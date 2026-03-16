@@ -1,0 +1,217 @@
+{
+  "_meta": {
+    "project": "DATA Project / COMP2850 Environmental Monitoring Dashboard",
+    "description": "Alert threshold rules for all five sensor domains. These rules are already encoded in the synthetic datasets — your dashboard status column and alert_triggered column are derived from exactly these thresholds. Implement them as-is. You do not need to change them. If you do change a threshold, you must document your reason and cite the standard you are referencing.",
+    "status_levels": {
+      "normal": "All readings within acceptable range. No action required.",
+      "warning": "One or more readings approaching or exceeding a safe limit. Flag for review.",
+      "critical": "One or more readings exceed a safety or action threshold. Immediate attention required."
+    },
+    "logic": "status is the WORST level triggered by any single rule in that row. alert_triggered = 1 when status is warning or critical.",
+    "standards": {
+      "SANS_241_2015": "South African National Standard for drinking water quality",
+      "FAO_56": "FAO Irrigation and Drainage Paper 56 — crop water requirements",
+      "FAO_61": "FAO Irrigation and Drainage Paper 61 — agricultural drainage water quality",
+      "FAO_FAW_IPM_2018": "FAO Fall Armyworm Integrated Pest Management Guide 2018",
+      "Huber_Gillespie_1992": "Huber & Gillespie, Annual Review of Phytopathology — leaf wetness and disease",
+      "Martiskainen_2009": "Martiskainen et al. 2009 — livestock accelerometer behaviour classification",
+      "CASAS_Cook_2013": "CASAS Smart Home dataset, Cook et al. 2013 — PIR/door event calibration",
+      "SANS_1691_2007": "South African National Standard for CO and smoke alarm thresholds"
+    }
+  },
+
+  "water_quality": {
+    "file": "water_quality.csv",
+    "description": "River and reservoir water quality monitoring. Sites differ in baseline contamination level — downstream is more affected by agricultural runoff than upstream.",
+    "note_on_turbidity": "Turbidity measures light scattering by suspended particles — sediment, algae, bacteria, organic matter. It is a public health proxy: turbid water cannot be reliably disinfected because particles shield bacteria from chlorine. In the Eastern Cape context, post-rainfall turbidity spikes indicate genuine pathogen transport risk, not merely aesthetic cloudiness.",
+    "note_on_contamination_events": "A simultaneous spike in BOTH turbidity AND conductivity suggests chemical or agricultural runoff contamination rather than plain sediment wash. Rain alone drives turbidity up and conductivity down (dilution effect), so a combined spike is the key signature.",
+    "rules": [
+      {
+        "column": "ph",
+        "warning": { "condition": "ph < 6.5 OR ph > 8.5", "rationale": "Outside comfortable range for drinking water", "standard": "SANS_241_2015" },
+        "critical": { "condition": "ph < 6.0 OR ph > 9.0", "rationale": "Outside safe range — corrosive or scaling risk", "standard": "SANS_241_2015" }
+      },
+      {
+        "column": "turbidity_ntu",
+        "unit": "NTU (Nephelometric Turbidity Units)",
+        "warning": { "condition": "turbidity_ntu > 5", "rationale": "Aesthetic limit — visibly cloudy; disinfection reliability reduced", "standard": "SANS_241_2015" },
+        "critical": { "condition": "turbidity_ntu > 10", "rationale": "Treatment required before use; significant pathogen transport risk", "standard": "SANS_241_2015" }
+      },
+      {
+        "column": "conductivity_uS_cm",
+        "unit": "µS/cm (microsiemens per centimetre)",
+        "warning": { "condition": "conductivity_uS_cm > 500", "rationale": "Elevated dissolved solids — possible agricultural or industrial input", "standard": "SANS_241_2015" },
+        "critical": { "condition": "conductivity_uS_cm > 1500", "rationale": "High salinity — unsuitable for drinking or sensitive irrigation", "standard": "SANS_241_2015" }
+      }
+    ],
+    "status_logic": "status = critical if ANY critical rule fires; warning if ANY warning rule fires and no critical; normal otherwise."
+  },
+
+  "soil_monitoring": {
+    "file": "soil_monitoring.csv",
+    "description": "Soil condition monitoring across three agricultural sites with different land use and drainage characteristics.",
+    "note_on_ec": "Soil EC (electrical conductivity) rises as soil moisture falls — dissolved salts concentrate as water is removed. EC is therefore a proxy for salinity stress risk.",
+    "rules": [
+      {
+        "column": "soil_moisture_vwc",
+        "unit": "VWC — Volumetric Water Content as a fraction (0.0–1.0; multiply by 100 for %)",
+        "warning": { "condition": "soil_moisture_vwc < 0.14 OR soil_moisture_vwc > 0.45", "rationale": "Below field capacity lower bound (drought stress) or above upper bound (waterlogging / anaerobic risk)", "standard": "FAO_56" },
+        "critical": { "condition": "soil_moisture_vwc < 0.08", "rationale": "Severe drought stress — wilting point threshold for most crops", "standard": "FAO_56" }
+      },
+      {
+        "column": "soil_ph",
+        "unit": "pH units",
+        "warning": { "condition": "soil_ph < 5.5 OR soil_ph > 7.5", "rationale": "Outside optimal range for most crops — nutrient availability affected", "standard": "FAO_61" },
+        "critical": { "condition": "soil_ph < 4.5 OR soil_ph > 8.0", "rationale": "Strongly acidic or alkaline — toxic to most crops", "standard": "FAO_61" }
+      },
+      {
+        "column": "soil_ec_uS_cm",
+        "unit": "µS/cm",
+        "warning": { "condition": "soil_ec_uS_cm > 800", "rationale": "Salinity stress beginning for sensitive crops", "standard": "FAO_61" },
+        "critical": { "condition": "soil_ec_uS_cm > 2500", "rationale": "Severe salinity — most crops significantly impaired", "standard": "FAO_61" }
+      }
+    ],
+    "status_logic": "status = critical if ANY critical rule fires; warning if ANY warning rule fires and no critical; normal otherwise."
+  },
+
+  "pest_monitoring": {
+    "file": "pest_monitoring.csv",
+    "description": "Pest pressure and crop disease risk monitoring across three crop types. Combines trap counts (direct pest detection) with environmental conditions (disease risk modelling).",
+    "note_on_disease_model": "Disease risk is a compound trigger — it requires temperature, humidity, AND sustained leaf wetness simultaneously. No single sensor reading alone triggers it. This reflects the Huber & Gillespie (1992) model widely used in phytopathology.",
+    "note_on_leaf_wetness": "Leaf wetness (0–1) is dimensionless. Values above 0.6 indicate conditions where fungal spores can germinate and infect plant tissue.",
+    "rules": [
+      {
+        "column": "pest_trap_count",
+        "unit": "count per 15-minute interval",
+        "warning": { "condition": "pest_trap_count >= 5", "rationale": "Action threshold — population large enough to cause measurable crop loss if untreated", "standard": "FAO_FAW_IPM_2018" },
+        "critical": { "condition": "pest_trap_count >= 20", "rationale": "Outbreak threshold — urgent intervention required", "standard": "FAO_FAW_IPM_2018" }
+      },
+      {
+        "column": "alert_disease_moderate",
+        "type": "compound",
+        "warning": {
+          "condition": "air_temperature_c BETWEEN 15 AND 28 AND relative_humidity_pct > 75 AND leaf_wetness_0_1 > 0.6",
+          "rationale": "Conditions favourable for fungal disease initiation",
+          "standard": "Huber_Gillespie_1992"
+        }
+      },
+      {
+        "column": "alert_disease_high",
+        "type": "compound",
+        "critical": {
+          "condition": "above conditions sustained for >= 6 consecutive hours",
+          "rationale": "Sustained wetness allows spore germination and infection — high disease probability",
+          "standard": "Huber_Gillespie_1992"
+        }
+      }
+    ],
+    "status_logic": "status = critical if pest_trap_count >= 20 OR alert_disease_high; warning if pest_trap_count >= 5 OR alert_disease_moderate (and no critical); normal otherwise."
+  },
+
+  "livestock_tracking": {
+    "file": "livestock_tracking.csv",
+    "description": "GPS location and accelerometer activity data for two livestock herds. Designed to detect illness (low activity), theft (geofence breach or sudden high activity), and predator events.",
+    "note_on_accel": "Accelerometer magnitude (g) reflects behaviour: ~1.0g = resting, ~1.2g = slow movement/grazing, ~1.5g = active walking, >3.5g = fleeing or struggling. Low activity alerts only fire during active hours (06:00–20:00) — animals resting at night is normal and should not alert.",
+    "note_on_geofence": "The geofence is a circular boundary around the home kraal. Radius: 0.004° (~440m) for cattle, 0.006° (~660m) for goats. Breach does not always mean theft — animals may have found a gap in fencing — but it warrants investigation.",
+    "rules": [
+      {
+        "column": "accel_mag_g",
+        "unit": "g (gravitational acceleration units)",
+        "warning": {
+          "condition": "accel_mag_g < 1.08 sustained across 4 consecutive readings AND hour BETWEEN 6 AND 20",
+          "rationale": "Prolonged low activity during active hours may indicate illness, injury, or exhaustion",
+          "standard": "Martiskainen_2009"
+        },
+        "critical": {
+          "condition": "accel_mag_g > 3.5",
+          "rationale": "Sudden high-magnitude movement consistent with fleeing, struggling, or theft event",
+          "standard": "Martiskainen_2009"
+        }
+      },
+      {
+        "column": "latitude / longitude",
+        "type": "geofence",
+        "warning": {
+          "condition": "distance from kraal centre > geofence_radius",
+          "cattle_radius_degrees": 0.004,
+          "goat_radius_degrees": 0.006,
+          "kraal_lat": -32.780,
+          "kraal_lon": 26.840,
+          "rationale": "Animal outside expected grazing area",
+          "standard": "Martiskainen_2009"
+        }
+      }
+    ],
+    "status_logic": "status = critical if accel > 3.5g; warning if low_activity OR geofence_breach (and no critical); normal otherwise."
+  },
+
+  "infrastructure_events": {
+    "file": "infrastructure_events.csv",
+    "description": "Event log for fixed farm gate and perimeter fence infrastructure. Boolean event data — not continuous sensor readings. Designed to complement livestock_tracking.csv: correlate gate events with animal GPS proximity.",
+    "rules": [
+      {
+        "column": "gate_open_event",
+        "type": "boolean",
+        "warning": {
+          "condition": "gate_open_event = 1 AND hour < 6 OR hour >= 19",
+          "rationale": "Gate opened outside normal working hours — warrants attention",
+          "standard": null,
+          "note": "No formal standard; threshold set by operational context"
+        }
+      },
+      {
+        "column": "fence_breach_event",
+        "type": "boolean",
+        "critical": {
+          "condition": "fence_breach_event = 1",
+          "rationale": "Perimeter breach detected via vibration — always requires investigation",
+          "standard": null
+        }
+      }
+    ],
+    "status_logic": "status = critical if fence_breach_event = 1; warning if gate_open at night; normal otherwise."
+  },
+
+  "security_events": {
+    "file": "security_events.csv",
+    "description": "Community security and emergency alert network. Multi-sensor fusion: no single sensor alone triggers a critical alert (except panic button). This reduces false positives.",
+    "note_on_fusion": "The intrusion alert requires motion AND door_open AND vibration > 0.5 AND night simultaneously. This multi-sensor fusion approach is standard practice in security systems to avoid false positives from a single triggered sensor.",
+    "note_on_smoke": "smoke_ppm is a proxy from the MQ135 gas sensor, not a calibrated smoke detector. The thresholds are indicative. A real deployment would require a dedicated smoke/CO sensor for life-safety applications.",
+    "rules": [
+      {
+        "column": "alert_intrusion",
+        "type": "compound",
+        "critical": {
+          "condition": "motion_detected = 1 AND door_open = 1 AND vibration_level > 0.5 AND (hour < 6 OR hour >= 19)",
+          "rationale": "Multi-sensor fusion — simultaneous motion, door, and vibration at night strongly indicates intrusion",
+          "standard": "CASAS_Cook_2013"
+        }
+      },
+      {
+        "column": "smoke_ppm",
+        "unit": "ppm (parts per million, MQ135 proxy)",
+        "warning": { "condition": "smoke_ppm > 35", "rationale": "Elevated smoke — possible cooking fire or early fire event", "standard": "SANS_1691_2007" },
+        "critical": { "condition": "smoke_ppm > 200 OR flame_detected = 1", "rationale": "Fire event likely — immediate response required", "standard": "SANS_1691_2007" }
+      },
+      {
+        "column": "panic_triggered",
+        "type": "boolean",
+        "critical": {
+          "condition": "panic_triggered = 1",
+          "rationale": "Manual distress signal — always critical, no fusion required",
+          "standard": null
+        }
+      },
+      {
+        "column": "motion_detected",
+        "type": "contextual",
+        "warning": {
+          "condition": "motion_detected = 1 AND (hour < 6 OR hour >= 22)",
+          "rationale": "Motion during deep night hours — not sufficient alone for intrusion alert but warrants logging",
+          "standard": "CASAS_Cook_2013"
+        }
+      }
+    ],
+    "status_logic": "status = critical if alert_intrusion OR alert_fire OR panic_triggered; warning if motion at night (22:00-06:00) OR smoke > 35ppm (and no critical); normal otherwise."
+  }
+}
