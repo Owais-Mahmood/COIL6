@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <title>Login</title>
+
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.sand.min.css">
+
+    <style>
+        :root { 
+            --pico-background-color: #e9fdff;
+            --pico-card-background-color: #ffffff;
+
+            --pico-primary: #2915ac;
+            --pico-primary-background: #421ac5; 
+            --pico-primary-hover: #1e1ba7;
+            --pico-primary-hover-background: #2b1b97;
+
+            --pico-muted-border-color: #d4cfe3;
+            --pico-primary-border: #cfdfe3;
+
+            --pico-form-element-background-color: #ffffff;
+            --pico-primary-inverse: #ffffff;
+        }
+
+        body {
+            background-color: #ccbbef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        main.container {
+            max-width: 420px;
+        }
+
+        #login {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid #d3e6d5;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        #login h2 {
+            margin-bottom: 0.5rem;
+        }
+
+        #login p {
+            margin-bottom: 1.5rem;
+            color: #4b5a4f;
+        }
+
+        #login input {
+            margin-bottom: 1rem;
+        }
+
+        button {
+            background-color: #3a7d44 !important;
+            color: #ffffff !important;
+            border-color: #cfe3d4 !important;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #143a6e !important;
+        }
+
+        .signup-text {
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container">
+        <section id="login">
+            <h2>Login</h2>
+            <p>Log In</p>
+
+            <div>
+                <input
+                    type="text"
+                    name="username"
+                    placeholder="Username"
+                    aria-label="username"
+                    required
+                >
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    aria-label="password"
+                    required
+                >
+
+                <form action="/login" method="get">
+                    <button type="submit">Enter</button>
+                </form>
+            </div>
+
+            <p class="signup-text">
+                Or continue as guest <a href="/guest">here</a>
+            </p>
+        </section>
+    </main>
+</body>
+</html>
