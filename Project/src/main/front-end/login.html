@@ -10,105 +10,115 @@
         href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.sand.min.css">
 
     <style>
-        :root { 
-            --pico-background-color: #e9fdff;
-            --pico-card-background-color: #ffffff;
-
-            --pico-primary: #2915ac;
-            --pico-primary-background: #421ac5; 
-            --pico-primary-hover: #1e1ba7;
-            --pico-primary-hover-background: #2b1b97;
-
-            --pico-muted-border-color: #d4cfe3;
-            --pico-primary-border: #cfdfe3;
-
-            --pico-form-element-background-color: #ffffff;
-            --pico-primary-inverse: #ffffff;
+        :root {
+            /* making this original variable so can refer to throughout code */
+            --stroomloop-blue: #225382;
         }
 
         body {
-            background-color: #ccbbef;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
+            /* used AI to help come up with a good gradient background */
+            background: linear-gradient(160deg, #0b3d5c, #1a7aad, #5ab4d6);
         }
 
         main.container {
-            max-width: 420px;
+            max-width: 920px;
         }
 
-        #login {
-            background: #ffffff;
-            padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid #d3e6d5;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            text-align: center;
+        .loginpage {
+            /* turning page into grid to get spacing correct */
+            display: grid;
+            /* splitting page in two equally */
+            grid-template-columns: 1fr 1fr;
         }
 
-        #login h2 {
-            margin-bottom: 0.5rem;
+        .leftside {
+            /* same colour as the background of logo */
+            background: var(--stroomloop-blue);
+            padding: 52px 44px;
+            /* sets text in section to white */
+            color: white;
         }
 
-        #login p {
-            margin-bottom: 1.5rem;
-            color: #4b5a4f;
+        .rightside {
+            background: white;
+            padding: 52px 48px;
         }
 
-        #login input {
-            margin-bottom: 1rem;
+        .blurb {
+            /* making transparent box for blurb text */
+            background: rgba(255, 255, 255, 0.145);
+            padding: 20px;
+            color: white;
+            font-size: 0.92rem;
         }
 
-        button {
-            background-color: #3a7d44 !important;
-            color: #ffffff !important;
-            border-color: #cfe3d4 !important;
+        input[type = "email"], input[type = "password"] {
+            width: 100%;
+            font-size: 0.97rem;
+        }
+
+        button[type ="submit"] {
+            background-color: var(--stroomloop-blue);
+            color: #ffffff;
+            font-size: 1rem;
             width: 100%;
         }
 
         button:hover {
-            background-color: #143a6e !important;
+            /* change colour of button when hovering over it */
+            background-color: #2254828f;
         }
 
-        .signup-text {
-            margin-top: 1rem;
-        }
+
     </style>
 </head>
 
 <body>
-    <main class="container">
-        <section id="login">
-            <h2>Login</h2>
-            <p>Log In</p>
+    <main class = "container">
+        <div class="loginpage">
 
-            <div>
-                <input
-                    type="text"
-                    name="username"
-                    placeholder="Username"
-                    aria-label="username"
-                    required
-                >
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    aria-label="password"
-                    required
-                >
-
-                <form action="/login" method="get">
-                    <button type="submit">Enter</button>
-                </form>
+            <div class = "leftside">
+                <div class = "logo">
+                    <img src = "Stroomloop.png" alt = "Stroomloop logo">
+                    <!--add tagline and blurb down below-->
+                    <p class = "tagline">"lsfcnofjeoif"</p>
+                    <div class = "blurb">
+                        Welcome to Stroomloop...
+                    </div>
+                </div>
             </div>
 
-            <p class="signup-text">
-                Or continue as guest <a href="/guest">here</a>
-            </p>
-        </section>
+            <div class = "rightside">
+                <h2>Log in</h2>
+                <!--using method post to ensure the info is not seen in URL-->
+                <form action="/login" method="post">
+                    <!--input for email-->
+                    <label for = "email">Email:</label>
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="name@emample.com"
+                        required
+                    >
+
+                    <!--input for password-->
+                    <label for = "password">Password:</label>
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="*********"
+                        required
+                    >
+                    <button type="submit">Log in</button>
+                </form>
+
+                <p>OR</p>
+
+                <!--alternate option of continuing as guest without logging in-->
+                <form action = "/guest" method = "get">
+                    Continue as guest <a href="/guest">here</a>
+                </form>
+            </div>  
+        </div>
     </main>
 </body>
-</html>
