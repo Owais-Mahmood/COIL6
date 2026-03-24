@@ -85,14 +85,17 @@ fun loadWaterQualityData(filePath: String): List<WaterQualityReading> {
 }
 
 fun main() {
-    val filePath = "datasets/datasets/synthetic_outputs/water_quality.csv"
+    val filePath = "../../datasets/datasets/synthetic_outputs/water_quality.csv"
+
+    println("Working directory: " + File(".").absolutePath)
+    println("Trying file path: $filePath")
+    println("Exists? " + File(filePath).exists())
 
     // Load all readings from the CSV
     val waterReadings = loadWaterQualityData(filePath)
 
     println("Loaded ${waterReadings.size} readings")
 
-    // Print the first reading as a quick check
     if (waterReadings.isNotEmpty()) {
         println("First reading:")
         println(waterReadings[0])
