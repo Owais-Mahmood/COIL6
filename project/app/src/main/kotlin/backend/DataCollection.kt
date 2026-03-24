@@ -85,7 +85,7 @@ fun loadWaterQualityData(filePath: String): List<WaterQualityReading> {
 }
 
 fun main() {
-    val filePath = "../datasets/datasets/synthetic_outputs/water_quality.csv"
+    val filePath = "datasets/datasets/synthetic_outputs/water_quality.csv"
 
     // Load all readings from the CSV
     val waterReadings = loadWaterQualityData(filePath)
