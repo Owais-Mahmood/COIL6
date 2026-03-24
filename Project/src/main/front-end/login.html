@@ -13,15 +13,17 @@
         :root {
             /* making this original variable so can refer to throughout code */
             --stroomloop-blue: #225382;
+            --stroomloop-blue-transparent: #2254825a;
         }
 
         body {
-            /* used AI to help come up with a good gradient background */
-            background: linear-gradient(160deg, #0b3d5c, #1a7aad, #5ab4d6);
+            /* added image as background */
+            background-image: url('CapeTown.jpeg');
         }
 
         main.container {
-            max-width: 920px;
+            max-width: 100%;
+            width: 100%;
         }
 
         .loginpage {
@@ -33,23 +35,29 @@
 
         .leftside {
             /* same colour as the background of logo */
-            background: var(--stroomloop-blue);
+            background: var(--stroomloop-blue-transparent);
             padding: 52px 44px;
             /* sets text in section to white */
             color: white;
         }
 
         .rightside {
-            background: white;
+            background: rgba(255, 255, 255, 0.250);
             padding: 52px 48px;
         }
 
         .blurb {
             /* making transparent box for blurb text */
-            background: rgba(255, 255, 255, 0.145);
+            background: rgba(255, 255, 255, 0.600);
             padding: 20px;
-            color: white;
+            color: var(--stroomloop-blue);
             font-size: 0.92rem;
+            text-align: center;
+        }
+
+        .blurb-title {
+            font-size: 1.5rem;
+            font-weight: bold;
         }
 
         input[type = "email"], input[type = "password"] {
@@ -69,21 +77,40 @@
             background-color: #2254828f;
         }
 
+        .OR-option {
+            font-size: 1.5rem;
+            text-align: center;
+            transform: translateY(25px);
+        }
+
+        .continue-guest {
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .tagline {
+            font-size: 1rem;
+            color: #ffffff;
+            text-align: center;
+            transform: translateY(-50px);
+        }
 
     </style>
 </head>
 
 <body>
-    <main class = "container">
+    <!--using container fluid so it fills the screen and is adaptable-->
+    <main class = "container-fluid">
         <div class="loginpage">
 
             <div class = "leftside">
                 <div class = "logo">
-                    <img src = "Stroomloop.png" alt = "Stroomloop logo">
+                    <img src = "stroomloop_transparent.png" alt = "Stroomloop logo">
                     <!--add tagline and blurb down below-->
-                    <p class = "tagline">"lsfcnofjeoif"</p>
+                    <p class = "tagline"><b>Know your water. Protect your health.</b></p>
                     <div class = "blurb">
-                        Welcome to Stroomloop...
+                        <span class = "blurb-title">Welcome to Stroomloop</span><br>
+                        an online interface innovating water monitoring systems to empower your choices and support a healthy life. Tailored for South African locals fueled by smart sensors and intuitive dashboards we aim to turn live readings into safer every-day practices. Our company’s vision is to help you understand your equally complex and beautiful environment, take valuable insights and protect communities.
                     </div>
                 </div>
             </div>
@@ -97,7 +124,7 @@
                     <input
                         type="email"
                         name="email"
-                        placeholder="name@emample.com"
+                        placeholder="name@example.com"
                         required
                     >
 
@@ -112,10 +139,10 @@
                     <button type="submit">Log in</button>
                 </form>
 
-                <p>OR</p>
+                <p class = "OR-option"><b>OR</b></p>
 
                 <!--alternate option of continuing as guest without logging in-->
-                <form action = "/guest" method = "get">
+                <form action = "/guest" method = "get" class ="continue-guest">
                     Continue as guest <a href="/guest">here</a>
                 </form>
             </div>  
