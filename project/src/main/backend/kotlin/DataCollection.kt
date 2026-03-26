@@ -97,6 +97,11 @@ fun getReadingsForSite(
     return readings.filter { it.siteId.trim().lowercase() == target }
 }
 
+// Returns only the readings where an alert has been triggered
+fun getAlertReadings(readings: List<WaterQualityReading>): List<WaterQualityReading> {
+    return readings.filter { it.alertTriggered == 1 }
+}
+
 fun main() {
     val filePath = "../../datasets/datasets/synthetic_outputs/water_quality.csv"
 
@@ -121,5 +126,17 @@ fun main() {
         println(siteReadings[0])
     } else {
         println("No readings found for site: $siteToCheck")
+    }
+
+    // Test filtering alert readings
+    val alertReadings = getAlertReadings(waterReadings)
+
+    println("Total alert-triggered readings: ${alertReadings.size}")
+
+    if (alertReadings.isNotEmpty()) {
+        println("First alert reading:")
+        println(alertReadings[0])
+    } else {
+        println("No alert-triggered readings found.")
     }
 }
