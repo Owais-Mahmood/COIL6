@@ -23,19 +23,13 @@ data class WaterQualityReading(
     val wxRainMmHr: Double
 )
 
-// If a value can't be parsed, print a warning and use a default instead of crashing
+// If a value can't be parsed, use a default instead of crashing
 fun safeDouble(value: String, fieldName: String, lineNumber: Int): Double {
-    return value.toDoubleOrNull() ?: run {
-        println("Invalid $fieldName at line $lineNumber, defaulting to 0.0")
-        0.0
-    }
+    return value.toDoubleOrNull() ?: 0.0
 }
 
 fun safeInt(value: String, fieldName: String, lineNumber: Int): Int {
-    return value.toIntOrNull() ?: run {
-        println("Invalid $fieldName at line $lineNumber, defaulting to 0")
-        0
-    }
+    return value.toIntOrNull() ?: 0
 }
 
 // Loads the CSV file and converts each row into a WaterQualityReading object
