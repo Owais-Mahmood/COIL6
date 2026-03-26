@@ -102,6 +102,18 @@ fun getAlertReadings(readings: List<WaterQualityReading>): List<WaterQualityRead
     return readings.filter { it.alertTriggered == 1 }
 }
 
+// Returns only the readings that match the given status
+fun getReadingsByStatus(
+    readings: List<WaterQualityReading>,
+    status: String
+): List<WaterQualityReading> {
+
+    // Normalise both sides to avoid case/whitespace mismatches
+    val target = status.trim().lowercase()
+
+    return readings.filter { it.status.trim().lowercase() == target }
+}
+
 fun main() {
     val filePath = "../../datasets/datasets/synthetic_outputs/water_quality.csv"
 
@@ -138,5 +150,18 @@ fun main() {
         println(alertReadings[0])
     } else {
         println("No alert-triggered readings found.")
+    }
+
+    // Test filtering by status
+    val statusToCheck = "critical"
+    val statusReadings = getReadingsByStatus(waterReadings, statusToCheck)
+
+    println("Total $statusToCheck readings: ${statusReadings.size}")
+
+    if (statusReadings.isNotEmpty()) {
+        println("First $statusToCheck reading:")
+        println(statusReadings[0])
+    } else {
+        println("No $statusToCheck readings found.")
     }
 }
