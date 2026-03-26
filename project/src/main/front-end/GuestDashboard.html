@@ -24,7 +24,7 @@
 
         body {
             /* added image as background */
-            background-color: var(--stroomloop-blue);
+            background-image: linear-gradient(180deg, #08081F, #466DFC);
             background-size: cover;
             width: 100%;
             height: 100%;
@@ -42,14 +42,13 @@
         }
 
         .left-column {
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0);
         }
 
-        .search-bar{
-            display: flex;
-            gap: 8px;
-            margin-right: auto;
+        .user {
+            
         }
+        
 
     </style>
 </head>
@@ -61,6 +60,14 @@
 
             <div class = "left-column">
                 <!--profile logo etc.-->
+                <div class = "logo">
+                    <img src = "stroomloop_transparent.png" alt = "Stroomloop logo" width="290" height="290">
+                </div>
+                <div class = "logo">
+                    <img src = "profile_transparent.png" width="50" height="50">
+                    <p class = "user">Guest</p>
+                </div>
+            </div>
             </div>
 
             <div class = "right-section">
@@ -69,12 +76,6 @@
 
             <div class = "top-section">
                 <!--search bar and toggles etc.-->
-                <div class = "search-bar">
-                    <form action="/data" method="get">
-                        <input type="text" name="query" placeholder="Enter search" required>
-                        <button type="submit">Search</button>
-                    </form>
-                </div>
             </div>
         </div>
     </main>
