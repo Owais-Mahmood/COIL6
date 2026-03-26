@@ -24,7 +24,7 @@
 
         body {
             /* added image as background */
-            background-image: linear-gradient(180deg, #08081F, #466DFC);
+            background-color: var(--stroomloop-blue);
             background-size: cover;
             width: 100%;
             height: 100%;
@@ -36,19 +36,15 @@
             width: 100%;
         }
 
-        .logo {
-            transform: translateY(-27px);
-        }
-
         .dashboard {
             display: grid;
             grid-template-columns: 1fr 3fr;
         }
 
         .left-column {
-            background-color: rgba(255, 255, 255, 0);
+            background-color: white;
         }
-        
+
         .top-section {
             display: flex;
             align-items: center;
@@ -95,7 +91,6 @@
             /* change colour of button when hovering over it */
             background-color: rgba(5, 147, 229, 0.554);
         }
-
     </style>
 </head>
 
@@ -106,13 +101,6 @@
 
             <div class = "left-column">
                 <!--profile logo etc.-->
-                <div class = "logo">
-                    <img src = "stroomloop_transparent.png" alt = "Stroomloop logo" width="250" height="250">
-                </div>
-                <div class = "profile">
-                    <img src = "profile_transparent.png" width="50" height="50">
-                    <p class = "user">Guest</p>
-                </div>
             </div>
 
             <div class = "right-section">
@@ -127,7 +115,7 @@
                         </form>
                     </div>
                 </div>
-            </div>    
+            </div>  
 
         </div>
     </main>
