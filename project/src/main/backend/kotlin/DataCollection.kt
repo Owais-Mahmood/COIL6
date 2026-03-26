@@ -108,7 +108,7 @@ fun getReadingsByStatus(
     return readings.filter { it.status.trim().lowercase() == target }
 }
 
-fun main() {
+fun loadDataMain() {
     val filePath = "../../datasets/datasets/synthetic_outputs/water_quality.csv"
     
     // Load all readings from the CSV
