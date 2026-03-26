@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light dark">
-    <title>Login</title>
+    <title>GuestDashboard</title>
 
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.sand.min.css">
@@ -91,6 +91,15 @@
             color: white;
         }
 
+        .data-display{
+            display: grid;
+            grid-template-columns: repeat(2,1fr);
+            grid-template-rows: repeat(3);
+            row-gap: 250px;
+            column-gap: 50px;
+            max-width: 490px;
+        }
+
         input[type = "text"] {
             width: 300px !important;
             height: 28px !important; 
@@ -154,7 +163,35 @@
                         </form>
                     </div>
                 </div>
-            </div>    
+                
+                <div class = "data-display">
+
+                    <div class = "pH">
+                        <p>pH</p>
+                    </div>
+
+                    <div class = "Conductivity">
+                        <p>Conductivity</p>
+                    </div>
+
+                    <div class = "Turbidity">
+                        <p>Turbidity</p>
+                    </div>
+
+                    <div class = "Light Intensity">
+                        <p>Light Intensity</p>
+                    </div>
+
+                    <div class = "Water Level">
+                        <p>Water Level</p>
+                    </div>
+
+                    <div class = "Water Temp">
+                        <p>Water Temperature</p>
+                    </div>
+                </div>
+            </div>  
+            
 
        
         </div>
