@@ -1,6 +1,0 @@
-
-
-fun Application.configureRouting() {
-
-
-}
