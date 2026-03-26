@@ -23,19 +23,13 @@ data class WaterQualityReading(
     val wxRainMmHr: Double
 )
 
-// Helper functions to avoid crashes if the CSV has missing or weird values
+// If a value can't be parsed, use a default instead of crashing
 fun safeDouble(value: String, fieldName: String, lineNumber: Int): Double {
-    return value.toDoubleOrNull() ?: run {
-        println("Invalid $fieldName at line $lineNumber, defaulting to 0.0")
-        0.0
-    }
+    return value.toDoubleOrNull() ?: 0.0
 }
 
 fun safeInt(value: String, fieldName: String, lineNumber: Int): Int {
-    return value.toIntOrNull() ?: run {
-        println("Invalid $fieldName at line $lineNumber, defaulting to 0")
-        0
-    }
+    return value.toIntOrNull() ?: 0
 }
 
 // Loads the CSV file and converts each row into a WaterQualityReading object
@@ -47,12 +41,14 @@ fun loadWaterQualityData(filePath: String): List<WaterQualityReading> {
 
     // Start from index 1 to skip the header row
     for (i in 1 until lines.size) {
+        val lineNumber = i + 1
+
         // Split the row by commas and trim whitespace
         val row = lines[i].split(",").map { it.trim() }
 
         // Skip rows that don't have enough columns
         if (row.size < 17) {
-            println("Skipping malformed row at line ${i + 1}")
+            println("Skipping malformed row at line $lineNumber")
             continue
         }
 
@@ -60,33 +56,60 @@ fun loadWaterQualityData(filePath: String): List<WaterQualityReading> {
         val reading = WaterQualityReading(
             timestamp = row[0],
             siteId = row[1],
-            ph = safeDouble(row[2], "ph", i + 1),
-            turbidityNtu = safeDouble(row[3], "turbidity_ntu", i + 1),
-            conductivityUsCm = safeDouble(row[4], "conductivity_uS_cm", i + 1),
-            waterTemperatureC = safeDouble(row[5], "water_temperature_c", i + 1),
-            waterLevelCm = safeDouble(row[6], "water_level_cm", i + 1),
-            lightLux = safeDouble(row[7], "light_lux", i + 1),
+            ph = safeDouble(row[2], "ph", lineNumber),
+            turbidityNtu = safeDouble(row[3], "turbidity_ntu", lineNumber),
+            conductivityUsCm = safeDouble(row[4], "conductivity_uS_cm", lineNumber),
+            waterTemperatureC = safeDouble(row[5], "water_temperature_c", lineNumber),
+            waterLevelCm = safeDouble(row[6], "water_level_cm", lineNumber),
+            lightLux = safeDouble(row[7], "light_lux", lineNumber),
             status = row[8],
-            alertTriggered = safeInt(row[9], "alert_triggered", i + 1),
-            alertPh = safeInt(row[10], "alert_ph", i + 1),
-            alertTurbidity = safeInt(row[11], "alert_turbidity", i + 1),
-            alertTurbidityCrit = safeInt(row[12], "alert_turbidity_crit", i + 1),
-            alertConductivity = safeInt(row[13], "alert_conductivity", i + 1),
-            wxTempC = safeDouble(row[14], "wx_temp_c", i + 1),
-            wxRhPct = safeDouble(row[15], "wx_rh_pct", i + 1),
-            wxRainMmHr = safeDouble(row[16], "wx_rain_mm_hr", i + 1)
+            alertTriggered = safeInt(row[9], "alert_triggered", lineNumber),
+            alertPh = safeInt(row[10], "alert_ph", lineNumber),
+            alertTurbidity = safeInt(row[11], "alert_turbidity", lineNumber),
+            alertTurbidityCrit = safeInt(row[12], "alert_turbidity_crit", lineNumber),
+            alertConductivity = safeInt(row[13], "alert_conductivity", lineNumber),
+            wxTempC = safeDouble(row[14], "wx_temp_c", lineNumber),
+            wxRhPct = safeDouble(row[15], "wx_rh_pct", lineNumber),
+            wxRainMmHr = safeDouble(row[16], "wx_rain_mm_hr", lineNumber)
         )
 
-        // Add the reading to the list
         readings.add(reading)
     }
 
     return readings
 }
 
+// Returns only the readings that match the given site ID
+fun getReadingsForSite(
+    readings: List<WaterQualityReading>,
+    siteId: String
+): List<WaterQualityReading> {
+
+    // Normalise both sides to avoid case/whitespace mismatches
+    val target = siteId.trim().lowercase()
+
+    return readings.filter { it.siteId.trim().lowercase() == target }
+}
+
+// Returns only the readings where an alert has been triggered
+fun getAlertReadings(readings: List<WaterQualityReading>): List<WaterQualityReading> {
+    return readings.filter { it.alertTriggered == 1 }
+}
+
+// Returns only the readings that match the given status
+fun getReadingsByStatus(
+    readings: List<WaterQualityReading>,
+    status: String
+): List<WaterQualityReading> {
+
+    // Normalise both sides to avoid case/whitespace mismatches
+    val target = status.trim().lowercase()
+
+    return readings.filter { it.status.trim().lowercase() == target }
+}
+
 fun main() {
     val filePath = "../../datasets/datasets/synthetic_outputs/water_quality.csv"
-    
     
     // Load all readings from the CSV
     val waterReadings = loadWaterQualityData(filePath)
@@ -96,5 +119,43 @@ fun main() {
     if (waterReadings.isNotEmpty()) {
         println("First reading:")
         println(waterReadings[0])
+    }
+
+    // Test filtering by site
+    val siteToCheck = "site_upstream"
+    val siteReadings = getReadingsForSite(waterReadings, siteToCheck)
+
+    println("Readings count for $siteToCheck: ${siteReadings.size}")
+
+    if (siteReadings.isNotEmpty()) {
+        println("First reading for $siteToCheck:")
+        println(siteReadings[0])
+    } else {
+        println("No readings found for site: $siteToCheck")
+    }
+
+    // Test filtering alert readings
+    val alertReadings = getAlertReadings(waterReadings)
+
+    println("Total alert-triggered readings: ${alertReadings.size}")
+
+    if (alertReadings.isNotEmpty()) {
+        println("First alert reading:")
+        println(alertReadings[0])
+    } else {
+        println("No alert-triggered readings found.")
+    }
+
+    // Test filtering by status
+    val statusToCheck = "critical"
+    val statusReadings = getReadingsByStatus(waterReadings, statusToCheck)
+
+    println("Total $statusToCheck readings: ${statusReadings.size}")
+
+    if (statusReadings.isNotEmpty()) {
+        println("First $statusToCheck reading:")
+        println(statusReadings[0])
+    } else {
+        println("No $statusToCheck readings found.")
     }
 }
