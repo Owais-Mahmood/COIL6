@@ -56,6 +56,14 @@
             /* thinner top row */
             padding: 10px 24px;
         }
+        .user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .name {
+            color: white;
+        }
 
         .dashboard-title {
             font-size: 1.2rem;
@@ -70,6 +78,17 @@
             align-items: center;
             gap: 0;
             margin-left: auto;
+        }
+
+        .sidebar{
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            transform: translateY(30px);
+        }
+
+        .sidebarButton{
+            color: white;
         }
 
         input[type = "text"] {
@@ -109,9 +128,9 @@
                 <div class = "logo">
                     <img src = "stroomloop_transparent.png" alt = "Stroomloop logo" width="250" height="250">
                 </div>
-                <div class = "profile">
+                <div class = "user">
                     <img src = "profile_transparent.png" width="50" height="50">
-                    <p class = "user">Guest</p>
+                    <p class = "name">Guest</p>
                 </div>
             </div>
 
@@ -128,6 +147,14 @@
                     </div>
                 </div>
             </div>    
+
+            <div class = "sidebar">
+                <!-- This is the sidebar drop down menu allowing you to navigate to different pages-->
+                <a href="GuestDashboard.html" class="sidebarButton">Dashboard</a>
+                <a href="alerts.html" class="sidebarButton">Alerts</a>
+                <a href="trends.html" class="sidebarButton">Trends</a>
+                <a href="info.html" class="sidebarButton">Information</a>
+            </div>
 
         </div>
     </main>
