@@ -11,7 +11,7 @@ fun Application.configureRouting() {
     
     //the route from pressing "continue as guest" to the guest dashboard
         get("/guest") {
-            call.respondRedirect(/GuestDashboard.html)
+            call.respondRedirect("/GuestDashboard.html")
         }
     }
 }
