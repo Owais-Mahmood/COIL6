@@ -151,7 +151,6 @@ fun loadDataMain() {
     val statusReadings = getReadingsByStatus(waterReadings, statusToCheck)
 
     println("Total $statusToCheck readings: ${statusReadings.size}")
-
     if (statusReadings.isNotEmpty()) {
         println("First $statusToCheck reading:")
         println(statusReadings[0])
