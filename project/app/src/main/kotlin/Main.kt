@@ -23,8 +23,7 @@ fun main() {
             get("/") {
                 call.respondRedirect("/login.html")
             }
-
-            // Alerts
+             // Alerts
             get("/alerts") {
                 val alertReadings = getAlertReadings(waterReadings)
                 call.respondText("Total alert-triggered readings: ${alertReadings.size}")
