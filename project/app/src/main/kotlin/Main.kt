@@ -23,6 +23,12 @@ fun main() {
             get("/") {
                 call.respondRedirect("/login.html")
             }
+
+            //enter guest dashboard
+            get("/guest") {
+                call.respondRedirect("/GuestDashboard.html")
+            }
+
              // Alerts
             get("/alerts") {
                 val alertReadings = getAlertReadings(waterReadings)
