@@ -25,9 +25,10 @@
         body {
             /* added image as background */
             background-image: linear-gradient(180deg, #08081F, #466DFC);
-            background-size: cover;
-            width: 100%;
-            height: 100%;
+            background-attachment: fixed !important;
+            background-size: cover !important;
+            width: 100% !important;
+            min-height: 100vh !important;
         
         }
 
@@ -132,13 +133,23 @@
             border-radius: 8px;     /* rounded corners */
         }
 
-        .glossary-title {
+        .pH-title {
             font-weight: 300;
             font-size: 1rem;
             margin: 0 0 8px 0;      /* top right botton left */
         }
 
-        .information {
+        .pH {
+            color: white;
+        }
+
+        .conductivity-title {
+            font-weight: 300;
+            font-size: 1rem;
+            margin: 0 0 8px 0;      /* top right botton left */
+        }
+
+        .conductivity {
             color: white;
         }
 
@@ -184,9 +195,27 @@
 
                 <div class = "content"> 
                     <div class = "glossary">
-                        <span class = "glossary-title">Understand the Data</span>
-                        <p class = "information"><b>pH:</b> measures how acidic or alkaline the water is, on a scale of 0 to 14. Below 7 is acidic and above 7 is an alkaline. The WHO (World Health Organisation) recommends drinking water sites between 6.5 and 8.5.<br>
-                        <b>Conductivity:</b> </p>
+                        <span class = "pH-title">pH: </span>
+                        <ul class = "pH"> 
+                            <li>Measures how acidic or alkaline the water is, on a scale of 0 to 14.</li>
+                            <li>Below 7 is acidic and above 7 is an alkaline.</li> 
+                            <li>The WHO (World Health Organisation) recommends drinking water sites between 6.5 and 8.5.</li>
+                            <li>Water that is <b>too acidic</b> (below 6.5) can corrode pipes, allowing heavy metals like lead and copper into the water supply. This is extremely toxic for humans resulting in a sour taste and irritation of skin and eyes.</li>
+                            <li>Water that is <b>too alkaline</b> (above 8.5) can cause scale build up in pipes. The water can taste bitter and there is a reduction in effectiveness of chlorine disinfection, meaning bacteria is less likeley to be killed.</li>
+                        </ul>
+                    </div>
+
+                    <div class = "glossary">
+                        <span class = "conductivity-title">Conductivity: </span>
+                        <ul class = "conductivity">
+                            <li>Measures how well the water can conduct electricity.</li> 
+                            <li>Pure water conducts electricity very poorly, it is the dissolved salts, mineral and ions in water that carry the electrical charge.</li> 
+                            <li>It is measured in microsiemens per centimetre.</li>
+                            <li>For drinking water the acceptable range is 200-800 µS/cm.</li> 
+                            <li>When the conductivity is too low (below around 200 µS/cm) it indicates very few dissolved minerals, which sounds clean but can actually mean the water is too pure and lacks essential minerals 
+                            like calcium and magnesium that the body needs. It can also indicate the water is more corrosive to pipes.</li> 
+                            <li>When the water is too high in conductivity (above around 800 µS/cm) it suggests a high concentration of dissolved solids, potentially from agricultural runoff, industrial waste, sewage contamination, or road salt. High conductivity water can taste salty or bitter and may contain harmful contaminants.</li>
+                        </ul>
                     </div>
                 </div>
             </div>    
