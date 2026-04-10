@@ -23,7 +23,7 @@ ring = Wedge(center=(0.5,0.5),r=0.25,theta1 = 0, theta2 = 90, width = 1, facecol
 infographicCircle = plt.Circle((0.5,0.5),0.5, color = "#225382") # stroomloop blue
 
 # readings in the centre of the circle
-ax.text(0.6)
+ax.text(0.5, 0.5,"LIVE READING", ha = 'center', va = 'center'. fontsize = 15, color = 'white')
 
 axes.set_aspect(1) # so circle doesnt become an oval
 axes.add_patch(infographicCircle) # circle not drawn until attached to axis
