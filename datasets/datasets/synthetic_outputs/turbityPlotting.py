@@ -1,0 +1,99 @@
+import pandas as pd
+import matplotlib.pyplot as plt 
+from matplotlib.patches import Wedge # so we can start programming rings/arcs 
+import sys
+import os
+
+csv_path = sys.argv[1]
+
+output_path = sys.argv[2]
+
+def conductivity_loading(csv_path: str):
+    df = pd.read_csv(csv_path)
+    df['timestamp'] = pd.to_datetime(df['timestamp'])
+
+    return df[['timestamp', 'site_id', 'turbidity_ntu']]
+
+def ring_creation(axes, value, min_value, max_value, site_id, timestampStr):
+
+    #NOTE CHANGE COLOURING LOGIC
+    if value < 200:
+        ringColour = "#0FFF0F"
+    elif value > 500: #fix this 575 max even tho over 800 is problem
+        ringColour = "#FF0000"
+    else:
+        ringColour = "#FFF700FF"
+
+    #circle 
+    infographicCircle = plt.Circle((0.5,0.5),0.5, color = "#22548200") # stroomloop blue
+    axes.add_patch(infographicCircle) # circle not drawn until attached to axis
+
+    # arc logic - percentage change
+    percentage = (value-min_value)/(max_value-min_value)
+    percentage = max(0.0,min(1.0,percentage)) # making sure percentage is between 0 and 1
+
+    # changing fraction to degrees to show on ring
+    maxRing = 360
+    arc = percentage * maxRing
+    ring = Wedge(center=(0.5,0.5),r=0.5,theta1 = 90, theta2 = (90-arc), width = 0.11, facecolor = ringColour)
+    axes.add_patch(ring)
+    
+    #readings in the centre of the circle
+    axes.text(0.5, 0.55, f"{value}", ha = 'center', va = 'center', fontsize = 15, color = "#225382") # note change back to white
+    axes.text(0.5,0.45,"INSERT", ha = 'center', va = 'center', fontsize = 10, color = "#225382")
+
+    # status
+    # status
+    normal = "normal"
+    moderate = "moderate"
+    critical = "critical"
+    if value < 7:
+        status = "normal"
+    elif value > 500: #fix this 575 max even tho over 800 is problem
+        status = "critical"
+    else:
+        status = "moderate"
+    axes.text(0.5,0.25,status,ha = 'center', va = 'center', fontsize = 7, color = "#225382") # note change back to white this is just for testing
+
+    #site title
+    axes.set_title(site_id, fontsize=10, color="#225382", fontweight = 'bold') #make white later
+    #timestamp 
+    axes.text(0.5, 0.35, timestampStr, ha='center', va='center', fontsize=5, color= "#225382")
+        
+
+    # organising data
+    axes.set_aspect(1) # so circle doesnt become an oval
+    axes.set_xlim(0,1) # so ring is shown
+    axes.set_ylim(0,1) # so ring is shown
+    axes.axis("off")
+
+def plot_recent_reading(df: pd.DataFrame, output_dir: str):
+    recentReading = df.sort_values('timestamp').groupby('site_id').last().reset_index()     #getting most recent reading
+    n = len(recentReading)
+
+    site_ids = list(recentReading ['site_id'])
+    values = list(recentReading ['turbidity_ntu'])
+    timestamps = list(recentReading ['timestamp'])
+
+    fig, axes = plt.subplots(2, n)
+
+    #range of conductivity readings from csv file
+    min_val, max_val = 30, 575
+
+    for i in range(len(site_ids)):
+        #changing format of timestamp to be more pretty
+        timestampStr = timestamps[i].strftime('%Y-%m-%d %H:%M')
+        ring_creation(axes[0][i], values[i], min_val, max_val, site_ids[i], timestampStr)
+
+        ax_text = axes[1][i]
+        ax_text.axis('off')
+        
+    os.makedirs(output_dir, exist_ok=True)
+    out_path = os.path.join(output_dir, "turbity_latest.png")
+    fig.savefig(out_path, dpi=150, bbox_inches='tight')
+    plt.close(fig)  #Free memory important when generating many plots in one run
+    print(f"Saved: {out_path}")
+
+
+df = conductivity_loading(csv_path)
+plot_recent_reading(df, output_path)

@@ -12,9 +12,11 @@ def conductivity_loading(csv_path: str):
     df = pd.read_csv(csv_path)
     df['timestamp'] = pd.to_datetime(df['timestamp'])
 
-    return df[['timestamp', 'site_id', 'conductivity_uS_cm']]
+    return df[['timestamp', 'site_id', 'ph']]
 
 def ring_creation(axes, value, min_value, max_value, site_id, timestampStr):
+
+    #NOTE CHANGE COLOURING LOGIC
     if value < 200:
         ringColour = "#0FFF0F"
     elif value > 500: #fix this 575 max even tho over 800 is problem
@@ -70,7 +72,7 @@ def plot_recent_reading(df: pd.DataFrame, output_dir: str):
     n = len(recentReading)
 
     site_ids = list(recentReading ['site_id'])
-    values = list(recentReading ['conductivity_uS_cm'])
+    values = list(recentReading ['ph'])
     timestamps = list(recentReading ['timestamp'])
 
     fig, axes = plt.subplots(2, n)
@@ -87,7 +89,7 @@ def plot_recent_reading(df: pd.DataFrame, output_dir: str):
         ax_text.axis('off')
         
     os.makedirs(output_dir, exist_ok=True)
-    out_path = os.path.join(output_dir, "conductivity_latest.png")
+    out_path = os.path.join(output_dir, "pH_latest.png")
     fig.savefig(out_path, dpi=150, bbox_inches='tight')
     plt.close(fig)  #Free memory important when generating many plots in one run
     print(f"Saved: {out_path}")
