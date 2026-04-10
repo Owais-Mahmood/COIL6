@@ -1,0 +1,70 @@
+import pandas as pd
+import matplotlib.pyplot as plt 
+from matplotlib.patches import Wedge # so we can start programming rings/arcs 
+import sys
+import os
+
+csv_path = sys.argv[1]
+
+output_path = sys.argv[2]
+
+def conductivity_loading(csv_path: str):
+    df = pd.read_csv(csv_path)
+    df['timestamp'] = pd.to_datetime(df['timestamp'])
+
+    return df[['timestamp', 'site_id', 'conductivity_uS_cm']]
+
+def ring_creation(axes, value, min_value, max_value):
+    if value < 200:
+        ringColour = "#008000"
+    elif value > 500: #fix this 575 max even tho over 800 is problem
+        ringColour = "#FF0000"
+    else:
+        ringColour = "#FFA500"
+
+    #circle 
+    infographicCircle = plt.Circle((0.5,0.5),0.5, color = "#225382") # stroomloop blue
+    axes.add_patch(infographicCircle) # circle not drawn until attached to axis
+
+    ring = Wedge(center=(0.5,0.5),r=0.25,theta1 = 0, theta2 = 90, width = 1, facecolor = ringColour)
+    axes.add_patch(ring)
+    
+    #readings in the centre of the circle
+    axes.text(0.5, 0.5, f"{value}", ha = 'center', va = 'center', fontsize = 15, color = 'white')
+
+    #bypasses some automatic formatting
+    axes.set_aspect(1)
+    axes.axis('off')
+
+def plot_recent_reading(df: pd.DataFrame, output_dir: str):
+    recentReading = df.sort_values('timestamp').groupby('site_id').last().reset_index()     #getting most recent reading
+    n = len(recentReading)
+
+    site_ids = list(recentReading ['site_id'])
+    values = list(recentReading ['conductivity_uS_cm'])
+    timestamps = list(recentReading ['timestamp'])
+
+    fig, axes = plt.subplots(2, n)
+
+    #range of conductivity readings from csv file
+    min_val, max_val = 30, 575
+
+    for i in range(len(site_ids)):
+        #changing format of timestamp to be more pretty
+        timestampStr = timestamps[i].strftime('%Y-%m-%d %H:%M')
+        ring_creation(axes[0][i], values[i], min_val, max_val)
+
+        ax_text = axes[1][i]
+        ax_text.axis('off')
+        ax_text.text(0.5, 0.65, site_ids[i], ha='center', va='center', fontsize=10, color="#FFFFFF")
+        ax_text.text(0.5, 0.35, timestampStr, ha='center', va='center', fontsize=8, color="#FFFFFF")
+        
+    os.makedirs(output_dir, exist_ok=True)
+    out_path = os.path.join(output_dir, "conductivity_latest.png")
+    fig.savefig(out_path, dpi=150, bbox_inches='tight')
+    plt.close(fig)  #Free memory important when generating many plots in one run
+    print(f"Saved: {out_path}")
+
+
+df = conductivity_loading(csv_path)
+plot_recent_reading(df, output_path)
