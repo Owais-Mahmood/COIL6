@@ -16,25 +16,44 @@ def conductivity_loading(csv_path: str):
 
 def ring_creation(axes, value, min_value, max_value):
     if value < 200:
-        ringColour = "#008000"
+        ringColour = "#0FFF0F"
     elif value > 500: #fix this 575 max even tho over 800 is problem
         ringColour = "#FF0000"
     else:
-        ringColour = "#FFA500"
+        ringColour = "#FFF700FF"
 
     #circle 
-    infographicCircle = plt.Circle((0.5,0.5),0.5, color = "#225382") # stroomloop blue
+    infographicCircle = plt.Circle((0.5,0.5),0.5, color = "#22548200") # stroomloop blue
     axes.add_patch(infographicCircle) # circle not drawn until attached to axis
 
-    ring = Wedge(center=(0.5,0.5),r=0.25,theta1 = 0, theta2 = 90, width = 1, facecolor = ringColour)
+    arc = 60
+    ring = Wedge(center=(0.5,0.5),r=0.5,theta1 = 90, theta2 = (90-arc), width = 0.11, facecolor = ringColour)
     axes.add_patch(ring)
     
     #readings in the centre of the circle
-    axes.text(0.5, 0.5, f"{value}", ha = 'center', va = 'center', fontsize = 15, color = 'white')
+    axes.text(0.5, 0.55, f"{value}", ha = 'center', va = 'center', fontsize = 15, color = "#225382") # note change back to white
+    axes.text(0.5,0.45,"µS/cm", ha = 'center', va = 'center', fontsize = 10, color = "#225382")
 
-    #bypasses some automatic formatting
-    axes.set_aspect(1)
-    axes.axis('off')
+    # status
+    # status
+    normal = "normal"
+    moderate = "moderate"
+    critical = "critical"
+    if value < 200:
+        status = "normal"
+    elif value > 500: #fix this 575 max even tho over 800 is problem
+        status = "critical"
+    else:
+        status = "moderate"
+    axes.text(0.5,0.25,status,ha = 'center', va = 'center', fontsize = 7, color = "#225382") # note change back to white this is just for testing
+
+    # INSERT TIME-STAMP CODE
+
+    # organising data
+    axes.set_aspect(1) # so circle doesnt become an oval
+    axes.set_xlim(0,1) # so ring is shown
+    axes.set_ylim(0,1) # so ring is shown
+    axes.axis("off")
 
 def plot_recent_reading(df: pd.DataFrame, output_dir: str):
     recentReading = df.sort_values('timestamp').groupby('site_id').last().reset_index()     #getting most recent reading
