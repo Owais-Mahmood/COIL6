@@ -15,12 +15,11 @@ def conductivity_loading(csv_path: str):
     return df[['timestamp', 'site_id', 'conductivity_uS_cm']]
 
 def ring_creation(axes, value, min_value, max_value, site_id, timestampStr):
-    if value < 200:
-        ringColour = "#0FFF0F"
-    elif value > 500: #fix this 575 max even tho over 800 is problem
+    if value < 200 or value > 500:
         ringColour = "#FF0000"
     else:
-        ringColour = "#FFF700FF"
+        ringColour = "#0FFF0F"
+        #ringColour = "#FFF700FF" research moderate
 
     #circle 
     infographicCircle = plt.Circle((0.5,0.5),0.5, color = "#22548200") # stroomloop blue
@@ -41,16 +40,10 @@ def ring_creation(axes, value, min_value, max_value, site_id, timestampStr):
     axes.text(0.5,0.45,"µS/cm", ha = 'center', va = 'center', fontsize = 10, color = "#225382")
 
     # status
-    # status
-    normal = "normal"
-    moderate = "moderate"
-    critical = "critical"
-    if value < 200:
-        status = "normal"
-    elif value > 500: #fix this 575 max even tho over 800 is problem
+    if value < 200 or value > 500:
         status = "critical"
     else:
-        status = "moderate"
+        status = "normal"
     axes.text(0.5,0.25,status,ha = 'center', va = 'center', fontsize = 7, color = "#225382") # note change back to white this is just for testing
 
     #site title
@@ -64,6 +57,7 @@ def ring_creation(axes, value, min_value, max_value, site_id, timestampStr):
     axes.set_xlim(0,1) # so ring is shown
     axes.set_ylim(0,1) # so ring is shown
     axes.axis("off")
+    print(f"{site_id}: value={value}, pct={percentage}, arc={arc}")
 
 def plot_recent_reading(df: pd.DataFrame, output_dir: str):
     recentReading = df.sort_values('timestamp').groupby('site_id').last().reset_index()     #getting most recent reading
@@ -73,18 +67,16 @@ def plot_recent_reading(df: pd.DataFrame, output_dir: str):
     values = list(recentReading ['conductivity_uS_cm'])
     timestamps = list(recentReading ['timestamp'])
 
-    fig, axes = plt.subplots(2, n)
+    fig, axes = plt.subplots(1, n)
 
     #range of conductivity readings from csv file
-    min_val, max_val = 30, 575
+    min_val, max_val = 0, 575
 
     for i in range(len(site_ids)):
         #changing format of timestamp to be more pretty
         timestampStr = timestamps[i].strftime('%Y-%m-%d %H:%M')
-        ring_creation(axes[0][i], values[i], min_val, max_val, site_ids[i], timestampStr)
+        ring_creation(axes[i], values[i], min_val, max_val, site_ids[i], timestampStr)
 
-        ax_text = axes[1][i]
-        ax_text.axis('off')
         
     os.makedirs(output_dir, exist_ok=True)
     out_path = os.path.join(output_dir, "conductivity_latest.png")
