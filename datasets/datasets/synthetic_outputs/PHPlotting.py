@@ -20,12 +20,13 @@ green = "#008000"
 orange = "#FFA500"
 red = "#FF0000"
 ringColour = green # can insert logic of how to pick the colour later
-ring = Wedge(center=(0.5,0.5),r=0.25,theta1 = 0, theta2 = 90, width = 0.1, facecolor = ringColour)
+arc = 60
+ring = Wedge(center=(0.5,0.5),r=0.5,theta1 = 90, theta2 = (90-arc), width = 0.11, facecolor = ringColour)
 axes.add_patch(ring)
 
 # readings in the centre of the circle
-axes.text(0.5, 0.5,"LIVE READING", ha = 'center', va = 'center', fontsize = 15, color = 'white')
-axes.text(0.5,0.5,"pH Scale", ha = 'center', va = 'center', fontsize = 10, color = 'white')
+axes.text(0.5, 0.55,"LIVE READING", ha = 'center', va = 'center', fontsize = 15, color = 'white')
+axes.text(0.5,0.45,"pH Scale", ha = 'center', va = 'center', fontsize = 10, color = 'white')
 
 # status
 normal = "normal"
