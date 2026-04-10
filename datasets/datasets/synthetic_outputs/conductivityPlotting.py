@@ -14,7 +14,7 @@ def conductivity_loading(csv_path: str):
 
     return df[['timestamp', 'site_id', 'conductivity_uS_cm']]
 
-def ring_creation(axes, value, min_value, max_value):
+def ring_creation(axes, value, min_value, max_value, site_id, timestampStr):
     if value < 200:
         ringColour = "#0FFF0F"
     elif value > 500: #fix this 575 max even tho over 800 is problem
@@ -47,7 +47,11 @@ def ring_creation(axes, value, min_value, max_value):
         status = "moderate"
     axes.text(0.5,0.25,status,ha = 'center', va = 'center', fontsize = 7, color = "#225382") # note change back to white this is just for testing
 
-    # INSERT TIME-STAMP CODE
+    #site title
+    axes.set_title(site_id, fontsize=10, color="#225382", fontweight = 'bold') #make white later
+    #timestamp 
+    axes.text(0.5, 0.35, timestampStr, ha='center', va='center', fontsize=5, color= "#225382")
+        
 
     # organising data
     axes.set_aspect(1) # so circle doesnt become an oval
@@ -71,12 +75,10 @@ def plot_recent_reading(df: pd.DataFrame, output_dir: str):
     for i in range(len(site_ids)):
         #changing format of timestamp to be more pretty
         timestampStr = timestamps[i].strftime('%Y-%m-%d %H:%M')
-        ring_creation(axes[0][i], values[i], min_val, max_val)
+        ring_creation(axes[0][i], values[i], min_val, max_val, site_ids[i], timestampStr)
 
         ax_text = axes[1][i]
         ax_text.axis('off')
-        ax_text.text(0.5, 0.65, site_ids[i], ha='center', va='center', fontsize=10, color="#FFFFFF")
-        ax_text.text(0.5, 0.35, timestampStr, ha='center', va='center', fontsize=8, color="#FFFFFF")
         
     os.makedirs(output_dir, exist_ok=True)
     out_path = os.path.join(output_dir, "conductivity_latest.png")
