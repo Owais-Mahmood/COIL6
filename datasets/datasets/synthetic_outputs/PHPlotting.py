@@ -23,7 +23,18 @@ ring = Wedge(center=(0.5,0.5),r=0.25,theta1 = 0, theta2 = 90, width = 1, facecol
 infographicCircle = plt.Circle((0.5,0.5),0.5, color = "#225382") # stroomloop blue
 
 # readings in the centre of the circle
-ax.text(0.5, 0.5,"LIVE READING", ha = 'center', va = 'center'. fontsize = 15, color = 'white')
+axes.text(0.5, 0.5,"LIVE READING", ha = 'center', va = 'center', fontsize = 15, color = 'white')
+axes.text(0.5,0.5,"pH Scale", ha = 'center', va = 'center', fontsize = 10, color = 'white')
+
+# status
+normal = "normal"
+moderate = "moderate"
+critical = "critical"
+status = normal # add code here to decide what critical level it is = insert logic
+axes.text(0.5,0.25,status,ha = 'center', va = 'center', fontsize = 13, color = 'white')
+
+# timestamp
+####### insert code
 
 axes.set_aspect(1) # so circle doesnt become an oval
 axes.add_patch(infographicCircle) # circle not drawn until attached to axis
