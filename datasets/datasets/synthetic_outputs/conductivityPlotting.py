@@ -26,7 +26,13 @@ def ring_creation(axes, value, min_value, max_value, site_id, timestampStr):
     infographicCircle = plt.Circle((0.5,0.5),0.5, color = "#22548200") # stroomloop blue
     axes.add_patch(infographicCircle) # circle not drawn until attached to axis
 
-    arc = 60
+    # arc logic - percentage change
+    percentage = (value-min_value)/(max_value-min_value)
+    percentage = max(0.0,min(1.0,percentage)) # making sure percentage is between 0 and 1
+
+    # changing fraction to degrees to show on ring
+    maxRing = 360
+    arc = percentage * maxRing
     ring = Wedge(center=(0.5,0.5),r=0.5,theta1 = 90, theta2 = (90-arc), width = 0.11, facecolor = ringColour)
     axes.add_patch(ring)
     
