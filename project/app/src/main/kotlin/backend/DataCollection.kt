@@ -108,53 +108,16 @@ fun getReadingsByStatus(
     return readings.filter { it.status.trim().lowercase() == target }
 }
 
-fun loadDataMain() {
-    val filePath = "../../datasets/datasets/synthetic_outputs/water_quality.csv"
-    
-    // Load all readings from the CSV
-    val waterReadings = loadWaterQualityData(filePath)
+// Returns the latest reading for a given site
+fun getLatestReadingForSite(
+    readings: List<WaterQualityReading>,
+    siteId: String
+): WaterQualityReading? {
 
-    println("Loaded ${waterReadings.size} readings")
+    // Normalise site ID before comparing
+    val target = siteId.trim().lowercase()
 
-    if (waterReadings.isNotEmpty()) {
-        println("First reading:")
-        println(waterReadings[0])
-    }
-
-    // Test filtering by site
-    val siteToCheck = "site_upstream"
-    val siteReadings = getReadingsForSite(waterReadings, siteToCheck)
-
-    println("Readings count for $siteToCheck: ${siteReadings.size}")
-
-    if (siteReadings.isNotEmpty()) {
-        println("First reading for $siteToCheck:")
-        println(siteReadings[0])
-    } else {
-        println("No readings found for site: $siteToCheck")
-    }
-
-    // Test filtering alert readings
-    val alertReadings = getAlertReadings(waterReadings)
-
-    println("Total alert-triggered readings: ${alertReadings.size}")
-
-    if (alertReadings.isNotEmpty()) {
-        println("First alert reading:")
-        println(alertReadings[0])
-    } else {
-        println("No alert-triggered readings found.")
-    }
-
-    // Test filtering by status
-    val statusToCheck = "critical"
-    val statusReadings = getReadingsByStatus(waterReadings, statusToCheck)
-
-    println("Total $statusToCheck readings: ${statusReadings.size}")
-    if (statusReadings.isNotEmpty()) {
-        println("First $statusToCheck reading:")
-        println(statusReadings[0])
-    } else {
-        println("No $statusToCheck readings found.")
-    }
+    return readings
+        .filter { it.siteId.trim().lowercase() == target }
+        .maxByOrNull { it.timestamp }
 }

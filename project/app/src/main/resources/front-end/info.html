@@ -11,25 +11,22 @@
 
     <style>
         :root {
-            /* making this original variable so can refer to throughout code */
             --stroomloop-blue: #225382;
             --stroomloop-blue-transparent: #2254825a;
         }
 
-        html, body{
+        html, body {
             height: 100%;
             margin: 0;
             padding: 0;
         }
 
         body {
-            /* added image as background */
             background-image: linear-gradient(180deg, #08081F, #466DFC);
-            background-attachment: fixed !important;
-            background-size: cover !important;
-            width: 100% !important;
-            min-height: 100vh !important;
-        
+            background-attachment: fixed;
+            background-size: cover;
+            width: 100%;
+            min-height: 100vh;
         }
 
         main.container {
@@ -49,20 +46,21 @@
         .left-column {
             background-color: rgba(255, 255, 255, 0);
         }
-        
+
         .top-section {
             display: flex;
             align-items: center;
             background-color: var(--stroomloop-blue-transparent);
-            /* thinner top row */
             padding: 10px 24px;
-            border-radius: 8px;     /* rounded corners */
+            border-radius: 8px;
         }
+
         .user {
             display: flex;
             align-items: center;
             gap: 10px;
         }
+
         .name {
             color: white;
         }
@@ -74,48 +72,27 @@
             margin: 0;
         }
 
-        .search-bar{
+        .search-bar {
             display: flex;
             flex-direction: row;
             align-items: center;
             gap: 0;
             margin-left: auto;
-            border-radius: 8px;     /* rounded corners */
         }
 
-        .sidebar{
+        .sidebar {
             display: flex;
             flex-direction: column;
             gap: 20px;
             transform: translateY(30px);
         }
 
-        .sidebarButton{
+        .sidebarButton {
             color: white;
         }
 
-        input[type = "text"] {
-            width: 300px !important;
-            height: 28px !important; 
-            margin: 0 !important;
-            padding: 6px 8px !important;
-            font-size: 0.8rem;
-            line-height: 1 !important;
-        }
-
-        button[type ="submit"]{
-            width: auto !important; 
-            height: 28px !important; 
-            margin: 0 !important;
-            padding: 6px 8px !important;
-            background-color: rgb(5, 147, 229);
-            font-size: 0.8rem;
-            line-height: 1 !important;
-        }
-
-        button:hover {
-            /* change colour of button when hovering over it */
-            background-color: rgba(5, 147, 229, 0.554);
+        .right-section {
+            padding-right: 30px;
         }
 
         .content {
@@ -126,53 +103,69 @@
         }
 
         .glossary {
-            background-color: var(--stroomloop-blue-transparent);
+            background-color: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(6px);
             color: white;
+            font-size: 0.85rem;
+            padding: 16px;
+            border-radius: 8px;
+        }
+
+        .section-title {
+            font-weight: 500;
+            font-size: 1rem;
+            margin: 0 0 8px 0;
+        }
+
+        ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        li {
+            margin-bottom: 6px;
+        }
+
+        input[type="text"] {
+            width: 300px !important;
+            height: 28px !important;
+            margin: 0 !important;
+            padding: 6px 8px !important;
             font-size: 0.8rem;
-            padding: 16px;         
-            border-radius: 8px;     /* rounded corners */
+            line-height: 1 !important;
         }
 
-        .pH-title {
-            font-weight: 300;
-            font-size: 1rem;
-            margin: 0 0 8px 0;      /* top right botton left */
+        button[type="submit"] {
+            width: auto !important;
+            height: 28px !important;
+            margin: 0 !important;
+            padding: 6px 8px !important;
+            background-color: rgb(5, 147, 229);
+            font-size: 0.8rem;
+            line-height: 1 !important;
         }
 
-        .pH {
-            color: white;
+        button:hover {
+            background-color: rgba(5, 147, 229, 0.554);
         }
-
-        .conductivity-title {
-            font-weight: 300;
-            font-size: 1rem;
-            margin: 0 0 8px 0;      /* top right botton left */
-        }
-
-        .conductivity {
-            color: white;
-        }
-
     </style>
 </head>
 
 <body>
-    <!--using container fluid so it fills the screen and is adaptable-->
-    <main class = "container-fluid">
+    <main class="container-fluid">
         <div class="dashboard">
 
-            <div class = "left-column">
-                <!--profile logo etc.-->
-                <div class = "logo">
-                    <img src = "stroomloop_transparent.png" alt = "Stroomloop logo" width="250" height="250">
-                </div>
-                <div class = "user">
-                    <img src = "profile_transparent.png" width="50" height="50">
-                    <p class = "name">Guest</p>
+            <div class="left-column">
+                <div class="logo">
+                    <img src="images/stroomloop_transparent.png" alt="Stroomloop logo" width="250" height="250">
                 </div>
 
-                <div class = "sidebar">
-                    <!-- This is the sidebar drop down menu allowing you to navigate to different pages-->
+                <div class="user">
+                    <img src="images/profile_transparent.png" width="50" height="50" alt="Profile icon">
+                    <p class="name">Guest</p>
+                </div>
+
+                <div class="sidebar">
                     <a href="GuestDashboard.html" class="sidebarButton">Dashboard</a>
                     <a href="alerts.html" class="sidebarButton">Alerts</a>
                     <a href="trends.html" class="sidebarButton">Trends</a>
@@ -180,12 +173,10 @@
                 </div>
             </div>
 
-            <div class = "right-section">
-                <!--all the dashboard info-->
-                <div class = "top-section">
-                    <!--search bar and title etc.-->
-                    <h1 class = "dashboard-title"> Water Monitoring Dashboard</h1>
-                    <div class = "search-bar">
+            <div class="right-section">
+                <div class="top-section">
+                    <h1 class="dashboard-title">Water Monitoring Dashboard</h1>
+                    <div class="search-bar">
                         <form action="/data" method="get">
                             <input type="text" name="query" placeholder="Enter search" required>
                             <button type="submit">🔍</button>
@@ -193,34 +184,34 @@
                     </div>
                 </div>
 
-                <div class = "content"> 
-                    <div class = "glossary">
-                        <span class = "pH-title">pH: </span>
-                        <ul class = "pH"> 
-                            <li>Measures how acidic or alkaline the water is, on a scale of 0 to 14.</li>
-                            <li>Below 7 is acidic and above 7 is an alkaline.</li> 
-                            <li>The WHO (World Health Organisation) recommends drinking water sites between 6.5 and 8.5.</li>
-                            <li>Water that is <b>too acidic</b> (below 6.5) can corrode pipes, allowing heavy metals like lead and copper into the water supply. This is extremely toxic for humans resulting in a sour taste and irritation of skin and eyes.</li>
-                            <li>Water that is <b>too alkaline</b> (above 8.5) can cause scale build up in pipes. The water can taste bitter and there is a reduction in effectiveness of chlorine disinfection, meaning bacteria is less likeley to be killed.</li>
+                <div class="content">
+
+                    <div class="glossary">
+                        <span class="section-title">pH</span>
+                        <ul>
+                            <li>Measures how acidic or alkaline the water is (scale 0–14).</li>
+                            <li>Below 7 is acidic, above 7 is alkaline.</li>
+                            <li>Recommended safe drinking water range: <b>6.5 – 8.5</b>.</li>
+                            <li>Water that is <b>too acidic (below 6.5)</b> can corrode pipes and release harmful metals like lead and copper. This can be toxic and cause a sour taste or irritation.</li>
+                            <li>Water that is <b>too alkaline (above 8.5)</b> can cause scale build-up, affect taste, and reduce the effectiveness of chlorine disinfection.</li>
                         </ul>
                     </div>
 
-                    <div class = "glossary">
-                        <span class = "conductivity-title">Conductivity: </span>
-                        <ul class = "conductivity">
-                            <li>Measures how well the water can conduct electricity.</li> 
-                            <li>Pure water conducts electricity very poorly, it is the dissolved salts, mineral and ions in water that carry the electrical charge.</li> 
-                            <li>It is measured in microsiemens per centimetre.</li>
-                            <li>For drinking water the acceptable range is 200-800 µS/cm.</li> 
-                            <li>When the conductivity is too low (below around 200 µS/cm) it indicates very few dissolved minerals, which sounds clean but can actually mean the water is too pure and lacks essential minerals 
-                            like calcium and magnesium that the body needs. It can also indicate the water is more corrosive to pipes.</li> 
-                            <li>When the water is too high in conductivity (above around 800 µS/cm) it suggests a high concentration of dissolved solids, potentially from agricultural runoff, industrial waste, sewage contamination, or road salt. High conductivity water can taste salty or bitter and may contain harmful contaminants.</li>
+                    <div class="glossary">
+                        <span class="section-title">Conductivity</span>
+                        <ul>
+                            <li>Measures how well water conducts electricity.</li>
+                            <li>Caused by dissolved salts, minerals, and ions in the water.</li>
+                            <li>Measured in microsiemens per centimetre (µS/cm).</li>
+                            <li>Typical safe range: <b>200 – 800 µS/cm</b>.</li>
+                            <li><b>Low conductivity (&lt;200 µS/cm):</b> may indicate a lack of essential minerals and can make water more corrosive.</li>
+                            <li><b>High conductivity (&gt;800 µS/cm):</b> may indicate pollution (e.g. runoff, waste, or contamination) and can affect taste or safety.</li>
                         </ul>
                     </div>
+
                 </div>
-            </div>    
-       
+            </div>
         </div>
     </main>
 </body>
-
+</html>
