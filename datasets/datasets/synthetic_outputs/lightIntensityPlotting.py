@@ -73,8 +73,6 @@ def plot_recent_reading(df: pd.DataFrame, output_dir: str):
     timestamps = list(recentReading ['timestamp'])
 
     os.makedirs(output_dir, exist_ok=True)
-    #range of readings from csv file
-    min_val, max_val = 0, 138144 # NOTE might need to make a function to find max and min to sort through large dataset
 
     for i in range(len(site_ids)):
         #changing format of timestamp to be more pretty
@@ -92,4 +90,6 @@ def plot_recent_reading(df: pd.DataFrame, output_dir: str):
 
 
 df = lightIntensity_loading(csv_path)
+#range of readings from csv file
+min_val, max_val = 0.0, df['light_lux'].max()
 plot_recent_reading(df, output_path)
