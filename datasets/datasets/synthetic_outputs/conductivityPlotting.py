@@ -39,8 +39,8 @@ def ring_creation(axes, value, min_value, max_value, site_id, timestampStr):
     axes.add_patch(ring)
     
     #readings in the centre of the circle
-    axes.text(0.5, 0.55, f"{value}", ha = 'center', va = 'center', fontsize = 15, color = "#225382") # note change back to white
-    axes.text(0.5,0.45,"µS/cm", ha = 'center', va = 'center', fontsize = 10, color = "#225382")
+    axes.text(0.5, 0.55, f"{value}", ha = 'center', va = 'center', fontsize = 28, color = "#FFFFFF") # note change back to white
+    axes.text(0.5,0.45,"µS/cm", ha = 'center', va = 'center', fontsize = 18, color = "#FFFFFF")
 
     # status
     if value > 500:
@@ -49,12 +49,12 @@ def ring_creation(axes, value, min_value, max_value, site_id, timestampStr):
         status = "moderate"
     else:
         status = "healthy"
-    axes.text(0.5,0.25,status,ha = 'center', va = 'center', fontsize = 7, color = "#225382") # note change back to white this is just for testing
+    axes.text(0.5,0.25,status,ha = 'center', va = 'center', fontsize = 14, color = "#FFFFFF") # note change back to white this is just for testing
 
     #site title
-    axes.set_title(site_id, fontsize=10, color="#225382", fontweight = 'bold') #make white later
+    axes.set_title(site_id, fontsize=16, color="#FFFFFF", fontweight = 'bold') #make white later
     #timestamp 
-    axes.text(0.5, 0.35, timestampStr, ha='center', va='center', fontsize=5, color= "#225382")
+    axes.text(0.5, 0.35, timestampStr, ha='center', va='center', fontsize=14, color= "#FFFFFF")
         
 
     # organising data
@@ -82,8 +82,10 @@ def plot_recent_reading(df: pd.DataFrame, output_dir: str):
         fig, ax = plt.subplots(1, 1)
         ring_creation(ax, values[i], min_val, max_val, site_ids[i], timestampStr)
 
+        fig.patch.set_alpha(0)
+        ax.patch.set_alpha(0)
         out_path = os.path.join(output_dir, f"conductivity_{site_ids[i]}.png")
-        fig.savefig(out_path, dpi=150, bbox_inches='tight')
+        fig.savefig(out_path, dpi=150, bbox_inches='tight', transparent=True)
         plt.close(fig)  #Free memory important when generating many plots in one run
         print(f"Saved: {out_path}")
 

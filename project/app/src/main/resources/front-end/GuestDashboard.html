@@ -207,14 +207,20 @@
 <ul class="status-list" id="status-counts"></ul>
 </div>
 
-<div class="data-card"><h3>pH</h3><p id="ph-value" class="data-value"></p></div>
+<div class="data-card">
+    <h3>pH</h3>
+    <img id="ph-img" src="" style="width: 200px; display: block; margin: 0 auto;"></img></div>
 
 <div class="data-card">
     <h3>Conductivity</h3>
-    <img id="conductivity-img" src="" width="100%" sytle="border-radius: 8px:"></img></div>
+    <img id="conductivity-img" src="" style="width: 200px; display: block; margin: 0 auto;"></img></div>
 
 <div class="data-card"><h3>Turbidity</h3><p id="turbidity-value" class="data-value"></p></div>
-<div class="data-card"><h3>Light</h3><p id="light-value" class="data-value"></p></div>
+
+<div class="data-card">
+    <h3>Light</h3>
+    <img id="lightIntensity-img" src="" style="width: 200px; display: block; margin: 0 auto;"></img></div>
+
 <div class="data-card"><h3>Water Level</h3><p id="water-level-value" class="data-value"></p></div>
 <div class="data-card"><h3>Temperature</h3><p id="water-temp-value" class="data-value"></p></div>
 
@@ -252,9 +258,7 @@ async function loadLatest(){
     const res=await fetch(`/latest/${site}`)
     const d=await res.json()
 
-    updateWithFade("ph-value",d.ph+" pH")
     updateWithFade("turbidity-value",d.turbidityNtu+" NTU")
-    updateWithFade("light-value",d.lightLux+" lux")
     updateWithFade("water-level-value",d.waterLevelCm+" cm")
     updateWithFade("water-temp-value",d.waterTemperatureC+" °C")
 
@@ -284,12 +288,17 @@ async function loadStatus(){
 const select=document.getElementById("site-select")
 select.value=getSavedSite()
 updateConductivityImage(select.value)
+updatepHImage(select.value)
+updateLightImage(select.value)
 
 select.addEventListener("change",()=>{
     setSavedSite(select.value)
     loadLatest()
     updateTimestamp()
     updateConductivityImage(select.value)
+    updatepHImage(select.value)
+    updateLightImage(select.value)
+
 })
 
 function refresh(){
@@ -302,8 +311,18 @@ function refresh(){
 function updateConductivityImage(site) {
     const img = document.getElementById("conductivity-img")
     img.src = `outputs/conductivity_${site}.png`
-    console.log("loading image:, img.src")
 }
+
+function updatepHImage(site) {
+    const img = document.getElementById("ph-img")
+    img.src = `outputs/pH_${site}.png`
+}
+
+function updateLightImage(site) {
+    const img = document.getElementById("lightIntensity-img")
+    img.src = `outputs/lightIntensity_${site}.png`
+}
+
 
 refresh()
 setInterval(refresh,15000)
