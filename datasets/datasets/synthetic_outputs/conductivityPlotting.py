@@ -61,28 +61,26 @@ def ring_creation(axes, value, min_value, max_value, site_id, timestampStr):
 
 def plot_recent_reading(df: pd.DataFrame, output_dir: str):
     recentReading = df.sort_values('timestamp').groupby('site_id').last().reset_index()     #getting most recent reading
-    n = len(recentReading)
 
     site_ids = list(recentReading ['site_id'])
     values = list(recentReading ['conductivity_uS_cm'])
     timestamps = list(recentReading ['timestamp'])
 
-    fig, axes = plt.subplots(1, n)
-
+    os.makedirs(output_dir, exist_ok=True)
     #range of conductivity readings from csv file
     min_val, max_val = 0, 575
 
     for i in range(len(site_ids)):
         #changing format of timestamp to be more pretty
         timestampStr = timestamps[i].strftime('%Y-%m-%d %H:%M')
-        ring_creation(axes[i], values[i], min_val, max_val, site_ids[i], timestampStr)
-
         
-    os.makedirs(output_dir, exist_ok=True)
-    out_path = os.path.join(output_dir, "conductivity_latest.png")
-    fig.savefig(out_path, dpi=150, bbox_inches='tight')
-    plt.close(fig)  #Free memory important when generating many plots in one run
-    print(f"Saved: {out_path}")
+        fig, ax = plt.subplots(1, 1)
+        ring_creation(ax, values[i], min_val, max_val, site_ids[i], timestampStr)
+
+        out_path = os.path.join(output_dir, f"conductivity_{site_ids[i]}.png")
+        fig.savefig(out_path, dpi=150, bbox_inches='tight')
+        plt.close(fig)  #Free memory important when generating many plots in one run
+        print(f"Saved: {out_path}")
 
 
 df = conductivity_loading(csv_path)
