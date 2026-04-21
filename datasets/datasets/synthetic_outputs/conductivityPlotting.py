@@ -17,7 +17,7 @@ def conductivity_loading(csv_path: str):
 def ring_creation(axes, value, min_value, max_value, site_id, timestampStr):
     if value > 500:
         ringColour = "#FF0000"
-    elif value>=375 and value<=500:
+    elif value>=300 and value<=500:
         ringColour = "#FFFB00"
     else:
         ringColour = "#0FFF0F"
@@ -43,10 +43,12 @@ def ring_creation(axes, value, min_value, max_value, site_id, timestampStr):
     axes.text(0.5,0.45,"µS/cm", ha = 'center', va = 'center', fontsize = 10, color = "#225382")
 
     # status
-    if value < 200 or value > 500:
+    if value > 500:
         status = "critical"
+    elif value>=300 and value<=500:
+        status = "moderate"
     else:
-        status = "normal"
+        status = "healthy"
     axes.text(0.5,0.25,status,ha = 'center', va = 'center', fontsize = 7, color = "#225382") # note change back to white this is just for testing
 
     #site title
