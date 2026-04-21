@@ -15,11 +15,11 @@ def turbidity_loading(csv_path: str):
     return df[['timestamp', 'site_id', 'turbidity_ntu']]
 
 def ring_creation(axes, value, min_value, max_value, site_id, timestampStr):
-    if value > 10:
+    if value > 10.0:
         ringColour = "#FF0000"
-    elif value>5 and value<=10:
+    elif value>5.0 and value<=10.0:
         ringColour = "#FFFB00"
-    elif value>=0 and value<=5:
+    elif value>=0.0 and value<=5.0:
         ringColour = "#0FFF0F"
     
         #ringColour = "#FFF700FF" research moderate
@@ -43,11 +43,11 @@ def ring_creation(axes, value, min_value, max_value, site_id, timestampStr):
     axes.text(0.5,0.45,"NTU", ha = 'center', va = 'center', fontsize = 10, color = "#225382")
 
     # status
-    if value > 10:
+    if value > 10.0:
         status = "critical"
-    elif value>5 and value<=10:
+    elif value>5.0 and value<=10.0:
         status = "moderate"
-    elif value>=0 and value<=5:
+    elif value>=0.0 and value<=5.0:
         status = "healthy"
     axes.text(0.5,0.25,status,ha = 'center', va = 'center', fontsize = 7, color = "#225382") # note change back to white this is just for testing
 

@@ -15,11 +15,11 @@ def lightIntensity_loading(csv_path: str):
     return df[['timestamp', 'site_id', 'light_lux']]
 
 def ring_creation(axes, value, min_value, max_value, site_id, timestampStr): # whats tricky here is that light lux is for algae and doesnt actually need an alert
-    if value > 65000:
+    if value > 65000.0:
         ringColour = "#FF0000"
-    elif value>=25000 and value<=65000:
+    elif value>=25000.0 and value<=65000.0:
         ringColour = "#FFFB00"
-    elif value<=25000 and value>=0:
+    elif value<=25000.0 and value>=0.0:
         ringColour = "#0FFF0F"
     
         #ringColour = "#FFF700FF" research moderate
@@ -43,11 +43,11 @@ def ring_creation(axes, value, min_value, max_value, site_id, timestampStr): # w
     axes.text(0.5,0.45,"lux", ha = 'center', va = 'center', fontsize = 18, color = "#FFFFFF")
 
     # status
-    if value  > 65000:
+    if value  > 65000.0:
         status = "critical"
-    elif value>=25000 and value<=65000:
+    elif value>=25000.0 and value<=65000.0:
         status = 'moderate'
-    elif value<=25000 and value>=0:
+    elif value<=25000.0 and value>=0.0:
         status = 'healthy'
 
     axes.text(0.5,0.25,status,ha = 'center', va = 'center', fontsize = 14, color = "#FFFFFF") # note change back to white this is just for testing

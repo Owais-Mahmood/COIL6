@@ -15,11 +15,11 @@ def waterLevel_loading(csv_path: str):
     return df[['timestamp', 'site_id', 'water_level_cm']]
 
 def ring_creation(axes, value, min_value, max_value, site_id, timestampStr):
-    if value > 200:
+    if value < 50.0 or value>750.0:
         ringColour = "#FF0000"
-    elif value>100 and value<200:
+    elif value<=50.0 and value>=600.0:
         ringColour = "#FFFB00"
-    elif value>=0 and value<=100:
+    elif value>50.0 and value<600.0:
         ringColour = "#0FFF0F"
     
         #ringColour = "#FFF700FF" research moderate
@@ -43,12 +43,13 @@ def ring_creation(axes, value, min_value, max_value, site_id, timestampStr):
     axes.text(0.5,0.45,"cm", ha = 'center', va = 'center', fontsize = 18, color = "#FFFFFF")
 
     # status
-    if value > 200:
+    if value < 50.0 or value>750.0:
         status = "critical"
-    elif value>100 and value<200:
+    elif value<=50.0 and value>=600.0:
         status = "moderate"
-    elif value>=0 and value<=100:
+    elif value>50.0 and value<600.0:
         status = "healthy"
+        
     axes.text(0.5,0.25,status,ha = 'center', va = 'center', fontsize = 14, color = "#FFFFFF") # note change back to white this is just for testing
 
     #site title
