@@ -208,7 +208,11 @@
 </div>
 
 <div class="data-card"><h3>pH</h3><p id="ph-value" class="data-value"></p></div>
-<div class="data-card"><h3>Conductivity</h3><p id="conductivity-value" class="data-value"></p></div>
+
+<div class="data-card">
+    <h3>Conductivity</h3>
+    <img id="conductivity-img" src="" width="100%" sytle="border-radius: 8px:"></img></div>
+
 <div class="data-card"><h3>Turbidity</h3><p id="turbidity-value" class="data-value"></p></div>
 <div class="data-card"><h3>Light</h3><p id="light-value" class="data-value"></p></div>
 <div class="data-card"><h3>Water Level</h3><p id="water-level-value" class="data-value"></p></div>
@@ -249,7 +253,6 @@ async function loadLatest(){
     const d=await res.json()
 
     updateWithFade("ph-value",d.ph+" pH")
-    updateWithFade("conductivity-value",d.conductivityUsCm+" µS/cm")
     updateWithFade("turbidity-value",d.turbidityNtu+" NTU")
     updateWithFade("light-value",d.lightLux+" lux")
     updateWithFade("water-level-value",d.waterLevelCm+" cm")
@@ -280,11 +283,13 @@ async function loadStatus(){
 
 const select=document.getElementById("site-select")
 select.value=getSavedSite()
+updateConductivityImage(select.value)
 
 select.addEventListener("change",()=>{
     setSavedSite(select.value)
     loadLatest()
     updateTimestamp()
+    updateConductivityImage(select.value)
 })
 
 function refresh(){
@@ -292,6 +297,12 @@ function refresh(){
     loadStatus()
     loadLatest()
     updateTimestamp()
+}
+
+function updateConductivityImage(site) {
+    const img = document.getElementById("conductivity-img")
+    img.src = `outputs/conductivity_${site}.png`
+    console.log("loading image:, img.src")
 }
 
 refresh()
