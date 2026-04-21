@@ -15,10 +15,13 @@ def conductivity_loading(csv_path: str):
     return df[['timestamp', 'site_id', 'conductivity_uS_cm']]
 
 def ring_creation(axes, value, min_value, max_value, site_id, timestampStr):
-    if value < 200 or value > 500:
+    if value > 500:
         ringColour = "#FF0000"
+    elif value>=375 and value<=500:
+        ringColour = "#FFFB00"
     else:
         ringColour = "#0FFF0F"
+    
         #ringColour = "#FFF700FF" research moderate
 
     #circle 
