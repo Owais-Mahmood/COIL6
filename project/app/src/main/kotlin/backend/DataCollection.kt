@@ -108,6 +108,37 @@ fun getReadingsByStatus(
     return readings.filter { it.status.trim().lowercase() == target }
 }
 
+// Returns only the alert readings for a given site
+fun getAlertReadingsForSite(
+    readings: List<WaterQualityReading>,
+    siteId: String
+): List<WaterQualityReading> {
+
+    // Normalise site ID before comparing
+    val target = siteId.trim().lowercase()
+
+    return readings.filter {
+        it.siteId.trim().lowercase() == target && it.alertTriggered == 1
+    }
+}
+
+// Returns the count of each alert type for a given site
+fun getAlertTypeBreakdownForSite(
+    readings: List<WaterQualityReading>,
+    siteId: String
+): Map<String, Int> {
+
+    // Normalise site ID before comparing
+    val target = siteId.trim().lowercase()
+    val siteReadings = readings.filter { it.siteId.trim().lowercase() == target }
+
+    return mapOf(
+        "ph" to siteReadings.count { it.alertPh == 1 },
+        "turbidity" to siteReadings.count { it.alertTurbidity == 1 },
+        "conductivity" to siteReadings.count { it.alertConductivity == 1 }
+    )
+}
+
 // Returns the latest reading for a given site
 fun getLatestReadingForSite(
     readings: List<WaterQualityReading>,

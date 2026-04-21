@@ -1,4 +1,6 @@
 import backend.getAlertReadings
+import backend.getAlertReadingsForSite
+import backend.getAlertTypeBreakdownForSite
 import backend.getLatestReadingForSite
 import backend.getReadingsByStatus
 import backend.getReadingsForSite
@@ -48,6 +50,15 @@ data class StatusCountItem(
 data class SiteCountItem(
     val siteId: String,
     val count: Int
+)
+
+@Serializable
+data class AlertBreakdownResponse(
+    val siteId: String,
+    val ph: Int,
+    val turbidity: Int,
+    val conductivity: Int,
+    val total: Int
 )
 
 @Serializable
@@ -103,6 +114,40 @@ fun main() {
             get("/alerts") {
                 val alertReadings = getAlertReadings(waterReadings)
                 call.respond(AlertSummary("alerts", alertReadings.size))
+            }
+
+            // Alert count for a specific site
+            get("/alerts/{siteId}") {
+                val siteId = call.parameters["siteId"]
+
+                if (siteId.isNullOrBlank()) {
+                    call.respond(ErrorResponse("No site ID provided."))
+                    return@get
+                }
+
+                val alertReadings = getAlertReadingsForSite(waterReadings, siteId)
+                call.respond(AlertSummary("alerts", alertReadings.size))
+            }
+
+            // Alert type breakdown for a specific site
+            get("/alerts/{siteId}/breakdown") {
+                val siteId = call.parameters["siteId"]
+
+                if (siteId.isNullOrBlank()) {
+                    call.respond(ErrorResponse("No site ID provided."))
+                    return@get
+                }
+
+                val breakdown = getAlertTypeBreakdownForSite(waterReadings, siteId)
+                call.respond(
+                    AlertBreakdownResponse(
+                        siteId = siteId,
+                        ph = breakdown["ph"] ?: 0,
+                        turbidity = breakdown["turbidity"] ?: 0,
+                        conductivity = breakdown["conductivity"] ?: 0,
+                        total = (breakdown["ph"] ?: 0) + (breakdown["turbidity"] ?: 0) + (breakdown["conductivity"] ?: 0)
+                    )
+                )
             }
 
             // Dynamic site route
@@ -203,7 +248,7 @@ fun main() {
 
                 val siteReadings = getReadingsForSite(waterReadings, siteId)
                     .sortedBy { it.timestamp }
-                    .takeLast (200)
+                    .takeLast(200)
 
                 if (siteReadings.isEmpty()) {
                     call.respond(ErrorResponse("No readings found for site: $siteId"))
