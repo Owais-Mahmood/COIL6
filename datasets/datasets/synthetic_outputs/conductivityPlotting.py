@@ -32,7 +32,7 @@ def ring_creation(axes, value, min_value, max_value, site_id, timestampStr):
     # changing fraction to degrees to show on ring
     maxRing = 360
     arc = percentage * maxRing
-    ring = Wedge(center=(0.5,0.5),r=0.5,theta1 = 90, theta2 = (90-arc), width = 0.11, facecolor = ringColour)
+    ring = Wedge(center=(0.5,0.5),r=0.5,theta1 = 90, theta2 = (90-arc), width = 0.11, facecolor = ringColour) # note: matplotlib draws ring anti-clockwise? could this be a probelm with arcs we need to fix
     axes.add_patch(ring)
     
     #readings in the centre of the circle
