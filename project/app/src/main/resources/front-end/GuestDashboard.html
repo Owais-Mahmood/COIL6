@@ -15,17 +15,17 @@
             --stroomloop-blue-transparent: #2254825a;
         }
 
-        html, body{
-            height: 100%;
-            margin: 0;
-            padding: 0;
+        html {
+            min-height: 100%;
+            background-image: linear-gradient(180deg, #08081F, #466DFC);
+            background-attachment: fixed;
         }
 
         body {
-            background-image: linear-gradient(180deg, #08081F, #466DFC);
-            background-size: cover;
-            width: 100%;
-            height: 100%;
+            background: transparent;
+            min-height: 100%;
+            margin: 0;
+            padding: 0;
         }
 
         main.container {
@@ -215,14 +215,21 @@
     <h3>Conductivity</h3>
     <img id="conductivity-img" src="" style="width: 200px; display: block; margin: 0 auto;"></img></div>
 
-<div class="data-card"><h3>Turbidity</h3><p id="turbidity-value" class="data-value"></p></div>
+<div class="data-card">
+    <h3>Turbidity</h3>
+    <img id="turbidity-img" src="" style="width: 200px; display: block; margin: 0 auto;"></img></div>
 
 <div class="data-card">
     <h3>Light</h3>
     <img id="lightIntensity-img" src="" style="width: 200px; display: block; margin: 0 auto;"></img></div>
 
-<div class="data-card"><h3>Water Level</h3><p id="water-level-value" class="data-value"></p></div>
-<div class="data-card"><h3>Temperature</h3><p id="water-temp-value" class="data-value"></p></div>
+<div class="data-card">
+    <h3>Water Level</h3>
+    <img id="water-level-img" src="" style="width: 200px; display: block; margin: 0 auto;"></img></div>
+
+<div class="data-card">
+    <h3>Temperature</h3>
+    <img id="water-temp-img" src="" style="width: 200px; display: block; margin: 0 auto;"></img></div>
 
 <div class="data-card">
 <h3>Latest Status</h3>
@@ -258,10 +265,6 @@ async function loadLatest(){
     const res=await fetch(`/latest/${site}`)
     const d=await res.json()
 
-    updateWithFade("turbidity-value",d.turbidityNtu+" NTU")
-    updateWithFade("water-level-value",d.waterLevelCm+" cm")
-    updateWithFade("water-temp-value",d.waterTemperatureC+" °C")
-
     updateWithFade("status-value",
         d.status.charAt(0).toUpperCase()+d.status.slice(1),
         "data-value status-"+d.status)
@@ -285,29 +288,6 @@ async function loadStatus(){
     })
 }
 
-const select=document.getElementById("site-select")
-select.value=getSavedSite()
-updateConductivityImage(select.value)
-updatepHImage(select.value)
-updateLightImage(select.value)
-
-select.addEventListener("change",()=>{
-    setSavedSite(select.value)
-    loadLatest()
-    updateTimestamp()
-    updateConductivityImage(select.value)
-    updatepHImage(select.value)
-    updateLightImage(select.value)
-
-})
-
-function refresh(){
-    loadAlerts()
-    loadStatus()
-    loadLatest()
-    updateTimestamp()
-}
-
 function updateConductivityImage(site) {
     const img = document.getElementById("conductivity-img")
     img.src = `outputs/conductivity_${site}.png`
@@ -322,6 +302,51 @@ function updateLightImage(site) {
     const img = document.getElementById("lightIntensity-img")
     img.src = `outputs/lightIntensity_${site}.png`
 }
+
+function updateTurbidityImage(site) {
+    const img = document.getElementById("turbidity-img")
+    img.src = `outputs/turbidity_${site}.png`
+}
+
+function updatewaterLevelImage(site) {
+    const img = document.getElementById("water-level-img")
+    img.src = `outputs/waterLevel_${site}.png`
+}
+
+function updatewaterTempImage(site) {
+    const img = document.getElementById("water-temp-img")
+    img.src = `outputs/waterTemp_${site}.png`
+}
+
+const select=document.getElementById("site-select")
+select.value=getSavedSite()
+updateConductivityImage(select.value)
+updatepHImage(select.value)
+updateLightImage(select.value)
+updateTurbidityImage(select.value)
+updatewaterLevelImage(select.value)
+updatewaterTempImage(select.value)
+
+select.addEventListener("change",()=>{
+    setSavedSite(select.value)
+    loadLatest()
+    updateTimestamp()
+    updateConductivityImage(select.value)
+    updatepHImage(select.value)
+    updateLightImage(select.value)
+    updateTurbidityImage(select.value)
+    updatewaterLevelImage(select.value)
+    updatewaterTempImage(select.value)
+
+})
+
+function refresh(){
+    loadAlerts()
+    loadStatus()
+    loadLatest()
+    updateTimestamp()
+}
+
 
 
 refresh()
