@@ -108,53 +108,47 @@ fun getReadingsByStatus(
     return readings.filter { it.status.trim().lowercase() == target }
 }
 
-fun loadDataMain() {
-    val filePath = "../../datasets/datasets/synthetic_outputs/water_quality.csv"
-    
-    // Load all readings from the CSV
-    val waterReadings = loadWaterQualityData(filePath)
+// Returns only the alert readings for a given site
+fun getAlertReadingsForSite(
+    readings: List<WaterQualityReading>,
+    siteId: String
+): List<WaterQualityReading> {
 
-    println("Loaded ${waterReadings.size} readings")
+    // Normalise site ID before comparing
+    val target = siteId.trim().lowercase()
 
-    if (waterReadings.isNotEmpty()) {
-        println("First reading:")
-        println(waterReadings[0])
+    return readings.filter {
+        it.siteId.trim().lowercase() == target && it.alertTriggered == 1
     }
+}
 
-    // Test filtering by site
-    val siteToCheck = "site_upstream"
-    val siteReadings = getReadingsForSite(waterReadings, siteToCheck)
+// Returns the count of each alert type for a given site
+fun getAlertTypeBreakdownForSite(
+    readings: List<WaterQualityReading>,
+    siteId: String
+): Map<String, Int> {
 
-    println("Readings count for $siteToCheck: ${siteReadings.size}")
+    // Normalise site ID before comparing
+    val target = siteId.trim().lowercase()
+    val siteReadings = readings.filter { it.siteId.trim().lowercase() == target }
 
-    if (siteReadings.isNotEmpty()) {
-        println("First reading for $siteToCheck:")
-        println(siteReadings[0])
-    } else {
-        println("No readings found for site: $siteToCheck")
-    }
+    return mapOf(
+        "ph" to siteReadings.count { it.alertPh == 1 },
+        "turbidity" to siteReadings.count { it.alertTurbidity == 1 },
+        "conductivity" to siteReadings.count { it.alertConductivity == 1 }
+    )
+}
 
-    // Test filtering alert readings
-    val alertReadings = getAlertReadings(waterReadings)
+// Returns the latest reading for a given site
+fun getLatestReadingForSite(
+    readings: List<WaterQualityReading>,
+    siteId: String
+): WaterQualityReading? {
 
-    println("Total alert-triggered readings: ${alertReadings.size}")
+    // Normalise site ID before comparing
+    val target = siteId.trim().lowercase()
 
-    if (alertReadings.isNotEmpty()) {
-        println("First alert reading:")
-        println(alertReadings[0])
-    } else {
-        println("No alert-triggered readings found.")
-    }
-
-    // Test filtering by status
-    val statusToCheck = "critical"
-    val statusReadings = getReadingsByStatus(waterReadings, statusToCheck)
-
-    println("Total $statusToCheck readings: ${statusReadings.size}")
-    if (statusReadings.isNotEmpty()) {
-        println("First $statusToCheck reading:")
-        println(statusReadings[0])
-    } else {
-        println("No $statusToCheck readings found.")
-    }
+    return readings
+        .filter { it.siteId.trim().lowercase() == target }
+        .maxByOrNull { it.timestamp }
 }

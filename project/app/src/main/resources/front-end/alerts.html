@@ -11,24 +11,21 @@
 
     <style>
         :root {
-            /* making this original variable so can refer to throughout code */
             --stroomloop-blue: #225382;
             --stroomloop-blue-transparent: #2254825a;
         }
 
-        html, body{
+        html, body {
             height: 100%;
             margin: 0;
             padding: 0;
         }
 
         body {
-            /* added image as background */
             background-image: linear-gradient(180deg, #08081F, #466DFC);
             background-size: cover;
             width: 100%;
             height: 100%;
-        
         }
 
         main.container {
@@ -48,20 +45,21 @@
         .left-column {
             background-color: rgba(255, 255, 255, 0);
         }
-        
+       
         .top-section {
             display: flex;
             align-items: center;
             background-color: var(--stroomloop-blue-transparent);
-            /* thinner top row */
             padding: 10px 24px;
-            border-radius: 8px;     /* rounded corners */
+            border-radius: 8px;
         }
+
         .user {
             display: flex;
             align-items: center;
             gap: 10px;
         }
+
         .name {
             color: white;
         }
@@ -73,38 +71,84 @@
             margin: 0;
         }
 
-        .search-bar{
+        .search-bar {
             display: flex;
             flex-direction: row;
             align-items: center;
             gap: 0;
             margin-left: auto;
-            border-radius: 8px;     /* rounded corners */
         }
 
-        .sidebar{
+        .sidebar {
             display: flex;
             flex-direction: column;
             gap: 20px;
             transform: translateY(30px);
         }
 
-        .sidebarButton{
+        .sidebarButton {
             color: white;
         }
 
-        input[type = "text"] {
+        .right-section {
+            padding-right: 30px;
+        }
+
+        .alerts-content {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-top: 30px;
+            max-width: 900px;
+        }
+
+        .alert-card {
+            background-color: rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            padding: 20px;
+            color: white;
+            min-height: 140px;
+        }
+
+        .alert-card h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .alert-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .alert-value, .status-list {
+            transition: opacity 0.3s ease;
+        }
+
+        .status-list {
+            margin: 0;
+            padding-left: 18px;
+            color: white;
+        }
+
+        .status-list li {
+            margin-bottom: 6px;
+        }
+
+        input[type="text"] {
             width: 300px !important;
-            height: 28px !important; 
+            height: 28px !important;
             margin: 0 !important;
             padding: 6px 8px !important;
             font-size: 0.8rem;
             line-height: 1 !important;
         }
 
-        button[type ="submit"]{
-            width: auto !important; 
-            height: 28px !important; 
+        button[type="submit"] {
+            width: auto !important;
+            height: 28px !important;
             margin: 0 !important;
             padding: 6px 8px !important;
             background-color: rgb(5, 147, 229);
@@ -113,30 +157,26 @@
         }
 
         button:hover {
-            /* change colour of button when hovering over it */
             background-color: rgba(5, 147, 229, 0.554);
         }
-
     </style>
 </head>
 
 <body>
-    <!--using container fluid so it fills the screen and is adaptable-->
-    <main class = "container-fluid">
+    <main class="container-fluid">
         <div class="dashboard">
 
-            <div class = "left-column">
-                <!--profile logo etc.-->
-                <div class = "logo">
-                    <img src = "images/stroomloop_transparent.png" alt = "Stroomloop logo" width="250" height="250">
-                </div>
-                <div class = "user">
-                    <img src = "images/profile_transparent.png" width="50" height="50">
-                    <p class = "name">Guest</p>
+            <div class="left-column">
+                <div class="logo">
+                    <img src="images/stroomloop_transparent.png" alt="Stroomloop logo" width="250" height="250">
                 </div>
 
-                <div class = "sidebar">
-                    <!-- This is the sidebar drop down menu allowing you to navigate to different pages-->
+                <div class="user">
+                    <img src="images/profile_transparent.png" width="50" height="50" alt="Profile icon">
+                    <p class="name">Guest</p>
+                </div>
+
+                <div class="sidebar">
                     <a href="GuestDashboard.html" class="sidebarButton">Dashboard</a>
                     <a href="alerts.html" class="sidebarButton">Alerts</a>
                     <a href="trends.html" class="sidebarButton">Trends</a>
@@ -144,21 +184,129 @@
                 </div>
             </div>
 
-            <div class = "right-section">
-                <!--all the dashboard info-->
-                <div class = "top-section">
-                    <!--search bar and title etc.-->
-                    <h1 class = "dashboard-title"> Water Monitoring Dashboard</h1>
-                    <div class = "search-bar">
+            <div class="right-section">
+                <div class="top-section">
+                    <h1 class="dashboard-title">Water Monitoring Dashboard</h1>
+
+                    <select id="site-select" style="width: 225px; margin-left: 10px; margin-bottom: 0;">
+                        <option value="site_upstream">Site Upstream</option>
+                        <option value="site_downstream">Site Downstream</option>
+                        <option value="site_reservoir">Site Reservoir</option>
+                    </select>
+
+                    <div class="search-bar">
                         <form action="/data" method="get">
                             <input type="text" name="query" placeholder="Enter search" required>
                             <button type="submit">🔍</button>
                         </form>
                     </div>
                 </div>
-            </div>    
 
-       
+                <div class="alerts-content">
+                    <div class="alert-card">
+                        <h3>Total Alert-Triggered Readings</h3>
+                        <p class="alert-value" id="alert-count">Loading...</p>
+                    </div>
+
+                    <div class="alert-card">
+                        <h3>Status Breakdown</h3>
+                        <ul class="status-list" id="status-counts">
+                            <li>Loading...</li>
+                        </ul>
+                    </div>
+
+                    <div class="alert-card">
+                        <h3>Critical Readings</h3>
+                        <p class="alert-value" id="critical-count">Loading...</p>
+                    </div>
+
+                    <div class="alert-card">
+                        <h3>Warning Readings</h3>
+                        <p class="alert-value" id="warning-count">Loading...</p>
+                    </div>
+                </div>
+            </div>    
         </div>
     </main>
+
+    <script>
+        function getSavedSite() {
+            return localStorage.getItem("selectedSite") || "site_upstream"
+        }
+
+        function setSavedSite(siteId) {
+            localStorage.setItem("selectedSite", siteId)
+        }
+
+        function fadeUpdate(element, newValue) {
+            element.style.opacity = 0
+            setTimeout(() => {
+                element.textContent = newValue
+                element.style.opacity = 1
+            }, 150)
+        }
+
+        async function loadAlertCount() {
+            try {
+                const response = await fetch("/alerts")
+                const data = await response.json()
+                fadeUpdate(document.getElementById("alert-count"), data.count)
+            } catch (error) {
+                fadeUpdate(document.getElementById("alert-count"), "Error")
+            }
+        }
+
+        async function loadStatusCounts() {
+            try {
+                const response = await fetch("/summary/status-counts")
+                const data = await response.json()
+
+                const statusList = document.getElementById("status-counts")
+                statusList.style.opacity = 0
+
+                let criticalValue = "0"
+                let warningValue = "0"
+
+                setTimeout(() => {
+                    statusList.innerHTML = ""
+
+                    data.forEach(item => {
+                        const li = document.createElement("li")
+                        const statusText = item.status.charAt(0).toUpperCase() + item.status.slice(1)
+                        li.textContent = `${statusText}: ${item.count}`
+                        statusList.appendChild(li)
+
+                        if (item.status === "critical") criticalValue = item.count
+                        if (item.status === "warning") warningValue = item.count
+                    })
+
+                    fadeUpdate(document.getElementById("critical-count"), criticalValue)
+                    fadeUpdate(document.getElementById("warning-count"), warningValue)
+
+                    statusList.style.opacity = 1
+                }, 150)
+
+            } catch (error) {
+                document.getElementById("status-counts").innerHTML = "<li>Error loading data</li>"
+                fadeUpdate(document.getElementById("critical-count"), "Error")
+                fadeUpdate(document.getElementById("warning-count"), "Error")
+            }
+        }
+
+        const siteSelect = document.getElementById("site-select")
+        siteSelect.value = getSavedSite()
+
+        loadAlertCount()
+        loadStatusCounts()
+
+        siteSelect.addEventListener("change", () => {
+            setSavedSite(siteSelect.value)
+        })
+
+        setInterval(() => {
+            loadAlertCount()
+            loadStatusCounts()
+        }, 15000)
+    </script>
 </body>
+</html>
