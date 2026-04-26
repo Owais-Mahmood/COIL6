@@ -3,9 +3,15 @@ plugins {
     application
 }
 
+kotlin {
+    jvmToolchain(25) // match your Java version
+}
+
 repositories {
     mavenCentral()
 }
+
+
 
 dependencies {
     implementation("io.ktor:ktor-server-core:2.3.0")
