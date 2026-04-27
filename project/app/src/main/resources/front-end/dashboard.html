@@ -1,0 +1,922 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stroomloop · Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+
+    /* colour variables so I only have to change them in one place */
+    :root {
+        --blue: #225382;
+        --blue-dark: #1a3f63;
+        --blue-faint: rgba(34, 83, 130, 0.1);
+        --text-dark: #1c3a55;
+        --text-mid: #3a5a7a;
+        --text-light: #5a7a9a;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(180deg, #81C3DB 0%, #F2FCFF 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 24px 16px;
+    }
+
+    /* main card that holds everything */
+    .app {
+        width: 100%;
+        max-width: 1200px;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 24px 64px rgba(34, 83, 130, 0.2);
+        background: linear-gradient(to bottom,
+            #c8eaf3 0%,
+            #d8f0f7 18%,
+            #e4f6fa 36%,
+            #edfafc 58%,
+            #f3fdfe 78%,
+            #F2FCFF 100%);
+    }
+
+    /* ---------- navbar ---------- */
+    .navbar {
+        display: flex;
+        align-items: center;
+        padding: 14px 24px;
+        gap: 16px;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--blue);
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+    .logo-dot {
+        width: 10px;
+        height: 10px;
+        background: var(--blue);
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .nav-pills {
+        display: flex;
+        gap: 2px;
+        background: rgba(255, 255, 255, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 50px;
+        padding: 5px;
+        margin: 0 auto;
+        backdrop-filter: blur(8px);
+    }
+
+    .nav-pill {
+        padding: 7px 20px;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--blue);
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.2s;
+        user-select: none;
+    }
+
+    .nav-pill:hover {
+        background: rgba(255, 255, 255, 0.6);
+    }
+
+    .nav-pill.active {
+        background: white;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .login-btn {
+        padding: 7px 18px;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: white;
+        background: var(--blue);
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        white-space: nowrap;
+    }
+
+    .login-btn:hover {
+        background: var(--blue-dark);
+    }
+
+    /* ---------- page padding ---------- */
+    .page {
+        padding: 0 24px 32px;
+    }
+
+    /* ---------- status badges ---------- */
+    .ip-badge {
+        font-size: 0.68rem;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 50px;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .badge-ok   { background: #dcfce7; color: #16a34a; }
+    .badge-warn { background: #fef3c7; color: #d97706; }
+    .badge-crit { background: #fee2e2; color: #dc2626; }
+
+    /* ---------- site toggle buttons ---------- */
+    .site-btn {
+        padding: 6px 16px;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        background: rgba(255, 255, 255, 0.55);
+        color: var(--blue);
+        font-family: 'Inter', sans-serif;
+    }
+
+    .site-btn.active {
+        background: var(--blue);
+        color: white;
+    }
+
+    /* ---------- hero section ---------- */
+    .hero {
+        padding: 20px 0 16px;
+        display: grid;
+        grid-template-columns: 1fr 260px 280px;
+        gap: 20px;
+        align-items: start;
+    }
+
+    .hero-left {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .hero-heading {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        line-height: 1.3;
+        margin-bottom: 10px;
+        white-space: nowrap;
+    }
+
+    .hero-sub {
+        font-size: 0.82rem;
+        color: var(--text-mid);
+        line-height: 1.8;
+        margin-bottom: 16px;
+    }
+
+    /* the green/amber/red status pills */
+    .status-pills-row {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .spill-line {
+        display: flex;
+        gap: 8px;
+    }
+
+    .spill {
+        padding: 5px 12px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        border: 1px solid rgba(34, 83, 130, 0.15);
+        background: rgba(255, 255, 255, 0.7);
+        color: var(--blue);
+    }
+
+    .spill.green {
+        background: rgba(34, 197, 94, 0.12);
+        border-color: rgba(34, 197, 94, 0.35);
+        color: #16a34a;
+    }
+
+    .spill.green::before {
+        content: '●';
+        margin-right: 5px;
+        font-size: 0.65rem;
+        color: #22a05b;
+    }
+
+    .spill.amber {
+        background: rgba(245, 158, 11, 0.12);
+        border-color: rgba(245, 158, 11, 0.35);
+        color: #d97706;
+    }
+
+    .spill.amber::before {
+        content: '●';
+        margin-right: 5px;
+        font-size: 0.65rem;
+        color: #e9820a;
+    }
+
+    .toggle-spacer { flex: 1; }
+
+    .site-toggle-row {
+        display: flex;
+        gap: 8px;
+        margin-top: 28px;
+    }
+
+    /* map */
+    .hero-map {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: -185px;
+        margin-top: 15px;
+    }
+
+    .map-container svg {
+        width: 100%;
+        height: auto;
+    }
+
+    /* right side info panels */
+    .hero-panels {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .info-panel {
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 12px;
+        padding: 14px 16px;
+        backdrop-filter: blur(6px);
+    }
+
+    .ip-title {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--blue);
+        margin-bottom: 10px;
+    }
+
+    .ip-rows {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .ip-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .ip-icon  { font-size: 1rem; width: 22px; text-align: center; }
+    .ip-label { font-size: 0.73rem; color: var(--text-light); flex: 1; }
+    .ip-val   { font-size: 0.82rem; font-weight: 600; color: var(--text-dark); white-space: nowrap; flex-shrink: 0; }
+
+    /* ---------- bottom stat cards ---------- */
+    .cards-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin-top: 4px;
+    }
+
+    .card {
+        background: rgba(255, 255, 255, 0.65);
+        border-radius: 14px;
+        padding: 14px 16px;
+        backdrop-filter: blur(8px);
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+
+    .card-title {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--blue);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    .card-arrow { font-size: 0.75rem; color: #99aabb; }
+
+    /* alert overview card */
+    .ao-big {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        line-height: 1;
+        margin-bottom: 10px;
+    }
+
+    .ao-bars { display: flex; flex-direction: column; gap: 6px; }
+
+    .ao-bar-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .ao-bar-label {
+        font-size: 0.7rem;
+        color: var(--text-light);
+        width: 44px;
+        flex-shrink: 0;
+    }
+
+    .ao-bar-track {
+        flex: 1;
+        height: 6px;
+        border-radius: 3px;
+        background: var(--blue-faint);
+        overflow: hidden;
+    }
+
+    .ao-bar-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.4s ease;
+    }
+
+    .ao-bar-fill.c-warn { background: #f59e0b; }
+    .ao-bar-fill.c-crit { background: #ef4444; }
+    .ao-bar-fill.c-blue { background: var(--blue); }
+
+    .ao-bar-count {
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        width: 28px;
+        text-align: right;
+    }
+
+    /* pH trend mini bar chart */
+    .fake-chart {
+        display: flex;
+        align-items: flex-end;
+        gap: 4px;
+        height: 60px;
+        margin-top: 4px;
+    }
+
+    .fc-bar {
+        flex: 1;
+        border-radius: 3px 3px 0 0;
+        background: rgba(34, 83, 130, 0.25);
+    }
+
+    .fc-bar.hi { background: var(--blue); }
+
+    /* status breakdown donut */
+    .donut-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 4px 0;
+    }
+
+    .donut-legend { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+
+    .dl-row { display: flex; align-items: center; gap: 8px; }
+    .dl-dot  { width: 8px; height: 8px; border-radius: 50%; }
+    .dl-label { font-size: 0.72rem; color: var(--text-light); flex: 1; }
+    .dl-val   { font-size: 0.72rem; font-weight: 600; color: var(--text-dark); }
+
+    /* sensor levels card */
+    .slev-rows { display: flex; flex-direction: column; gap: 8px; }
+
+    .slev-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .slev-lbl {
+        font-size: 0.72rem;
+        color: var(--text-light);
+        width: 76px;
+        flex-shrink: 0;
+    }
+
+    .slev-track {
+        flex: 1;
+        height: 6px;
+        background: var(--blue-faint);
+        border-radius: 3px;
+        overflow: hidden;
+    }
+
+    .slev-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.4s ease;
+    }
+
+    .slev-fill.b { background: linear-gradient(90deg, #225382, #3b82f6); }
+    .slev-fill.w { background: linear-gradient(90deg, #e9820a, #fbbf24); }
+
+    .slev-val {
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        width: 52px;
+        text-align: right;
+        flex-shrink: 0;
+        transition: color 0.3s;
+    }
+
+</style>
+</head>
+<body>
+<div class="app">
+
+    <nav class="navbar">
+        <a class="logo" href="/dashboard.html">
+            <span class="logo-dot"></span> Stroomloop
+        </a>
+        <div class="nav-pills">
+            <a class="nav-pill active" href="/dashboard.html">Dashboard</a>
+            <a class="nav-pill" href="/alerts.html">Alerts</a>
+            <a class="nav-pill" href="/trends.html">Trends</a>
+            <a class="nav-pill" href="/info.html">Information</a>
+        </div>
+        <a class="login-btn" href="/login.html">Log in</a>
+    </nav>
+
+    <div class="page">
+
+        <div class="hero">
+
+            <!-- left: heading, description, status pills, site buttons -->
+            <div class="hero-left">
+                <div class="hero-heading">Know your water. Protect your health.</div>
+                <p class="hero-sub">
+                    An online interface innovating water monitoring for<br>
+                    South African communities. Smart sensors and<br>
+                    intuitive dashboards turning live readings into safer,<br>
+                    healthier everyday choices.
+                </p>
+                <div class="status-pills-row">
+                    <div class="spill-line">
+                        <span class="spill green" id="pill-healthy">— Healthy</span>
+                        <span class="spill amber" id="pill-moderate">— Moderate</span>
+                        <span class="spill" id="pill-critical" style="background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.35);color:#dc2626">— Critical</span>
+                    </div>
+                    <div class="spill-line">
+                        <span class="spill">70k Readings</span>
+                        <span class="spill">6 Metrics</span>
+                    </div>
+                </div>
+                <div class="toggle-spacer"></div>
+                <div class="site-toggle-row">
+                    <button class="site-btn active" onclick="selectSite(this, 'site_upstream')">Upstream</button>
+                    <button class="site-btn" onclick="selectSite(this, 'site_downstream')">Downstream</button>
+                    <button class="site-btn" onclick="selectSite(this, 'site_reservoir')">Reservoir</button>
+                </div>
+            </div>
+
+            <!-- middle: EC map SVG -->
+            <div class="hero-map">
+                <div class="map-container">
+                    <svg viewBox="0 0 380 320" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+                        <defs><style>
+                            .land    { fill: none; stroke: rgba(34,83,130,0.35); stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
+                            .river   { fill: none; stroke: rgba(34,83,130,0.65); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+                            .terrain { fill: none; stroke: rgba(34,83,130,0.2);  stroke-width: 1;   stroke-linecap: round; }
+                            .mlabel  { font-family: 'Inter', sans-serif; font-size: 9px; fill: rgba(34,83,130,0.55); font-weight: 600; }
+                        </style></defs>
+
+                        <!-- Eastern Cape outline -->
+                        <path class="land" d="M 30,132 L 22,162 L 24,205 L 32,238 L 46,264 L 60,278 L 72,285 L 88,291 L 108,292 L 145,285 L 185,275 L 222,266 L 260,253 L 282,242 L 312,222 L 332,198 L 350,168 L 368,128 L 370,72 L 368,32 L 295,10 L 218,6 L 148,10 L 88,18 L 42,78 L 30,132"/>
+                        <path class="land" d="M 338,168 L 346,158 L 354,164 L 350,175 L 340,178 Z" stroke-dasharray="3,2"/>
+
+                        <!-- terrain lines -->
+                        <path class="terrain" d="M 80,120 Q 130,112 180,118 Q 230,124 270,115"/>
+                        <path class="terrain" d="M 100,145 Q 145,138 190,143 Q 235,148 265,140"/>
+                        <path class="terrain" d="M 336,145 L 342,130 L 348,142 L 354,126 L 360,138 L 366,122 L 370,132" stroke="rgba(34,83,130,0.3)" stroke-width="1.2"/>
+                        <line x1="198" y1="232" x2="198" y2="218" class="terrain" stroke="rgba(34,83,130,0.35)" stroke-width="1.2"/>
+                        <path d="M 192,218 Q 198,210 204,218" class="terrain" stroke="rgba(34,83,130,0.35)" stroke-width="1.2"/>
+                        <path d="M 190,222 Q 198,212 206,222" class="terrain" stroke="rgba(34,83,130,0.35)" stroke-width="1.2"/>
+                        <line x1="214" y1="238" x2="214" y2="226" class="terrain" stroke="rgba(34,83,130,0.35)" stroke-width="1.2"/>
+                        <path d="M 208,226 Q 214,218 220,226" class="terrain" stroke="rgba(34,83,130,0.35)" stroke-width="1.2"/>
+                        <path d="M 206,230 Q 214,220 222,230" class="terrain" stroke="rgba(34,83,130,0.35)" stroke-width="1.2"/>
+                        <line x1="248" y1="242" x2="248" y2="230" class="terrain" stroke="rgba(34,83,130,0.35)" stroke-width="1.2"/>
+                        <path d="M 242,230 Q 248,222 254,230" class="terrain" stroke="rgba(34,83,130,0.35)" stroke-width="1.2"/>
+                        <path d="M 240,234 Q 248,224 256,234" class="terrain" stroke="rgba(34,83,130,0.35)" stroke-width="1.2"/>
+
+                        <!-- rivers -->
+                        <path class="river" d="M 338,136 C 300,134 260,132 220,134 C 175,136 120,134 80,133 C 55,132 38,132 30,132" stroke-width="1.6" stroke="rgba(34,83,130,0.5)"/>
+                        <path class="river" d="M 222,216 C 228,224 232,232 238,240 C 244,248 250,256 256,263 C 258,266 260,268 260,270"/>
+                        <path d="M 222,216 C 218,208 215,200 212,192" class="river" stroke-width="1" stroke="rgba(34,83,130,0.4)"/>
+                        <path d="M 238,240 C 233,238 228,236 224,232" class="river" stroke-width="0.8" stroke="rgba(34,83,130,0.3)"/>
+
+                        <!-- monitoring site markers -->
+                        <circle cx="222" cy="216" r="10" fill="rgba(76,175,80,0.15)"/>
+                        <circle cx="222" cy="216" r="5"  fill="#4CAF50" stroke="white" stroke-width="1.5"/>
+                        <text x="230" y="213" class="mlabel" fill="rgba(34,83,130,0.8)">Upstream</text>
+
+                        <circle cx="238" cy="240" r="10" fill="rgba(76,175,80,0.15)"/>
+                        <circle cx="238" cy="240" r="5"  fill="#4CAF50" stroke="white" stroke-width="1.5"/>
+                        <text x="246" y="237" class="mlabel" fill="rgba(34,83,130,0.8)">Reservoir</text>
+
+                        <circle cx="260" cy="270" r="10" fill="rgba(255,193,7,0.2)"/>
+                        <circle cx="260" cy="270" r="5"  fill="#FFC107" stroke="white" stroke-width="1.5"/>
+                        <text x="268" y="267" class="mlabel" fill="rgba(34,83,130,0.8)">Downstream</text>
+
+                        <text x="50"  y="255" class="mlabel" font-size="8">N ↑</text>
+                        <text x="155" y="235" class="mlabel" font-size="8" opacity="0.6">Eastern Cape</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- right: live readings panels -->
+            <div class="hero-panels">
+                <div class="info-panel">
+                    <div class="ip-title">Water Quality</div>
+                    <div class="ip-rows">
+                        <div class="ip-row">
+                            <span class="ip-icon">⬡</span>
+                            <span class="ip-label">pH Level</span>
+                            <span class="ip-val" id="val-ph">—</span>
+                            <span class="ip-badge badge-ok" id="badge-ph">—</span>
+                        </div>
+                        <div class="ip-row">
+                            <span class="ip-icon">〜</span>
+                            <span class="ip-label">Turbidity</span>
+                            <span class="ip-val" id="val-turb">—</span>
+                            <span class="ip-badge badge-ok" id="badge-turb">—</span>
+                        </div>
+                        <div class="ip-row">
+                            <span class="ip-icon">⚡</span>
+                            <span class="ip-label">Conductivity</span>
+                            <span class="ip-val" id="val-cond">—</span>
+                            <span class="ip-badge badge-ok" id="badge-cond">—</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="info-panel">
+                    <div class="ip-title">Environmental</div>
+                    <div class="ip-rows">
+                        <div class="ip-row">
+                            <span class="ip-icon">💧</span>
+                            <span class="ip-label">Water Temp</span>
+                            <span class="ip-val" id="val-temp">—</span>
+                            <span class="ip-badge badge-ok" id="badge-temp">—</span>
+                        </div>
+                        <div class="ip-row">
+                            <span class="ip-icon">📏</span>
+                            <span class="ip-label">Water Level</span>
+                            <span class="ip-val" id="val-level">—</span>
+                            <span class="ip-badge badge-ok" id="badge-level">—</span>
+                        </div>
+                        <div class="ip-row">
+                            <span class="ip-icon">☀</span>
+                            <span class="ip-label">Light</span>
+                            <span class="ip-val" id="val-light">—</span>
+                            <span class="ip-badge badge-ok" id="badge-light">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- end hero -->
+
+        <!-- bottom row of stat cards -->
+        <div class="cards-row">
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Alert Overview</span>
+                    <span class="card-arrow">↗</span>
+                </div>
+                <div class="ao-big" id="ao-total">—</div>
+                <div class="ao-bars">
+                    <div class="ao-bar-row">
+                        <span class="ao-bar-label">pH</span>
+                        <div class="ao-bar-track">
+                            <div class="ao-bar-fill c-crit" id="ao-bar-ph" style="width: 0%"></div>
+                        </div>
+                        <span class="ao-bar-count" id="ao-count-ph">—</span>
+                    </div>
+                    <div class="ao-bar-row">
+                        <span class="ao-bar-label">Turbidity</span>
+                        <div class="ao-bar-track">
+                            <div class="ao-bar-fill c-warn" id="ao-bar-turb" style="width: 0%"></div>
+                        </div>
+                        <span class="ao-bar-count" id="ao-count-turb">—</span>
+                    </div>
+                    <div class="ao-bar-row">
+                        <span class="ao-bar-label">Cond.</span>
+                        <div class="ao-bar-track">
+                            <div class="ao-bar-fill c-blue" id="ao-bar-cond" style="width: 0%"></div>
+                        </div>
+                        <span class="ao-bar-count" id="ao-count-cond">—</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">pH Trend</span>
+                    <span class="card-arrow">↗</span>
+                </div>
+                <div class="fake-chart">
+                    <!-- bars get updated by JS using real trend data -->
+                    <div class="fc-bar" style="height: 55%"></div>
+                    <div class="fc-bar" style="height: 62%"></div>
+                    <div class="fc-bar hi" style="height: 75%"></div>
+                    <div class="fc-bar" style="height: 65%"></div>
+                    <div class="fc-bar" style="height: 58%"></div>
+                    <div class="fc-bar hi" style="height: 80%"></div>
+                    <div class="fc-bar" style="height: 70%"></div>
+                    <div class="fc-bar" style="height: 64%"></div>
+                    <div class="fc-bar hi" style="height: 72%"></div>
+                    <div class="fc-bar" style="height: 68%"></div>
+                    <div class="fc-bar" style="height: 74%"></div>
+                    <div class="fc-bar hi" style="height: 76%"></div>
+                </div>
+                <div style="font-size: 0.72rem; color: #8aa4bb; margin-top: 6px">
+                    7-day average · <span id="ph-trend-val">—</span> pH
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Status Breakdown</span>
+                    <span class="card-arrow">↗</span>
+                </div>
+                <div class="donut-wrap">
+                    <svg width="90" height="90" viewBox="0 0 90 90">
+                        <circle cx="45" cy="45" r="36" fill="none" stroke="#f0f4f8" stroke-width="12"/>
+                        <circle cx="45" cy="45" r="36" fill="none" stroke="#22c55e" stroke-width="12" stroke-dasharray="153.8 72.4"  stroke-dashoffset="56.5"   transform="rotate(-90 45 45)"/>
+                        <circle cx="45" cy="45" r="36" fill="none" stroke="#f59e0b" stroke-width="12" stroke-dasharray="47.5 178.7"  stroke-dashoffset="-97.3"  transform="rotate(-90 45 45)"/>
+                        <circle cx="45" cy="45" r="36" fill="none" stroke="#ef4444" stroke-width="12" stroke-dasharray="24.9 201.3"  stroke-dashoffset="-144.8" transform="rotate(-90 45 45)"/>
+                        <text x="45" y="49" text-anchor="middle" font-size="12" font-weight="700" fill="#1c3a55" font-family="Inter, sans-serif">68%</text>
+                    </svg>
+                </div>
+                <div class="donut-legend">
+                    <div class="dl-row">
+                        <span class="dl-dot" style="background: #22c55e"></span>
+                        <span class="dl-label">Healthy</span>
+                        <span class="dl-val">68%</span>
+                    </div>
+                    <div class="dl-row">
+                        <span class="dl-dot" style="background: #f59e0b"></span>
+                        <span class="dl-label">Moderate</span>
+                        <span class="dl-val">21%</span>
+                    </div>
+                    <div class="dl-row">
+                        <span class="dl-dot" style="background: #ef4444"></span>
+                        <span class="dl-label">Critical</span>
+                        <span class="dl-val">11%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Sensor Levels</span>
+                    <span class="card-arrow">↗</span>
+                </div>
+                <div class="slev-rows">
+                    <div class="slev-row">
+                        <span class="slev-lbl">pH</span>
+                        <div class="slev-track"><div class="slev-fill b" id="fill-ph" style="width: 0%"></div></div>
+                        <span class="slev-val" id="slev-ph">—</span>
+                    </div>
+                    <div class="slev-row">
+                        <span class="slev-lbl">Turbidity</span>
+                        <div class="slev-track"><div class="slev-fill b" id="fill-turb" style="width: 0%"></div></div>
+                        <span class="slev-val" id="slev-turb">—</span>
+                    </div>
+                    <div class="slev-row">
+                        <span class="slev-lbl">Conductivity</span>
+                        <div class="slev-track"><div class="slev-fill b" id="fill-cond" style="width: 0%"></div></div>
+                        <span class="slev-val" id="slev-cond">—</span>
+                    </div>
+                    <div class="slev-row">
+                        <span class="slev-lbl">Temp</span>
+                        <div class="slev-track"><div class="slev-fill b" id="fill-temp" style="width: 0%"></div></div>
+                        <span class="slev-val" id="slev-temp">—</span>
+                    </div>
+                    <div class="slev-row">
+                        <span class="slev-lbl">Water Level</span>
+                        <div class="slev-track"><div class="slev-fill b" id="fill-level" style="width: 0%"></div></div>
+                        <span class="slev-val" id="slev-level">—</span>
+                    </div>
+                    <div class="slev-row">
+                        <span class="slev-lbl">Light</span>
+                        <div class="slev-track"><div class="slev-fill b" id="fill-light" style="width: 0%"></div></div>
+                        <span class="slev-val" id="slev-light">—</span>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- end cards -->
+
+    </div><!-- end page -->
+
+</div><!-- end app -->
+
+<script>
+
+    // tracks which site is currently selected
+    let currentSite = 'site_upstream';
+
+    function selectSite(btn, siteId) {
+        document.querySelectorAll('.site-toggle-row .site-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentSite = siteId;
+        loadData();
+    }
+
+    // maps backend status string to a CSS badge class
+    function getBadgeClass(status) {
+        if (status === 'normal')   return 'badge-ok';
+        if (status === 'warning')  return 'badge-warn';
+        if (status === 'critical') return 'badge-crit';
+        return 'badge-ok';
+    }
+
+    // maps backend status string to display label
+    function getStatusLabel(status) {
+        if (status === 'normal')   return 'Healthy';
+        if (status === 'warning')  return 'Moderate';
+        if (status === 'critical') return 'Critical';
+        return status;
+    }
+
+    function formatLight(lux) {
+        if (lux >= 1000) {
+            return (lux / 1000).toFixed(1) + 'k lux';
+        }
+        return lux.toFixed(0) + ' lux';
+    }
+
+    // updates a sensor level bar (width and colour)
+    function updateBar(fillId, percent, warn) {
+        const el = document.getElementById(fillId);
+        el.style.width = Math.min(100, Math.max(0, percent)) + '%';
+        el.className = 'slev-fill ' + (warn ? 'w' : 'b');
+    }
+
+    // fetches the status of all 3 sites and updates the top pills
+    async function loadSiteStatuses() {
+        try {
+            const sites = ['site_upstream', 'site_downstream', 'site_reservoir'];
+            const results = await Promise.all(
+                sites.map(s => fetch('/latest/' + s).then(r => r.json()))
+            );
+
+            const counts = { normal: 0, warning: 0, critical: 0 };
+            results.forEach(data => {
+                if (counts[data.status] !== undefined) counts[data.status]++;
+            });
+
+            const pillHealthy  = document.getElementById('pill-healthy');
+            const pillModerate = document.getElementById('pill-moderate');
+            const pillCritical = document.getElementById('pill-critical');
+
+            pillHealthy.textContent  = counts.normal   + ' Healthy';
+            pillModerate.textContent = counts.warning  + ' Moderate';
+            pillCritical.textContent = counts.critical + ' Critical';
+
+            pillHealthy.style.display  = counts.normal   > 0 ? '' : 'none';
+            pillModerate.style.display = counts.warning  > 0 ? '' : 'none';
+            pillCritical.style.display = counts.critical > 0 ? '' : 'none';
+
+        } catch (e) {
+            console.error('Could not load site statuses', e);
+        }
+    }
+
+    // main data load — fetches latest readings, alert breakdown and trend data
+    async function loadData() {
+        try {
+            const [latestRes, breakdownRes, trendRes] = await Promise.all([
+                fetch('/latest/' + currentSite),
+                fetch('/alerts/' + currentSite + '/breakdown'),
+                fetch('/trends/' + currentSite)
+            ]);
+
+            const d         = await latestRes.json();
+            const breakdown = await breakdownRes.json();
+            const trendData = await trendRes.json();
+
+            const badgeClass = getBadgeClass(d.status);
+            const statusLabel = getStatusLabel(d.status);
+
+            // update the right-hand reading panels
+            document.getElementById('val-ph').textContent    = d.ph.toFixed(2);
+            document.getElementById('val-turb').textContent  = d.turbidityNtu.toFixed(1) + ' NTU';
+            document.getElementById('val-cond').textContent  = d.conductivityUsCm.toFixed(0) + ' µS/cm';
+            document.getElementById('val-temp').textContent  = d.waterTemperatureC.toFixed(1) + '°C';
+            document.getElementById('val-level').textContent = d.waterLevelCm.toFixed(1) + ' cm';
+            document.getElementById('val-light').textContent = formatLight(d.lightLux);
+
+            ['ph', 'turb', 'cond', 'temp', 'level', 'light'].forEach(key => {
+                const badge = document.getElementById('badge-' + key);
+                badge.className = 'ip-badge ' + badgeClass;
+                badge.textContent = statusLabel;
+            });
+
+            // alert overview card
+            document.getElementById('ao-total').textContent      = breakdown.total;
+            document.getElementById('ao-count-ph').textContent   = breakdown.ph;
+            document.getElementById('ao-count-turb').textContent = breakdown.turbidity;
+            document.getElementById('ao-count-cond').textContent = breakdown.conductivity;
+
+            const maxAlerts = Math.max(breakdown.ph, breakdown.turbidity, breakdown.conductivity, 1);
+            document.getElementById('ao-bar-ph').style.width   = (breakdown.ph         / maxAlerts * 100) + '%';
+            document.getElementById('ao-bar-turb').style.width = (breakdown.turbidity  / maxAlerts * 100) + '%';
+            document.getElementById('ao-bar-cond').style.width = (breakdown.conductivity / maxAlerts * 100) + '%';
+
+            // pH trend bar chart — take last 12 readings
+            const last12 = trendData.slice(-12);
+            if (last12.length > 0) {
+                const phValues = last12.map(p => p.ph);
+                const minPh = Math.min(...phValues);
+                const maxPh = Math.max(...phValues);
+                const range = maxPh - minPh || 0.1;
+
+                document.querySelectorAll('.fake-chart .fc-bar').forEach((bar, i) => {
+                    if (i < phValues.length) {
+                        const heightPct = ((phValues[i] - minPh) / range) * 70 + 20;
+                        bar.style.height = heightPct + '%';
+                        bar.className = 'fc-bar' + (i === phValues.length - 1 ? ' hi' : '');
+                    }
+                });
+
+                document.getElementById('ph-trend-val').textContent = phValues[phValues.length - 1].toFixed(2);
+            }
+
+            // sensor level bars
+            updateBar('fill-ph',    (d.ph / 14) * 100,                  d.ph < 6.5 || d.ph > 8.5);
+            updateBar('fill-turb',  Math.min(d.turbidityNtu, 100),      d.turbidityNtu > 4);
+            updateBar('fill-cond',  (d.conductivityUsCm / 2000) * 100,  false);
+            updateBar('fill-temp',  (d.waterTemperatureC / 40) * 100,   d.waterTemperatureC > 25);
+            updateBar('fill-level', (d.waterLevelCm / 150) * 100,       false);
+            updateBar('fill-light', (d.lightLux / 25000) * 100,         false);
+
+            document.getElementById('slev-ph').textContent    = d.ph.toFixed(2);
+            document.getElementById('slev-turb').textContent  = d.turbidityNtu.toFixed(1);
+            document.getElementById('slev-cond').textContent  = d.conductivityUsCm.toFixed(0);
+            document.getElementById('slev-temp').textContent  = d.waterTemperatureC.toFixed(1) + '°C';
+            document.getElementById('slev-level').textContent = d.waterLevelCm.toFixed(1) + 'cm';
+            document.getElementById('slev-light').textContent = formatLight(d.lightLux);
+
+            // turn turbidity value amber if above safe threshold
+            document.getElementById('slev-turb').style.color = d.turbidityNtu > 4 ? '#d97706' : '#1c3a55';
+
+        } catch (e) {
+            console.error('Error loading dashboard data', e);
+        }
+    }
+
+    // load everything on page open
+    loadSiteStatuses();
+    loadData();
+
+    // refresh every 15 seconds
+    setInterval(loadData, 15000);
+    setInterval(loadSiteStatuses, 15000);
+
+</script>
+</body>
+</html>

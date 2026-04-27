@@ -102,7 +102,7 @@ fun main() {
 
             // Login page first
             get("/") {
-                call.respondRedirect("/login.html")
+                call.respondRedirect("/dashboard.html")
             }
 
             // Enter guest dashboard

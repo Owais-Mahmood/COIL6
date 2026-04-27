@@ -3,310 +3,101 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="color-scheme" content="light dark">
-    <title>Alerts</title>
-
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.sand.min.css">
-
+    <title>Stroomloop · Alerts</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --stroomloop-blue: #225382;
-            --stroomloop-blue-transparent: #2254825a;
-        }
-
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            background-image: linear-gradient(180deg, #81C3DB, #F2FCFF);
-            background-size: cover;
-            width: 100%;
-            height: 100%;
-        }
-
-        main.container {
-            max-width: 100%;
-            width: 100%;
-        }
-
-        .logo {
-            transform: translateY(-27px);
-        }
-
-        .dashboard {
-            display: grid;
-            grid-template-columns: 1fr 4fr;
-        }
-
-        .left-column {
-            background-color: rgba(255, 255, 255, 0);
-        }
-       
-        .top-section {
-            display: flex;
-            align-items: center;
-            background-color: var(--stroomloop-blue-transparent);
-            padding: 10px 24px;
-            border-radius: 8px;
-        }
-
-        .user {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .name {
-            color: white;
-        }
-
-        .dashboard-title {
-            font-size: 1.2rem;
-            font-weight: 400;
-            color: white;
-            margin: 0;
-        }
-
-        .search-bar {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 0;
-            margin-left: auto;
-        }
-
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            transform: translateY(30px);
-        }
-
-        .sidebarButton {
-            color: white;
-        }
-
-        .right-section {
-            padding-right: 30px;
-        }
-
-        .alerts-content {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 30px;
-            margin-top: 30px;
-            max-width: 900px;
-        }
-
-        .alert-card {
-            background-color: rgba(255, 255, 255, 0.12);
-            border-radius: 12px;
-            padding: 20px;
-            color: white;
-            min-height: 140px;
-        }
-
-        .alert-card h3 {
-            margin-top: 0;
-            margin-bottom: 10px;
-            font-size: 1rem;
-            font-weight: 600;
-        }
-
-        .alert-value {
-            font-size: 1.8rem;
-            font-weight: bold;
-            margin: 0;
-        }
-
-        .alert-value, .status-list {
-            transition: opacity 0.3s ease;
-        }
-
-        .status-list {
-            margin: 0;
-            padding-left: 18px;
-            color: white;
-        }
-
-        .status-list li {
-            margin-bottom: 6px;
-        }
-
-        input[type="text"] {
-            width: 300px !important;
-            height: 28px !important;
-            margin: 0 !important;
-            padding: 6px 8px !important;
-            font-size: 0.8rem;
-            line-height: 1 !important;
-        }
-
-        button[type="submit"] {
-            width: auto !important;
-            height: 28px !important;
-            margin: 0 !important;
-            padding: 6px 8px !important;
-            background-color: rgb(5, 147, 229);
-            font-size: 0.8rem;
-            line-height: 1 !important;
-        }
-
-        button:hover {
-            background-color: rgba(5, 147, 229, 0.554);
-        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(180deg, #81C3DB 0%, #F2FCFF 100%); min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 24px 16px; }
+        .app { width: 100%; max-width: 1200px; border-radius: 24px; overflow: hidden; box-shadow: 0 24px 64px rgba(34,83,130,0.2); background: linear-gradient(to bottom, #c8eaf3 0%, #d8f0f7 18%, #e4f6fa 36%, #edfafc 58%, #f3fdfe 78%, #F2FCFF 100%); }
+        .navbar { display: flex; align-items: center; padding: 14px 24px; gap: 16px; }
+        .logo { display: flex; align-items: center; gap: 8px; font-size: 1rem; font-weight: 700; color: #225382; white-space: nowrap; text-decoration: none; }
+        .logo-dot { width: 10px; height: 10px; background: #225382; border-radius: 50%; display: inline-block; }
+        .nav-pills { background: rgba(255,255,255,0.55); border-radius: 50px; padding: 5px; display: flex; gap: 2px; margin: 0 auto; backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.8); }
+        .nav-pill { padding: 7px 20px; border-radius: 50px; font-size: 0.875rem; font-weight: 500; color: #225382; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block; }
+        .nav-pill:hover { background: rgba(255,255,255,0.6); }
+        .nav-pill.active { background: white; color: #225382; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .login-btn { padding: 7px 18px; border-radius: 50px; font-size: 0.875rem; font-weight: 600; color: white; background: #225382; border: none; cursor: pointer; white-space: nowrap; text-decoration: none; display: inline-block; }
+        .login-btn:hover { background: #1a3f63; }
+        .page-content { padding: 20px 24px 32px; }
+        .alerts-content { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 10px; max-width: 900px; }
+        .alert-card { background: rgba(255,255,255,0.65); backdrop-filter: blur(8px); border-radius: 14px; padding: 20px; color: #1c3a55; min-height: 140px; border: 1px solid rgba(255,255,255,0.8); box-shadow: 0 4px 18px rgba(34,83,130,0.07); }
+        .alert-card h3 { margin-top: 0; margin-bottom: 10px; font-size: 1rem; font-weight: 600; color: #225382; }
+        .alert-value { font-size: 1.8rem; font-weight: bold; margin: 0; color: #1c3a55; }
+        .alert-value, .status-list { transition: opacity 0.3s ease; }
+        .status-list { margin: 0; padding-left: 18px; color: #3a5a7a; }
+        .status-list li { margin-bottom: 6px; }
     </style>
 </head>
-
 <body>
-    <main class="container-fluid">
-        <div class="dashboard">
-
-            <div class="left-column">
-                <div class="logo">
-                    <img src="images/stroomloop_transparent.png" alt="Stroomloop logo" width="250" height="250">
-                </div>
-
-                <div class="user">
-                    <img src="images/profile_transparent.png" width="50" height="50" alt="Profile icon">
-                    <p class="name">Guest</p>
-                </div>
-
-                <div class="sidebar">
-                    <a href="GuestDashboard.html" class="sidebarButton">Dashboard</a>
-                    <a href="alerts.html" class="sidebarButton">Alerts</a>
-                    <a href="trends.html" class="sidebarButton">Trends</a>
-                    <a href="info.html" class="sidebarButton">Information</a>
-                </div>
-            </div>
-
-            <div class="right-section">
-                <div class="top-section">
-                    <h1 class="dashboard-title">Water Monitoring Dashboard</h1>
-
-                    <select id="site-select" style="width: 225px; margin-left: 10px; margin-bottom: 0;">
-                        <option value="site_upstream">Site Upstream</option>
-                        <option value="site_downstream">Site Downstream</option>
-                        <option value="site_reservoir">Site Reservoir</option>
-                    </select>
-
-                    <div class="search-bar">
-                        <form action="/data" method="get">
-                            <input type="text" name="query" placeholder="Enter search" required>
-                            <button type="submit">🔍</button>
-                        </form>
-                    </div>
-                </div>
-
-                <div class="alerts-content">
-                    <div class="alert-card">
-                        <h3>Total Alert-Triggered Readings</h3>
-                        <p class="alert-value" id="alert-count">Loading...</p>
-                    </div>
-
-                    <div class="alert-card">
-                        <h3>Status Breakdown</h3>
-                        <ul class="status-list" id="status-counts">
-                            <li>Loading...</li>
-                        </ul>
-                    </div>
-
-                    <div class="alert-card">
-                        <h3>Critical Readings</h3>
-                        <p class="alert-value" id="critical-count">Loading...</p>
-                    </div>
-
-                    <div class="alert-card">
-                        <h3>Warning Readings</h3>
-                        <p class="alert-value" id="warning-count">Loading...</p>
-                    </div>
-                </div>
-            </div>    
+<div class="app">
+    <nav class="navbar">
+        <a class="logo" href="/dashboard.html"><span class="logo-dot"></span> Stroomloop</a>
+        <div class="nav-pills">
+            <a class="nav-pill" href="/dashboard.html">Dashboard</a>
+            <a class="nav-pill active" href="/alerts.html">Alerts</a>
+            <a class="nav-pill" href="/trends.html">Trends</a>
+            <a class="nav-pill" href="/info.html">Information</a>
         </div>
-    </main>
-
-    <script>
-        function getSavedSite() {
-            return localStorage.getItem("selectedSite") || "site_upstream"
-        }
-
-        function setSavedSite(siteId) {
-            localStorage.setItem("selectedSite", siteId)
-        }
-
-        function fadeUpdate(element, newValue) {
-            element.style.opacity = 0
+        <a class="login-btn" href="/login.html">Log in</a>
+    </nav>
+    <div class="page-content">
+        <div class="alerts-content">
+            <div class="alert-card">
+                <h3>Total Alert-Triggered Readings</h3>
+                <p class="alert-value" id="alert-count">Loading...</p>
+            </div>
+            <div class="alert-card">
+                <h3>Status Breakdown</h3>
+                <ul class="status-list" id="status-counts"><li>Loading...</li></ul>
+            </div>
+            <div class="alert-card">
+                <h3>Critical Readings</h3>
+                <p class="alert-value" id="critical-count">Loading...</p>
+            </div>
+            <div class="alert-card">
+                <h3>Warning Readings</h3>
+                <p class="alert-value" id="warning-count">Loading...</p>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function fadeUpdate(el, val) {
+        el.style.opacity = 0
+        setTimeout(() => { el.textContent = val; el.style.opacity = 1 }, 150)
+    }
+    async function loadAlertCount() {
+        try {
+            const data = await fetch("/alerts").then(r => r.json())
+            fadeUpdate(document.getElementById("alert-count"), data.count)
+        } catch { fadeUpdate(document.getElementById("alert-count"), "Error") }
+    }
+    async function loadStatusCounts() {
+        try {
+            const data = await fetch("/summary/status-counts").then(r => r.json())
+            const list = document.getElementById("status-counts")
+            list.style.opacity = 0
+            let crit = "0", warn = "0"
             setTimeout(() => {
-                element.textContent = newValue
-                element.style.opacity = 1
+                list.innerHTML = ""
+                data.forEach(item => {
+                    const li = document.createElement("li")
+                    li.textContent = item.status.charAt(0).toUpperCase() + item.status.slice(1) + ": " + item.count
+                    list.appendChild(li)
+                    if (item.status === "critical") crit = item.count
+                    if (item.status === "warning") warn = item.count
+                })
+                fadeUpdate(document.getElementById("critical-count"), crit)
+                fadeUpdate(document.getElementById("warning-count"), warn)
+                list.style.opacity = 1
             }, 150)
+        } catch {
+            document.getElementById("status-counts").innerHTML = "<li>Error loading data</li>"
         }
-
-        async function loadAlertCount() {
-            try {
-                const response = await fetch("/alerts")
-                const data = await response.json()
-                fadeUpdate(document.getElementById("alert-count"), data.count)
-            } catch (error) {
-                fadeUpdate(document.getElementById("alert-count"), "Error")
-            }
-        }
-
-        async function loadStatusCounts() {
-            try {
-                const response = await fetch("/summary/status-counts")
-                const data = await response.json()
-
-                const statusList = document.getElementById("status-counts")
-                statusList.style.opacity = 0
-
-                let criticalValue = "0"
-                let warningValue = "0"
-
-                setTimeout(() => {
-                    statusList.innerHTML = ""
-
-                    data.forEach(item => {
-                        const li = document.createElement("li")
-                        const statusText = item.status.charAt(0).toUpperCase() + item.status.slice(1)
-                        li.textContent = `${statusText}: ${item.count}`
-                        statusList.appendChild(li)
-
-                        if (item.status === "critical") criticalValue = item.count
-                        if (item.status === "warning") warningValue = item.count
-                    })
-
-                    fadeUpdate(document.getElementById("critical-count"), criticalValue)
-                    fadeUpdate(document.getElementById("warning-count"), warningValue)
-
-                    statusList.style.opacity = 1
-                }, 150)
-
-            } catch (error) {
-                document.getElementById("status-counts").innerHTML = "<li>Error loading data</li>"
-                fadeUpdate(document.getElementById("critical-count"), "Error")
-                fadeUpdate(document.getElementById("warning-count"), "Error")
-            }
-        }
-
-        const siteSelect = document.getElementById("site-select")
-        siteSelect.value = getSavedSite()
-
-        loadAlertCount()
-        loadStatusCounts()
-
-        siteSelect.addEventListener("change", () => {
-            setSavedSite(siteSelect.value)
-        })
-
-        setInterval(() => {
-            loadAlertCount()
-            loadStatusCounts()
-        }, 15000)
-    </script>
+    }
+    loadAlertCount()
+    loadStatusCounts()
+    setInterval(() => { loadAlertCount(); loadStatusCounts() }, 15000)
+</script>
 </body>
 </html>

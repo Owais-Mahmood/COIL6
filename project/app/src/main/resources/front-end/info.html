@@ -3,215 +3,66 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="color-scheme" content="light dark">
-    <title>Information</title>
-
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.sand.min.css">
-
+    <title>Stroomloop · Information</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --stroomloop-blue: #225382;
-            --stroomloop-blue-transparent: #2254825a;
-        }
-
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            background-image: linear-gradient(180deg, #81C3DB, #F2FCFF);
-            background-attachment: fixed;
-            background-size: cover;
-            width: 100%;
-            min-height: 100vh;
-        }
-
-        main.container {
-            max-width: 100%;
-            width: 100%;
-        }
-
-        .logo {
-            transform: translateY(-27px);
-        }
-
-        .dashboard {
-            display: grid;
-            grid-template-columns: 1fr 4fr;
-        }
-
-        .left-column {
-            background-color: rgba(255, 255, 255, 0);
-        }
-
-        .top-section {
-            display: flex;
-            align-items: center;
-            background-color: var(--stroomloop-blue-transparent);
-            padding: 10px 24px;
-            border-radius: 8px;
-        }
-
-        .user {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .name {
-            color: white;
-        }
-
-        .dashboard-title {
-            font-size: 1.2rem;
-            font-weight: 400;
-            color: white;
-            margin: 0;
-        }
-
-        .search-bar {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 0;
-            margin-left: auto;
-        }
-
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            transform: translateY(30px);
-        }
-
-        .sidebarButton {
-            color: white;
-        }
-
-        .right-section {
-            padding-right: 30px;
-        }
-
-        .content {
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .glossary {
-            background-color: rgba(255, 255, 255, 0.18);
-            backdrop-filter: blur(6px);
-            color: white;
-            font-size: 0.85rem;
-            padding: 16px;
-            border-radius: 8px;
-        }
-
-        .section-title {
-            font-weight: 500;
-            font-size: 1rem;
-            margin: 0 0 8px 0;
-        }
-
-        ul {
-            margin: 0;
-            padding-left: 18px;
-        }
-
-        li {
-            margin-bottom: 6px;
-        }
-
-        input[type="text"] {
-            width: 300px !important;
-            height: 28px !important;
-            margin: 0 !important;
-            padding: 6px 8px !important;
-            font-size: 0.8rem;
-            line-height: 1 !important;
-        }
-
-        button[type="submit"] {
-            width: auto !important;
-            height: 28px !important;
-            margin: 0 !important;
-            padding: 6px 8px !important;
-            background-color: rgb(5, 147, 229);
-            font-size: 0.8rem;
-            line-height: 1 !important;
-        }
-
-        button:hover {
-            background-color: rgba(5, 147, 229, 0.554);
-        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(180deg, #81C3DB 0%, #F2FCFF 100%); min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 24px 16px; }
+        .app { width: 100%; max-width: 1200px; border-radius: 24px; overflow: hidden; box-shadow: 0 24px 64px rgba(34,83,130,0.2); background: linear-gradient(to bottom, #c8eaf3 0%, #d8f0f7 18%, #e4f6fa 36%, #edfafc 58%, #f3fdfe 78%, #F2FCFF 100%); }
+        .navbar { display: flex; align-items: center; padding: 14px 24px; gap: 16px; }
+        .logo { display: flex; align-items: center; gap: 8px; font-size: 1rem; font-weight: 700; color: #225382; white-space: nowrap; text-decoration: none; }
+        .logo-dot { width: 10px; height: 10px; background: #225382; border-radius: 50%; display: inline-block; }
+        .nav-pills { background: rgba(255,255,255,0.55); border-radius: 50px; padding: 5px; display: flex; gap: 2px; margin: 0 auto; backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.8); }
+        .nav-pill { padding: 7px 20px; border-radius: 50px; font-size: 0.875rem; font-weight: 500; color: #225382; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block; }
+        .nav-pill:hover { background: rgba(255,255,255,0.6); }
+        .nav-pill.active { background: white; color: #225382; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .login-btn { padding: 7px 18px; border-radius: 50px; font-size: 0.875rem; font-weight: 600; color: white; background: #225382; border: none; cursor: pointer; white-space: nowrap; text-decoration: none; display: inline-block; }
+        .login-btn:hover { background: #1a3f63; }
+        .page-content { padding: 20px 24px 32px; }
+        .content { display: flex; flex-direction: column; gap: 16px; }
+        .glossary { background: rgba(255,255,255,0.65); backdrop-filter: blur(8px); border-radius: 14px; padding: 20px; border: 1px solid rgba(255,255,255,0.8); box-shadow: 0 4px 18px rgba(34,83,130,0.07); font-size: 0.85rem; color: #3a5a7a; }
+        .section-title { font-weight: 700; font-size: 1rem; margin: 0 0 10px 0; color: #225382; display: block; }
+        ul { margin: 0; padding-left: 18px; }
+        li { margin-bottom: 6px; }
     </style>
 </head>
-
 <body>
-    <main class="container-fluid">
-        <div class="dashboard">
-
-            <div class="left-column">
-                <div class="logo">
-                    <img src="images/stroomloop_transparent.png" alt="Stroomloop logo" width="250" height="250">
-                </div>
-
-                <div class="user">
-                    <img src="images/profile_transparent.png" width="50" height="50" alt="Profile icon">
-                    <p class="name">Guest</p>
-                </div>
-
-                <div class="sidebar">
-                    <a href="GuestDashboard.html" class="sidebarButton">Dashboard</a>
-                    <a href="alerts.html" class="sidebarButton">Alerts</a>
-                    <a href="trends.html" class="sidebarButton">Trends</a>
-                    <a href="info.html" class="sidebarButton">Information</a>
-                </div>
+<div class="app">
+    <nav class="navbar">
+        <a class="logo" href="/dashboard.html"><span class="logo-dot"></span> Stroomloop</a>
+        <div class="nav-pills">
+            <a class="nav-pill" href="/dashboard.html">Dashboard</a>
+            <a class="nav-pill" href="/alerts.html">Alerts</a>
+            <a class="nav-pill" href="/trends.html">Trends</a>
+            <a class="nav-pill active" href="/info.html">Information</a>
+        </div>
+        <a class="login-btn" href="/login.html">Log in</a>
+    </nav>
+    <div class="page-content">
+        <div class="content">
+            <div class="glossary">
+                <span class="section-title">pH</span>
+                <ul>
+                    <li>Measures how acidic or alkaline the water is (scale 0–14).</li>
+                    <li>Below 7 is acidic, above 7 is alkaline.</li>
+                    <li>Recommended safe drinking water range: <b>6.5 – 8.5</b>.</li>
+                    <li>Water that is <b>too acidic (below 6.5)</b> can corrode pipes and release harmful metals like lead and copper.</li>
+                    <li>Water that is <b>too alkaline (above 8.5)</b> can cause scale build-up and reduce the effectiveness of chlorine disinfection.</li>
+                </ul>
             </div>
-
-            <div class="right-section">
-                <div class="top-section">
-                    <h1 class="dashboard-title">Water Monitoring Dashboard</h1>
-                    <div class="search-bar">
-                        <form action="/data" method="get">
-                            <input type="text" name="query" placeholder="Enter search" required>
-                            <button type="submit">🔍</button>
-                        </form>
-                    </div>
-                </div>
-
-                <div class="content">
-
-                    <div class="glossary">
-                        <span class="section-title">pH</span>
-                        <ul>
-                            <li>Measures how acidic or alkaline the water is (scale 0–14).</li>
-                            <li>Below 7 is acidic, above 7 is alkaline.</li>
-                            <li>Recommended safe drinking water range: <b>6.5 – 8.5</b>.</li>
-                            <li>Water that is <b>too acidic (below 6.5)</b> can corrode pipes and release harmful metals like lead and copper. This can be toxic and cause a sour taste or irritation.</li>
-                            <li>Water that is <b>too alkaline (above 8.5)</b> can cause scale build-up, affect taste, and reduce the effectiveness of chlorine disinfection.</li>
-                        </ul>
-                    </div>
-
-                    <div class="glossary">
-                        <span class="section-title">Conductivity</span>
-                        <ul>
-                            <li>Measures how well water conducts electricity.</li>
-                            <li>Caused by dissolved salts, minerals, and ions in the water.</li>
-                            <li>Measured in microsiemens per centimetre (µS/cm).</li>
-                            <li>Typical safe range: <b>200 – 800 µS/cm</b>.</li>
-                            <li><b>Low conductivity (&lt;200 µS/cm):</b> may indicate a lack of essential minerals and can make water more corrosive.</li>
-                            <li><b>High conductivity (&gt;800 µS/cm):</b> may indicate pollution (e.g. runoff, waste, or contamination) and can affect taste or safety.</li>
-                        </ul>
-                    </div>
-
-                </div>
+            <div class="glossary">
+                <span class="section-title">Conductivity</span>
+                <ul>
+                    <li>Measures how well water conducts electricity.</li>
+                    <li>Caused by dissolved salts, minerals, and ions in the water.</li>
+                    <li>Measured in microsiemens per centimetre (µS/cm).</li>
+                    <li>Typical safe range: <b>200 – 800 µS/cm</b>.</li>
+                    <li><b>Low conductivity (&lt;200 µS/cm):</b> may indicate a lack of essential minerals and can make water more corrosive.</li>
+                    <li><b>High conductivity (&gt;800 µS/cm):</b> may indicate pollution from runoff or contamination.</li>
+                </ul>
             </div>
         </div>
-    </main>
+    </div>
+</div>
 </body>
 </html>
