@@ -105,11 +105,6 @@ fun main() {
                 call.respondRedirect("/dashboard.html")
             }
 
-            // Enter guest dashboard
-            get("/guest") {
-                call.respondRedirect("/GuestDashboard.html")
-            }
-
             // Alerts route
             get("/alerts") {
                 val alertReadings = getAlertReadings(waterReadings)
