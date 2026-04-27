@@ -58,7 +58,8 @@ data class AlertBreakdownResponse(
     val ph: Int,
     val turbidity: Int,
     val conductivity: Int,
-    val total: Int
+    val total: Int,
+    val totalReadings: Int
 )
 
 @Serializable
@@ -97,21 +98,17 @@ fun main() {
 
         routing {
 
-            // Serve frontend files
             staticResources("/", "front-end")
 
-            // Login page first
             get("/") {
                 call.respondRedirect("/dashboard.html")
             }
 
-            // Alerts route
             get("/alerts") {
                 val alertReadings = getAlertReadings(waterReadings)
                 call.respond(AlertSummary("alerts", alertReadings.size))
             }
 
-            // Alert count for a specific site
             get("/alerts/{siteId}") {
                 val siteId = call.parameters["siteId"]
 
@@ -124,7 +121,6 @@ fun main() {
                 call.respond(AlertSummary("alerts", alertReadings.size))
             }
 
-            // Alert type breakdown for a specific site
             get("/alerts/{siteId}/breakdown") {
                 val siteId = call.parameters["siteId"]
 
@@ -140,12 +136,12 @@ fun main() {
                         ph = breakdown["ph"] ?: 0,
                         turbidity = breakdown["turbidity"] ?: 0,
                         conductivity = breakdown["conductivity"] ?: 0,
-                        total = (breakdown["ph"] ?: 0) + (breakdown["turbidity"] ?: 0) + (breakdown["conductivity"] ?: 0)
+                        total = (breakdown["ph"] ?: 0) + (breakdown["turbidity"] ?: 0) + (breakdown["conductivity"] ?: 0),
+                        totalReadings = getReadingsForSite(waterReadings, siteId).size
                     )
                 )
             }
 
-            // Dynamic site route
             get("/site/{siteId}") {
                 val siteId = call.parameters["siteId"]
 
@@ -158,7 +154,6 @@ fun main() {
                 call.respond(SiteSummary(siteId, siteReadings.size))
             }
 
-            // Dynamic status route
             get("/status/{status}") {
                 val status = call.parameters["status"]
 
@@ -171,7 +166,6 @@ fun main() {
                 call.respond(StatusSummary(status, statusReadings.size))
             }
 
-            // Summary of status counts
             get("/summary/status-counts") {
                 val statuses = listOf("normal", "warning", "critical")
 
@@ -185,7 +179,6 @@ fun main() {
                 call.respond(results)
             }
 
-            // Summary of site counts
             get("/summary/site-counts") {
                 val siteIds = waterReadings
                     .map { it.siteId.trim() }
@@ -202,7 +195,6 @@ fun main() {
                 call.respond(results)
             }
 
-            // Latest reading for a given site
             get("/latest/{siteId}") {
                 val siteId = call.parameters["siteId"]
 
@@ -232,7 +224,6 @@ fun main() {
                 }
             }
 
-            // Trend data for a given site
             get("/trends/{siteId}") {
                 val siteId = call.parameters["siteId"]
 
