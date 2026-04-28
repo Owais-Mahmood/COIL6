@@ -86,7 +86,7 @@
     /* ---------- status badges ---------- */
     .ip-badge {
         font-size: 0.68rem; font-weight: 600;
-        padding: 2px 8px; border-radius: 50px;
+        padding: 2px 4px; border-radius: 50px;
         white-space: nowrap; flex-shrink: 0;
     }
 
@@ -194,7 +194,6 @@
 
     .card-arrow { font-size: 0.75rem; color: #99aabb; }
 
-    /* shared big number + subtitle */
     .ao-big {
         font-size: 2rem; font-weight: 700; color: var(--text-dark);
         line-height: 1; margin-bottom: 4px;
@@ -277,7 +276,6 @@
     }
 
     .sc-rows { display: flex; flex-direction: column; gap: 14px; }
-
     .sc-row  { display: flex; align-items: center; gap: 10px; }
 
     .sc-label {
@@ -313,22 +311,50 @@
     .sc-badge.worst  { background: #fee2e2; color: #dc2626; }
     .sc-badge.hidden { visibility: hidden; }
 
-    /* ---------- sensor levels ---------- */
-    .slev-rows { display: flex; flex-direction: column; gap: 8px; }
-    .slev-row  { display: flex; align-items: center; gap: 10px; }
+    /* ---------- weather conditions ---------- */
+    .wx-rows { display: flex; flex-direction: column; gap: 16px; margin-top: 6px; }
+    .wx-row  { display: flex; align-items: center; gap: 12px; }
 
-    .slev-lbl  { font-size: 0.72rem; color: var(--text-light); width: 76px; flex-shrink: 0; }
+    .wx-icon  { font-size: 1.4rem; width: 28px; text-align: center; flex-shrink: 0; }
+    .wx-label { font-size: 0.72rem; color: var(--text-light); flex: 1; }
+    .wx-val   { font-size: 0.88rem; font-weight: 600; color: var(--text-dark); white-space: nowrap; }
 
-    .slev-track { flex: 1; height: 6px; background: var(--blue-faint); border-radius: 3px; overflow: hidden; }
+    /* ---------- verdict strip ---------- */
+    .verdict-strip {
+        display: flex; align-items: center; gap: 20px;
+        margin-top: 14px; border-radius: 14px; padding: 20px 24px;
+        transition: background 0.4s ease, border-color 0.4s ease;
+    }
 
-    .slev-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
-    .slev-fill.b { background: linear-gradient(90deg, #225382, #3b82f6); }
-    .slev-fill.w { background: linear-gradient(90deg, #e9820a, #fbbf24); }
-    .slev-fill.c { background: linear-gradient(90deg, #dc2626, #f87171); }
+    .verdict-strip.v-safe {
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+    }
 
-    .slev-val {
-        font-size: 0.72rem; font-weight: 600; color: var(--text-dark);
-        width: 56px; text-align: right; flex-shrink: 0; transition: color 0.3s;
+    .verdict-strip.v-warn {
+        background: rgba(245, 158, 11, 0.12);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .verdict-strip.v-crit {
+        background: rgba(239, 68, 68, 0.12);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .verdict-icon { font-size: 2rem; flex-shrink: 0; line-height: 1; }
+
+    .verdict-body { flex: 1; }
+
+    .verdict-title {
+        font-size: 1rem; font-weight: 700; color: var(--text-dark);
+        margin-bottom: 2px;
+    }
+
+    .verdict-sub { font-size: 0.75rem; color: var(--text-mid); }
+
+    .verdict-site {
+        font-size: 0.78rem; font-weight: 600;
+        color: var(--text-light); text-align: right; flex-shrink: 0;
     }
 
 </style>
@@ -582,46 +608,42 @@
                 </div>
             </div>
 
-            <!-- Card 4: Sensor Levels -->
+            <!-- Card 4: Weather Conditions -->
             <div class="card">
                 <div class="card-header">
-                    <span class="card-title">Sensor Levels</span>
+                    <span class="card-title">Weather</span>
                     <span class="card-arrow">↗</span>
                 </div>
-                <div class="slev-rows">
-                    <div class="slev-row">
-                        <span class="slev-lbl">pH</span>
-                        <div class="slev-track"><div class="slev-fill b" id="fill-ph" style="width:0%"></div></div>
-                        <span class="slev-val" id="slev-ph">—</span>
+                <p class="sc-sub">Ambient weather recorded at the selected monitoring site alongside the latest water quality reading.</p>
+                <div class="wx-rows">
+                    <div class="wx-row">
+                        <span class="wx-icon">🌡️</span>
+                        <span class="wx-label">Air Temperature</span>
+                        <span class="wx-val" id="wx-temp">—</span>
                     </div>
-                    <div class="slev-row">
-                        <span class="slev-lbl">Turbidity</span>
-                        <div class="slev-track"><div class="slev-fill b" id="fill-turb" style="width:0%"></div></div>
-                        <span class="slev-val" id="slev-turb">—</span>
+                    <div class="wx-row">
+                        <span class="wx-icon">🌫️</span>
+                        <span class="wx-label">Humidity</span>
+                        <span class="wx-val" id="wx-rh">—</span>
                     </div>
-                    <div class="slev-row">
-                        <span class="slev-lbl">Conductivity</span>
-                        <div class="slev-track"><div class="slev-fill b" id="fill-cond" style="width:0%"></div></div>
-                        <span class="slev-val" id="slev-cond">—</span>
-                    </div>
-                    <div class="slev-row">
-                        <span class="slev-lbl">Temp</span>
-                        <div class="slev-track"><div class="slev-fill b" id="fill-temp" style="width:0%"></div></div>
-                        <span class="slev-val" id="slev-temp">—</span>
-                    </div>
-                    <div class="slev-row">
-                        <span class="slev-lbl">Water Level</span>
-                        <div class="slev-track"><div class="slev-fill b" id="fill-level" style="width:0%"></div></div>
-                        <span class="slev-val" id="slev-level">—</span>
-                    </div>
-                    <div class="slev-row">
-                        <span class="slev-lbl">Light</span>
-                        <div class="slev-track"><div class="slev-fill b" id="fill-light" style="width:0%"></div></div>
-                        <span class="slev-val" id="slev-light">—</span>
+                    <div class="wx-row">
+                        <span class="wx-icon">☔</span>
+                        <span class="wx-label">Rainfall Rate</span>
+                        <span class="wx-val" id="wx-rain">—</span>
                     </div>
                 </div>
             </div>
 
+        </div>
+
+        <!-- Verdict strip -->
+        <div class="verdict-strip v-safe" id="verdict-strip">
+            <span class="verdict-icon" id="verdict-icon">✓</span>
+            <div class="verdict-body">
+                <div class="verdict-title" id="verdict-title">Water at this site is currently safe to use</div>
+                <div class="verdict-sub" id="verdict-sub">All monitored parameters are within acceptable limits</div>
+            </div>
+            <div class="verdict-site" id="verdict-site">Upstream</div>
         </div>
 
     </div>
@@ -631,35 +653,10 @@
 
     let currentSite = 'site_upstream';
 
-    // SANS 241:2015 thresholds
     function phStatus(ph) {
         if (ph < 6.0 || ph > 9.0) return 'c';
         if (ph < 6.5 || ph > 8.5) return 'w';
         return 'b';
-    }
-
-    function turbStatus(ntu) {
-        if (ntu > 10) return 'c';
-        if (ntu > 5)  return 'w';
-        return 'b';
-    }
-
-    function condStatus(uScm) {
-        if (uScm > 1500) return 'c';
-        if (uScm > 500)  return 'w';
-        return 'b';
-    }
-
-    function statusColor(s) {
-        if (s === 'c') return '#dc2626';
-        if (s === 'w') return '#d97706';
-        return '#1c3a55';
-    }
-
-    function updateBar(fillId, percent, status) {
-        const el = document.getElementById(fillId);
-        el.style.width = Math.min(100, Math.max(0, percent)) + '%';
-        el.className = 'slev-fill ' + status;
     }
 
     function getBadgeClass(status) {
@@ -679,9 +676,6 @@
     function formatLight(lux) {
         return lux >= 1000 ? (lux / 1000).toFixed(1) + 'k lux' : lux.toFixed(0) + ' lux';
     }
-
-    const turbMax = { site_upstream: 400, site_downstream: 800, site_reservoir: 300 };
-    const condMax = { site_upstream: 350, site_downstream: 600, site_reservoir: 450 };
 
     function selectSite(btn, siteId) {
         document.querySelectorAll('.site-toggle-row .site-btn').forEach(b => b.classList.remove('active'));
@@ -725,14 +719,14 @@
             const results = await Promise.all(
                 sites.map(s => Promise.all([
                     fetch('/alerts/' + s).then(r => r.json()),
-                    fetch('/alerts/' + s + '/breakdown').then(r => r.json())
+                    fetch('/site/' + s).then(r => r.json())
                 ]))
             );
 
-            const pcts = results.map(([alertData, breakdownData]) => {
-                const total  = breakdownData.totalReadings || 1;
+            const pcts = results.map(([alertData, siteData]) => {
+                const total  = siteData.count || 1;
                 const alerts = alertData.count;
-                return (total - alerts) / total * 100;
+                return Math.max(0, (total - alerts) / total * 100);
             });
 
             const maxPct = Math.max(...pcts);
@@ -781,7 +775,8 @@
             // live reading panels
             document.getElementById('val-ph').textContent    = d.ph.toFixed(2);
             document.getElementById('val-turb').textContent  = d.turbidityNtu.toFixed(1) + ' NTU';
-            document.getElementById('val-cond').textContent  = d.conductivityUsCm.toFixed(0) + ' µS/cm';
+            const cond = d.conductivityUsCm;
+            document.getElementById('val-cond').textContent  = cond >= 1000 ? (cond / 1000).toFixed(1) + 'k µS/cm' : cond.toFixed(0) + ' µS/cm';
             document.getElementById('val-temp').textContent  = d.waterTemperatureC.toFixed(1) + '°C';
             document.getElementById('val-level').textContent = d.waterLevelCm.toFixed(1) + ' cm';
             document.getElementById('val-light').textContent = formatLight(d.lightLux);
@@ -795,17 +790,15 @@
             });
 
             // alert overview
-            const totalReadings = breakdown.totalReadings || 1;
-            const pct = n => (n / totalReadings * 100).toFixed(1) + '%';
-
             document.getElementById('ao-total').textContent      = breakdown.total.toLocaleString();
-            document.getElementById('ao-count-ph').textContent   = pct(breakdown.ph);
-            document.getElementById('ao-count-turb').textContent = pct(breakdown.turbidity);
-            document.getElementById('ao-count-cond').textContent = pct(breakdown.conductivity);
+            document.getElementById('ao-count-ph').textContent   = breakdown.ph.toLocaleString();
+            document.getElementById('ao-count-turb').textContent = breakdown.turbidity.toLocaleString();
+            document.getElementById('ao-count-cond').textContent = breakdown.conductivity.toLocaleString();
 
-            document.getElementById('ao-bar-ph').style.width   = (breakdown.ph           / totalReadings * 100) + '%';
-            document.getElementById('ao-bar-turb').style.width = (breakdown.turbidity    / totalReadings * 100) + '%';
-            document.getElementById('ao-bar-cond').style.width = (breakdown.conductivity / totalReadings * 100) + '%';
+            const maxAlerts = Math.max(breakdown.ph, breakdown.turbidity, breakdown.conductivity, 1);
+            document.getElementById('ao-bar-ph').style.width   = (breakdown.ph           / maxAlerts * 100) + '%';
+            document.getElementById('ao-bar-turb').style.width = (breakdown.turbidity    / maxAlerts * 100) + '%';
+            document.getElementById('ao-bar-cond').style.width = (breakdown.conductivity / maxAlerts * 100) + '%';
 
             // pH trend
             const last12 = trendData.slice(-12);
@@ -825,23 +818,38 @@
                     phValues[phValues.length - 1].toFixed(2);
             }
 
-            // sensor level bars
-            updateBar('fill-ph',    (d.ph / 14) * 100,                                  phStatus(d.ph));
-            updateBar('fill-turb',  (d.turbidityNtu     / turbMax[currentSite]) * 100,  turbStatus(d.turbidityNtu));
-            updateBar('fill-cond',  (d.conductivityUsCm / condMax[currentSite]) * 100,  condStatus(d.conductivityUsCm));
-            updateBar('fill-temp',  (d.waterTemperatureC / 40) * 100,                   d.waterTemperatureC > 25 ? 'w' : 'b');
-            updateBar('fill-level', (d.waterLevelCm / 800) * 100,                       'b');
-            updateBar('fill-light', (d.lightLux / 25000) * 100,                         'b');
+            // weather conditions
+            document.getElementById('wx-temp').textContent = d.wxTempC.toFixed(1) + '°C';
+            document.getElementById('wx-rh').textContent   = d.wxRhPct.toFixed(0) + '%';
+            document.getElementById('wx-rain').textContent = d.wxRainMmHr.toFixed(2) + ' mm/hr';
 
-            document.getElementById('slev-ph').textContent    = d.ph.toFixed(2);
-            document.getElementById('slev-turb').textContent  = d.turbidityNtu.toFixed(1);
-            document.getElementById('slev-cond').textContent  = d.conductivityUsCm.toFixed(0);
-            document.getElementById('slev-temp').textContent  = d.waterTemperatureC.toFixed(1) + '°C';
-            document.getElementById('slev-level').textContent = d.waterLevelCm.toFixed(1) + ' cm';
-            document.getElementById('slev-light').textContent = formatLight(d.lightLux);
+            // verdict strip
+            const siteName = currentSite.replace('site_', '');
+            const siteLabel = siteName.charAt(0).toUpperCase() + siteName.slice(1);
 
-            document.getElementById('slev-turb').style.color = statusColor(turbStatus(d.turbidityNtu));
-            document.getElementById('slev-cond').style.color = statusColor(condStatus(d.conductivityUsCm));
+            document.getElementById('verdict-site').textContent = siteLabel;
+
+            const strip = document.getElementById('verdict-strip');
+            const title = document.getElementById('verdict-title');
+            const sub   = document.getElementById('verdict-sub');
+            const icon  = document.getElementById('verdict-icon');
+
+            if (d.status === 'normal') {
+                strip.className  = 'verdict-strip v-safe';
+                icon.textContent = '✓';
+                title.textContent = 'Water at this site is currently safe to use';
+                sub.textContent   = 'All monitored parameters are within acceptable limits';
+            } else if (d.status === 'warning') {
+                strip.className  = 'verdict-strip v-warn';
+                icon.textContent = '⚠';
+                title.textContent = 'Water at this site has moderate concerns, please use with caution';
+                sub.textContent   = 'One or more parameters are approaching unsafe levels';
+            } else {
+                strip.className  = 'verdict-strip v-crit';
+                icon.textContent = '✕';
+                title.textContent = 'Water at this site is currently unsafe, do not use';
+                sub.textContent   = 'One or more parameters have exceeded safe limits';
+            }
 
         } catch (e) {
             console.error('Error loading dashboard data', e);
