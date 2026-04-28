@@ -194,7 +194,7 @@
 
     .card-arrow { font-size: 0.75rem; color: #99aabb; }
 
-    /* alert overview */
+    /* shared big number + subtitle */
     .ao-big {
         font-size: 2rem; font-weight: 700; color: var(--text-dark);
         line-height: 1; margin-bottom: 4px;
@@ -202,6 +202,7 @@
 
     .ao-sub { font-size: 0.72rem; color: var(--text-mid); margin-bottom: 25px; }
 
+    /* alert overview bars */
     .ao-bars     { display: flex; flex-direction: column; gap: 6px; }
     .ao-bar-row  { display: flex; align-items: center; gap: 8px; }
 
@@ -269,8 +270,13 @@
         font-size: 0.58rem; color: var(--text-light); margin-top: 4px;
     }
 
-    /* ---------- site comparison card ---------- */
-    .sc-rows { display: flex; flex-direction: column; gap: 14px; margin-top: 4px; }
+    /* ---------- site comparison ---------- */
+    .sc-sub {
+        font-size: 0.72rem; color: var(--text-mid);
+        line-height: 1.6; margin-bottom: 16px;
+    }
+
+    .sc-rows { display: flex; flex-direction: column; gap: 14px; }
 
     .sc-row  { display: flex; align-items: center; gap: 10px; }
 
@@ -303,11 +309,11 @@
         white-space: nowrap; flex-shrink: 0;
     }
 
-    .sc-badge.best    { background: #dcfce7; color: #16a34a; }
-    .sc-badge.worst   { background: #fee2e2; color: #dc2626; }
-    .sc-badge.hidden  { visibility: hidden; }
+    .sc-badge.best   { background: #dcfce7; color: #16a34a; }
+    .sc-badge.worst  { background: #fee2e2; color: #dc2626; }
+    .sc-badge.hidden { visibility: hidden; }
 
-    /* sensor levels */
+    /* ---------- sensor levels ---------- */
     .slev-rows { display: flex; flex-direction: column; gap: 8px; }
     .slev-row  { display: flex; align-items: center; gap: 10px; }
 
@@ -467,7 +473,42 @@
 
         <div class="cards-row">
 
-            <!-- Card 1: Alert Overview -->
+            <!-- Card 1: Site Comparison -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Site Comparison</span>
+                    <span class="card-arrow">↗</span>
+                </div>
+                <p class="sc-sub">Proportion of all historical readings at each monitoring site that stayed within safe water quality limits, based on the full dataset.</p>
+                <div class="sc-rows">
+                    <div class="sc-row">
+                        <span class="sc-label">Upstream</span>
+                        <div class="sc-track">
+                            <div class="sc-fill" id="sc-fill-upstream" style="width:0%"></div>
+                        </div>
+                        <span class="sc-val" id="sc-val-upstream">—</span>
+                        <span class="sc-badge hidden" id="sc-badge-upstream">—</span>
+                    </div>
+                    <div class="sc-row">
+                        <span class="sc-label">Downstream</span>
+                        <div class="sc-track">
+                            <div class="sc-fill" id="sc-fill-downstream" style="width:0%"></div>
+                        </div>
+                        <span class="sc-val" id="sc-val-downstream">—</span>
+                        <span class="sc-badge hidden" id="sc-badge-downstream">—</span>
+                    </div>
+                    <div class="sc-row">
+                        <span class="sc-label">Reservoir</span>
+                        <div class="sc-track">
+                            <div class="sc-fill" id="sc-fill-reservoir" style="width:0%"></div>
+                        </div>
+                        <span class="sc-val" id="sc-val-reservoir">—</span>
+                        <span class="sc-badge hidden" id="sc-badge-reservoir">—</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Alert Overview -->
             <div class="card">
                 <div class="card-header">
                     <span class="card-title">Alert Overview</span>
@@ -500,14 +541,14 @@
                 </div>
             </div>
 
-            <!-- Card 2: pH Trend -->
+            <!-- Card 3: pH Trend -->
             <div class="card">
                 <div class="card-header">
                     <span class="card-title">pH Trend</span>
                     <span class="card-arrow">↗</span>
                 </div>
                 <div class="ao-big" id="ph-trend-val">—</div>
-                <div class="ao-sub">Latest reading · last 12 measurements shown</div>
+                <div class="ao-sub">Latest reading · Last 12 measurements shown</div>
                 <div class="ph-chart-outer">
                     <div class="ph-yaxis">
                         <span class="ph-unit-lbl">pH</span>
@@ -535,41 +576,6 @@
                             <span>older</span>
                             <span>now</span>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 3: Site Comparison -->
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title">Site Comparison</span>
-                    <span class="card-arrow">↗</span>
-                </div>
-                <div class="ao-sub" style="margin-bottom:12px">% of readings with no alert — all time</div>
-                <div class="sc-rows">
-                    <div class="sc-row">
-                        <span class="sc-label">Upstream</span>
-                        <div class="sc-track">
-                            <div class="sc-fill" id="sc-fill-upstream" style="width:0%"></div>
-                        </div>
-                        <span class="sc-val" id="sc-val-upstream">—</span>
-                        <span class="sc-badge hidden" id="sc-badge-upstream">—</span>
-                    </div>
-                    <div class="sc-row">
-                        <span class="sc-label">Downstream</span>
-                        <div class="sc-track">
-                            <div class="sc-fill" id="sc-fill-downstream" style="width:0%"></div>
-                        </div>
-                        <span class="sc-val" id="sc-val-downstream">—</span>
-                        <span class="sc-badge hidden" id="sc-badge-downstream">—</span>
-                    </div>
-                    <div class="sc-row">
-                        <span class="sc-label">Reservoir</span>
-                        <div class="sc-track">
-                            <div class="sc-fill" id="sc-fill-reservoir" style="width:0%"></div>
-                        </div>
-                        <span class="sc-val" id="sc-val-reservoir">—</span>
-                        <span class="sc-badge hidden" id="sc-badge-reservoir">—</span>
                     </div>
                 </div>
             </div>
@@ -735,8 +741,8 @@
                 const val   = document.getElementById('sc-val-'   + keys[i]);
                 const badge = document.getElementById('sc-badge-' + keys[i]);
 
-                fill.style.width  = pct.toFixed(1) + '%';
-                val.textContent   = pct.toFixed(0) + '%';
+                fill.style.width = pct.toFixed(1) + '%';
+                val.textContent  = pct.toFixed(0) + '%';
 
                 if (pct >= 70)      fill.className = 'sc-fill healthy';
                 else if (pct >= 40) fill.className = 'sc-fill moderate';
