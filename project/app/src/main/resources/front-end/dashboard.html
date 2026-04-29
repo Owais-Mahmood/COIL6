@@ -71,18 +71,11 @@
     .nav-pill:hover  { background: rgba(255,255,255,0.6); }
     .nav-pill.active { background: white; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
 
-
     .nav-clock {
-        padding: 7px 18px;
-        border-radius: 50px;
-        font-size: 0.875rem;
-        font-weight: 600;
-        color: var(--blue);
-        background: rgba(255,255,255,0.65);
-        border: 1px solid rgba(255,255,255,0.85);
-        backdrop-filter: blur(8px);
-        white-space: nowrap;
-        user-select: none;
+        padding: 7px 18px; border-radius: 50px;
+        font-size: 0.875rem; font-weight: 600; color: var(--blue);
+        background: rgba(255,255,255,0.65); border: 1px solid rgba(255,255,255,0.85);
+        backdrop-filter: blur(8px); white-space: nowrap; user-select: none;
     }
 
     .login-btn {
@@ -213,7 +206,13 @@
         line-height: 1; margin-bottom: 4px;
     }
 
-    .ao-sub { font-size: 0.72rem; color: var(--text-mid); margin-bottom: 25px; }
+    .ao-sub {
+        font-size: 0.72rem;
+        color: var(--text-mid);
+        line-height: 1.6;
+        margin-top: 10px;
+        margin-bottom: 16px;
+    }
 
     /* alert overview bars */
     .ao-bars     { display: flex; flex-direction: column; gap: 6px; }
@@ -234,53 +233,6 @@
     .ao-bar-count {
         font-size: 0.7rem; font-weight: 600; color: var(--text-dark);
         width: 44px; text-align: right;
-    }
-
-    /* pH trend chart */
-    .fc-bar {
-        flex: 1;
-        border-radius: 3px 3px 0 0;
-        background: rgba(34, 83, 130, 0.15);
-        transition: height 0.4s ease;
-        position: relative;
-        z-index: 2;
-    }
-
-    .fc-bar.ph-normal { background: var(--blue); }
-    .fc-bar.ph-warn   { background: #e9820a; }
-    .fc-bar.ph-crit   { background: #dc2626; }
-
-    .ph-chart-outer { display: flex; gap: 6px; margin-top: 2px; }
-
-    .ph-yaxis { position: relative; height: 60px; width: 22px; flex-shrink: 0; }
-
-    .ph-yaxis-lbl {
-        position: absolute; right: 0;
-        font-size: 0.58rem; color: #e9820a;
-        line-height: 1; transform: translateY(50%);
-    }
-
-    .ph-unit-lbl {
-        position: absolute; right: 0; top: -14px;
-        font-size: 0.58rem; color: var(--text-light); line-height: 1;
-    }
-
-    .ph-chart-right { flex: 1; display: flex; flex-direction: column; }
-
-    .fake-chart {
-        display: flex; align-items: flex-end; gap: 4px;
-        height: 60px; position: relative;
-    }
-
-    .ph-ref-line {
-        position: absolute; left: 0; right: 0; height: 0;
-        border-top: 1px dashed rgba(233, 130, 10, 0.4);
-        pointer-events: none; z-index: 1;
-    }
-
-    .ph-xlabel {
-        display: flex; justify-content: space-between;
-        font-size: 0.58rem; color: var(--text-light); margin-top: 4px;
     }
 
     /* ---------- site comparison ---------- */
@@ -324,6 +276,14 @@
     .sc-badge.best   { background: #dcfce7; color: #16a34a; }
     .sc-badge.worst  { background: #fee2e2; color: #dc2626; }
     .sc-badge.hidden { visibility: hidden; }
+
+    /* ---------- status breakdown ---------- */
+    .sb-donut-wrap { display: flex; justify-content: center; margin: 4px 0 14px; margin-top:10px; }
+    .sb-legend     { display: flex; flex-direction: column; gap: 8px; }
+    .sb-row        { display: flex; align-items: center; gap: 8px; }
+    .sb-dot        { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .sb-label      { font-size: 0.72rem; color: var(--text-light); flex: 1; }
+    .sb-val        { font-size: 0.72rem; font-weight: 600; color: var(--text-dark); }
 
     /* ---------- weather conditions ---------- */
     .wx-rows { display: flex; flex-direction: column; gap: 16px; margin-top: 6px; }
@@ -397,11 +357,20 @@
             <div class="hero-left">
                 <div class="hero-heading">Know your water. Protect your health.</div>
                 <p class="hero-sub">
-                    An online interface innovating water monitoring for<br>
-                    South African communities. Smart sensors and<br>
-                    intuitive dashboards turning live readings into safer,<br>
-                    healthier everyday choices.
+                    Stroomloop is an online platform designed to support<br>
+                    water monitoring in South African communities. By<br>
+                    combining smart sensors with intuitive dashboards, it<br>
+                    transforms live readings into clear, actionable insights for<br>
+                    healthier everyday decisions.
+                    <br>
+                    <br>
+                    By making water quality data easy to understand<br>
+                    and access, the platform helps communitites stay informed<br>
+                    and respond quickly to potential risks. This supports<br>
+                    safer water use, improves awareness and contributes<br>
+                    to better long-term health outcomes
                 </p>
+                <br>
                 <div class="status-pills-row">
                     <div class="spill-line">
                         <span class="spill green" id="pill-healthy">— Healthy</span>
@@ -467,19 +436,16 @@
                 <div class="info-panel">
                     <div class="ip-title">Latest Reading</div>
                     <div class="ip-rows">
-
                         <div class="ip-row">
                             <span class="ip-icon">🕒</span>
                             <span class="ip-label">Timestamp</span>
                             <span class="ip-val" id="val-timestamp">—</span>
                         </div>
-
                         <div class="ip-row">
                             <span class="ip-icon">📅</span>
                             <span class="ip-label">Date</span>
                             <span class="ip-val" id="val-date">—</span>
                         </div>
-
                     </div>
                 </div>
                 <div class="info-panel">
@@ -521,7 +487,7 @@
                             <span class="ip-badge badge-ok" id="badge-level">—</span>
                         </div>
                         <div class="ip-row">
-                            <span class="ip-icon">☀</span>
+                            <span class="ip-icon">🌤️</span>
                             <span class="ip-label">Light</span>
                             <span class="ip-val" id="val-light">—</span>
                             <span class="ip-badge badge-ok" id="badge-light">—</span>
@@ -540,7 +506,7 @@
                     <span class="card-title">Site Comparison</span>
                     <span class="card-arrow">↗</span>
                 </div>
-                <p class="sc-sub">Proportion of all historical readings at each monitoring site that stayed within safe water quality limits, based on the full dataset.</p>
+                <p class="sc-sub">The percentage of historical readings at each monitoring site that remained within safe water quality limits across the full dataset.</p>
                 <div class="sc-rows">
                     <div class="sc-row">
                         <span class="sc-label">Upstream</span>
@@ -576,7 +542,7 @@
                     <span class="card-arrow">↗</span>
                 </div>
                 <div class="ao-big" id="ao-total">—</div>
-                <div class="ao-sub">Readings that triggered an alert</div>
+                <div class="ao-sub">The number of readings that exceeded safe limits and triggered alerts</div>
                 <div class="ao-bars">
                     <div class="ao-bar-row">
                         <span class="ao-bar-label">pH</span>
@@ -602,46 +568,46 @@
                 </div>
             </div>
 
-            <!-- Card 3: pH Trend -->
+            <!-- Card 3: Status Breakdown -->
             <div class="card">
                 <div class="card-header">
-                    <span class="card-title">pH Trend</span>
+                    <span class="card-title">Status Breakdown</span>
                     <span class="card-arrow">↗</span>
                 </div>
-                <div class="ao-big" id="ph-trend-val">—</div>
-                <div class="ao-sub">Latest reading · Last 12 measurements shown</div>
-                <div class="ph-chart-outer">
-                    <div class="ph-yaxis">
-                        <span class="ph-unit-lbl">pH</span>
-                        <span class="ph-yaxis-lbl" style="bottom:70%">8.5</span>
-                        <span class="ph-yaxis-lbl" style="bottom:30%">6.5</span>
+                <div class="ao-sub" style="margin-bottom:0">Across all monitoring sites based on the full dataset</div>
+                <div class="sb-donut-wrap">
+                    <svg width="90" height="90" viewBox="0 0 90 90">
+                        <circle cx="45" cy="45" r="36" fill="none" stroke="rgba(34,83,130,0.08)" stroke-width="12"/>
+                        <circle cx="45" cy="45" r="36" fill="none" stroke="#22c55e" stroke-width="12"
+                                id="sb-arc-normal" stroke-dasharray="0 226.2" transform="rotate(-90 45 45)"/>
+                        <circle cx="45" cy="45" r="36" fill="none" stroke="#f59e0b" stroke-width="12"
+                                id="sb-arc-warning" stroke-dasharray="0 226.2" transform="rotate(-90 45 45)"/>
+                        <circle cx="45" cy="45" r="36" fill="none" stroke="#ef4444" stroke-width="12"
+                                id="sb-arc-critical" stroke-dasharray="0 226.2" transform="rotate(-90 45 45)"/>
+                        <text x="45" y="49" text-anchor="middle" font-size="12" font-weight="700"
+                              fill="#1c3a55" font-family="Inter,sans-serif" id="sb-center-pct">—</text>
+                    </svg>
+                </div>
+                <div class="sb-legend">
+                    <div class="sb-row">
+                        <span class="sb-dot" style="background:#22c55e"></span>
+                        <span class="sb-label">Healthy</span>
+                        <span class="sb-val" id="sb-pct-normal">—</span>
                     </div>
-                    <div class="ph-chart-right">
-                        <div class="fake-chart">
-                            <div class="ph-ref-line" style="bottom:70%"></div>
-                            <div class="ph-ref-line" style="bottom:30%"></div>
-                            <div class="fc-bar" style="height:50%"></div>
-                            <div class="fc-bar" style="height:50%"></div>
-                            <div class="fc-bar" style="height:50%"></div>
-                            <div class="fc-bar" style="height:50%"></div>
-                            <div class="fc-bar" style="height:50%"></div>
-                            <div class="fc-bar" style="height:50%"></div>
-                            <div class="fc-bar" style="height:50%"></div>
-                            <div class="fc-bar" style="height:50%"></div>
-                            <div class="fc-bar" style="height:50%"></div>
-                            <div class="fc-bar" style="height:50%"></div>
-                            <div class="fc-bar" style="height:50%"></div>
-                            <div class="fc-bar" style="height:50%"></div>
-                        </div>
-                        <div class="ph-xlabel">
-                            <span>older</span>
-                            <span>now</span>
-                        </div>
+                    <div class="sb-row">
+                        <span class="sb-dot" style="background:#f59e0b"></span>
+                        <span class="sb-label">Moderate</span>
+                        <span class="sb-val" id="sb-pct-warning">—</span>
+                    </div>
+                    <div class="sb-row">
+                        <span class="sb-dot" style="background:#ef4444"></span>
+                        <span class="sb-label">Critical</span>
+                        <span class="sb-val" id="sb-pct-critical">—</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Card 4: Weather Conditions -->
+            <!-- Card 4: Weather -->
             <div class="card">
                 <div class="card-header">
                     <span class="card-title">Weather</span>
@@ -655,7 +621,7 @@
                         <span class="wx-val" id="wx-temp">—</span>
                     </div>
                     <div class="wx-row">
-                        <span class="wx-icon">🌫️</span>
+                        <span class="wx-icon">💨</span>
                         <span class="wx-label">Humidity</span>
                         <span class="wx-val" id="wx-rh">—</span>
                     </div>
@@ -686,12 +652,6 @@
 
     let currentSite = 'site_upstream';
 
-    function phStatus(ph) {
-        if (ph < 6.0 || ph > 9.0) return 'c';
-        if (ph < 6.5 || ph > 8.5) return 'w';
-        return 'b';
-    }
-
     function getBadgeClass(status) {
         if (status === 'normal')   return 'badge-ok';
         if (status === 'warning')  return 'badge-warn';
@@ -710,24 +670,19 @@
         return lux >= 1000 ? (lux / 1000).toFixed(1) + 'k lux' : lux.toFixed(0) + ' lux';
     }
 
-function updateClock() {
-    const now = new Date();
+    function updateClock() {
+        const now  = new Date();
+        const past = new Date(now);
+        past.setFullYear(past.getFullYear() - 3);
 
-    const past = new Date(now);
-    past.setFullYear(past.getFullYear() - 3);
+        const hh   = String(past.getHours()).padStart(2, '0');
+        const mm   = String(past.getMinutes()).padStart(2, '0');
+        const dd   = String(past.getDate()).padStart(2, '0');
+        const mo   = String(past.getMonth() + 1).padStart(2, '0');
+        const yyyy = past.getFullYear();
 
-    const hours = String(past.getHours()).padStart(2, '0');
-    const mins  = String(past.getMinutes()).padStart(2, '0');
-
-    const day   = String(past.getDate()).padStart(2, '0');
-    const month = String(past.getMonth() + 1).padStart(2, '0');
-    const year  = past.getFullYear();
-
-    document.getElementById('clock').textContent =
-        `${hours}:${mins} · ${day}/${month}/${year}`;
-}
-
-
+        document.getElementById('clock').textContent = `${hh}:${mm} · ${dd}/${mo}/${yyyy}`;
+    }
 
     function selectSite(btn, siteId) {
         document.querySelectorAll('.site-toggle-row .site-btn').forEach(b => b.classList.remove('active'));
@@ -771,7 +726,7 @@ function updateClock() {
             const results = await Promise.all(
                 sites.map(s => Promise.all([
                     fetch('/alerts/' + s).then(r => r.json()),
-                    fetch('/site/' + s).then(r => r.json())
+                    fetch('/site/'   + s).then(r => r.json())
                 ]))
             );
 
@@ -789,8 +744,8 @@ function updateClock() {
                 const val   = document.getElementById('sc-val-'   + keys[i]);
                 const badge = document.getElementById('sc-badge-' + keys[i]);
 
-                fill.style.width = pct.toFixed(1) + '%';
-                val.textContent  = pct.toFixed(0) + '%';
+                fill.style.width    = pct.toFixed(1) + '%';
+                val.textContent     = pct.toFixed(0) + '%';
 
                 if (pct >= 70)      fill.className = 'sc-fill healthy';
                 else if (pct >= 40) fill.className = 'sc-fill moderate';
@@ -812,17 +767,56 @@ function updateClock() {
         }
     }
 
+    async function loadStatusBreakdown() {
+        try {
+            const data = await fetch('/summary/status-counts').then(r => r.json());
+
+            const counts = { normal: 0, warning: 0, critical: 0 };
+            data.forEach(d => { if (counts[d.status] !== undefined) counts[d.status] = d.count; });
+
+            const total = (counts.normal + counts.warning + counts.critical) || 1;
+            const C     = 226.2;
+
+            const normalPct   = counts.normal   / total * 100;
+            const warningPct  = counts.warning  / total * 100;
+            const criticalPct = counts.critical / total * 100;
+
+            const normalArc = normalPct   / 100 * C;
+            const warnArc   = warningPct  / 100 * C;
+            const critArc   = criticalPct / 100 * C;
+
+            const arcNormal   = document.getElementById('sb-arc-normal');
+            const arcWarning  = document.getElementById('sb-arc-warning');
+            const arcCritical = document.getElementById('sb-arc-critical');
+
+            arcNormal.setAttribute('stroke-dasharray',  `${normalArc.toFixed(1)} ${(C - normalArc).toFixed(1)}`);
+            arcNormal.setAttribute('stroke-dashoffset', '0');
+
+            arcWarning.setAttribute('stroke-dasharray',  `${warnArc.toFixed(1)} ${(C - warnArc).toFixed(1)}`);
+            arcWarning.setAttribute('stroke-dashoffset', `${-normalArc.toFixed(1)}`);
+
+            arcCritical.setAttribute('stroke-dasharray',  `${critArc.toFixed(1)} ${(C - critArc).toFixed(1)}`);
+            arcCritical.setAttribute('stroke-dashoffset', `${-(normalArc + warnArc).toFixed(1)}`);
+
+            document.getElementById('sb-center-pct').textContent  = normalPct.toFixed(0)   + '%';
+            document.getElementById('sb-pct-normal').textContent   = normalPct.toFixed(1)   + '%';
+            document.getElementById('sb-pct-warning').textContent  = warningPct.toFixed(1)  + '%';
+            document.getElementById('sb-pct-critical').textContent = criticalPct.toFixed(1) + '%';
+
+        } catch (e) {
+            console.error('Could not load status breakdown', e);
+        }
+    }
+
     async function loadData() {
         try {
-            const [latestRes, breakdownRes, trendRes] = await Promise.all([
+            const [latestRes, breakdownRes] = await Promise.all([
                 fetch('/latest/' + currentSite),
-                fetch('/alerts/' + currentSite + '/breakdown'),
-                fetch('/trends/' + currentSite)
+                fetch('/alerts/' + currentSite + '/breakdown')
             ]);
 
             const d         = await latestRes.json();
             const breakdown = await breakdownRes.json();
-            const trendData = await trendRes.json();
 
             // live reading panels
             document.getElementById('val-ph').textContent    = d.ph.toFixed(2);
@@ -852,31 +846,13 @@ function updateClock() {
             document.getElementById('ao-bar-turb').style.width = (breakdown.turbidity    / maxAlerts * 100) + '%';
             document.getElementById('ao-bar-cond').style.width = (breakdown.conductivity / maxAlerts * 100) + '%';
 
-            // pH trend
-            const last12 = trendData.slice(-12);
-            if (last12.length > 0) {
-                const phValues = last12.map(p => p.ph);
-
-                document.querySelectorAll('.fake-chart .fc-bar').forEach((bar, i) => {
-                    if (i < phValues.length) {
-                        const heightPct = ((phValues[i] - 6.0) / (9.5 - 6.0)) * 70 + 20;
-                        bar.style.height = Math.min(100, Math.max(10, heightPct)) + '%';
-                        const st = phStatus(phValues[i]);
-                        bar.className = 'fc-bar ' + (st === 'c' ? 'ph-crit' : st === 'w' ? 'ph-warn' : 'ph-normal');
-                    }
-                });
-
-                document.getElementById('ph-trend-val').textContent =
-                    phValues[phValues.length - 1].toFixed(2);
-            }
-
-            // weather conditions
+            // weather
             document.getElementById('wx-temp').textContent = d.wxTempC.toFixed(1) + '°C';
             document.getElementById('wx-rh').textContent   = d.wxRhPct.toFixed(0) + '%';
             document.getElementById('wx-rain').textContent = d.wxRainMmHr.toFixed(2) + ' mm/hr';
 
             // verdict strip
-            const siteName = currentSite.replace('site_', '');
+            const siteName  = currentSite.replace('site_', '');
             const siteLabel = siteName.charAt(0).toUpperCase() + siteName.slice(1);
 
             document.getElementById('verdict-site').textContent = siteLabel;
@@ -887,18 +863,18 @@ function updateClock() {
             const icon  = document.getElementById('verdict-icon');
 
             if (d.status === 'normal') {
-                strip.className  = 'verdict-strip v-safe';
-                icon.textContent = '✓';
+                strip.className   = 'verdict-strip v-safe';
+                icon.textContent  = '✓';
                 title.textContent = 'Water at this site is currently safe to use';
                 sub.textContent   = 'All monitored parameters are within acceptable limits';
             } else if (d.status === 'warning') {
-                strip.className  = 'verdict-strip v-warn';
-                icon.textContent = '⚠';
+                strip.className   = 'verdict-strip v-warn';
+                icon.textContent  = '⚠';
                 title.textContent = 'Water at this site has moderate concerns, please use with caution';
                 sub.textContent   = 'One or more parameters are approaching unsafe levels';
             } else {
-                strip.className  = 'verdict-strip v-crit';
-                icon.textContent = '✕';
+                strip.className   = 'verdict-strip v-crit';
+                icon.textContent  = '✕';
                 title.textContent = 'Water at this site is currently unsafe, do not use';
                 sub.textContent   = 'One or more parameters have exceeded safe limits';
             }
@@ -908,16 +884,17 @@ function updateClock() {
         }
     }
 
-    
     updateClock();
     loadSiteStatuses();
     loadData();
     loadSiteComparison();
+    loadStatusBreakdown();
 
-    setInterval(loadData,           15000);
-    setInterval(loadSiteStatuses,   15000);
-    setInterval(loadSiteComparison, 60000);
-    setInterval(updateClock,         1000);
+    setInterval(loadData,            15000);
+    setInterval(loadSiteStatuses,    15000);
+    setInterval(loadSiteComparison,  60000);
+    setInterval(loadStatusBreakdown, 60000);
+    setInterval(updateClock,          1000);
 
 </script>
 </body>

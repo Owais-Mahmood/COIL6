@@ -4,26 +4,27 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stroomloop · Trends</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-
 <style>
+
     :root {
         --blue: #225382;
         --blue-dark: #1a3f63;
+        --blue-faint: rgba(34, 83, 130, 0.1);
         --text-dark: #1c3a55;
         --text-mid: #3a5a7a;
         --text-light: #5a7a9a;
     }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
         font-family: 'Inter', sans-serif;
         background: linear-gradient(180deg, #81C3DB 0%, #F2FCFF 100%);
         min-height: 100vh;
         display: flex;
+        align-items: flex-start;
         justify-content: center;
         padding: 24px 16px;
     }
@@ -33,117 +34,150 @@
         max-width: 1200px;
         border-radius: 24px;
         overflow: hidden;
-        box-shadow: 0 24px 64px rgba(34,83,130,0.2);
+        box-shadow: 0 24px 64px rgba(34, 83, 130, 0.2);
         background: linear-gradient(to bottom,
             #c8eaf3 0%, #d8f0f7 18%, #e4f6fa 36%,
             #edfafc 58%, #f3fdfe 78%, #F2FCFF 100%);
     }
 
-    /* NAVBAR — same as Dashboard */
-    .navbar {
-        display: flex;
-        align-items: center;
-        padding: 14px 24px;
-        gap: 16px;
-    }
+    /* ---------- navbar ---------- */
+    .navbar { display: flex; align-items: center; padding: 14px 24px; gap: 16px; }
 
     .logo {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 1rem;
-        font-weight: 700;
-        color: var(--blue);
-        text-decoration: none;
-        white-space: nowrap;
-    }
-
-    .logo-dot {
-        width: 10px;
-        height: 10px;
-        background: var(--blue);
-        border-radius: 50%;
+        display: flex; align-items: center; gap: 8px;
+        font-size: 1rem; font-weight: 700; color: var(--blue);
+        text-decoration: none; white-space: nowrap;
     }
 
     .nav-pills {
-        display: flex;
-        gap: 2px;
+        display: flex; gap: 2px;
         background: rgba(255,255,255,0.55);
         border: 1px solid rgba(255,255,255,0.8);
-        border-radius: 50px;
-        padding: 5px;
-        margin: 0 auto;
+        border-radius: 50px; padding: 5px; margin: 0 auto;
         backdrop-filter: blur(8px);
     }
 
     .nav-pill {
-        padding: 7px 20px;
-        border-radius: 50px;
-        font-size: 0.875rem;
-        font-weight: 500;
-        color: var(--blue);
-        text-decoration: none;
-        transition: 0.2s;
+        padding: 7px 20px; border-radius: 50px;
+        font-size: 0.875rem; font-weight: 500; color: var(--blue);
+        text-decoration: none; display: inline-block;
+        transition: all 0.2s; user-select: none;
     }
 
-    .nav-pill:hover { background: rgba(255,255,255,0.6); }
-    .nav-pill.active {
-        background: white;
-        font-weight: 600;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
+    .nav-pill:hover  { background: rgba(255,255,255,0.6); }
+    .nav-pill.active { background: white; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
 
     .login-btn {
-        padding: 7px 18px;
-        border-radius: 50px;
-        font-size: 0.875rem;
-        font-weight: 600;
-        color: white;
-        background: var(--blue);
-        text-decoration: none;
+        padding: 7px 18px; border-radius: 50px;
+        font-size: 0.875rem; font-weight: 600; color: white;
+        background: var(--blue); border: none; cursor: pointer;
+        text-decoration: none; display: inline-block; white-space: nowrap;
     }
+
     .login-btn:hover { background: var(--blue-dark); }
 
-    /* PAGE CONTENT */
-    .page-content {
-        padding: 24px 24px 32px;
+    /* ---------- page ---------- */
+    .page { padding: 0 24px 32px; }
+
+    /* ---------- description ---------- */
+    .trends-desc {
+        padding: 20px 0 0;
+        max-width: 760px;
     }
 
-    /* TREND CARD — matches Dashboard card style */
-    .trends-content {
-        display: grid;
-        gap: 16px;
-        max-width: 900px;
+    .trends-desc p {
+        font-size: 0.84rem;
+        color: var(--text-mid);
+        line-height: 1.65;
     }
 
-    .trend-card {
-        background: rgba(255,255,255,0.65);
-        border-radius: 14px;
-        padding: 16px 18px;
-        backdrop-filter: blur(8px);
-        border: 1px solid rgba(255,255,255,0.8);
-        box-shadow: 0 4px 18px rgba(34,83,130,0.07);
+    /* ---------- site buttons ---------- */
+    .site-btn {
+        padding: 6px 16px; border-radius: 50px;
+        font-size: 0.8rem; font-weight: 500; border: none; cursor: pointer;
+        background: rgba(255,255,255,0.55); color: var(--blue);
+        font-family: 'Inter', sans-serif;
     }
 
-    .trend-card h3 {
-        font-size: 0.95rem;
-        font-weight: 700;
-        color: var(--blue);
-        margin-bottom: 14px;
+    .site-btn.active { background: var(--blue); color: white; }
+
+    /* ---------- metric pills ---------- */
+    .metric-pill {
+        padding: 6px 14px; border-radius: 50px;
+        font-size: 0.78rem; font-weight: 500;
+        border: 1px solid rgba(34,83,130,0.2);
+        background: transparent; color: var(--blue);
+        cursor: pointer; font-family: 'Inter', sans-serif;
+        transition: all 0.2s;
     }
 
-    #chart-area {
-        min-height: 380px;
+    .metric-pill.active { background: var(--blue); color: white; border-color: var(--blue); }
+
+    /* ---------- toggle row ---------- */
+    .toggle-row {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 14px 0; gap: 12px; flex-wrap: wrap;
     }
 
-    .chart-info {
-        color: var(--text-light);
-        font-size: 0.85rem;
-        margin-top: 10px;
+    .site-group   { display: flex; gap: 8px; }
+    .metric-group { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    /* ---------- main grid ---------- */
+    .trends-main-grid {
+        display: grid; grid-template-columns: 1fr 180px;
+        gap: 16px; align-items: start;
     }
+
+    /* ---------- card ---------- */
+    .card {
+        background: rgba(255,255,255,0.65); border-radius: 14px;
+        padding: 14px 16px; backdrop-filter: blur(8px);
+    }
+
+    .card-header {
+        display: flex; align-items: center;
+        justify-content: space-between; margin-bottom: 4px;
+    }
+
+    .card-title {
+        font-size: 0.78rem; font-weight: 700; color: var(--blue);
+        text-transform: uppercase; letter-spacing: 0.04em;
+    }
+
+    .card-sub { font-size: 0.67rem; color: var(--text-light); }
+
+    /* ---------- stat boxes ---------- */
+    .stat-boxes { display: flex; flex-direction: column; gap: 8px; }
+
+    .stat-box {
+        background: rgba(255,255,255,0.65); border-radius: 12px;
+        padding: 10px 12px; backdrop-filter: blur(8px);
+    }
+
+    .stat-label {
+        font-size: 0.6rem; font-weight: 700; color: var(--text-light);
+        text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 2px;
+    }
+
+    .stat-val {
+        font-size: 1.1rem; font-weight: 800; color: var(--text-dark); line-height: 1.2;
+    }
+
+    .stat-unit { font-size: 0.65rem; color: var(--text-light); font-weight: 500; }
+
+    .stat-sub { font-size: 0.6rem; color: var(--text-light); margin-top: 2px; }
+
+    .stat-badge {
+        display: inline-block; font-size: 0.6rem; font-weight: 700;
+        padding: 2px 8px; border-radius: 10px; margin-top: 3px;
+    }
+
+    .badge-ok   { background: #dcfce7; color: #16a34a; }
+    .badge-warn { background: #fef3c7; color: #d97706; }
+    .badge-crit { background: #fee2e2; color: #dc2626; }
+
 </style>
 </head>
-
 <body>
 <div class="app">
 
@@ -151,118 +185,261 @@
         <div class="logo">
             <img src="images/stroomloop.png" width="200">
         </div>
-
         <div class="nav-pills">
             <a class="nav-pill" href="/dashboard.html">Dashboard</a>
             <a class="nav-pill" href="/alerts.html">Alerts</a>
             <a class="nav-pill active" href="/trends.html">Trends</a>
             <a class="nav-pill" href="/info.html">Information</a>
         </div>
-
         <a class="login-btn" href="/login.html">Log in</a>
     </nav>
 
-    <div class="page-content">
-        <div class="trends-content">
+    <div class="page">
 
-            <div class="trend-card">
-                <h3>pH Trend</h3>
+        <div class="trends-desc">
+            <p>Track how water quality parameters change over time across your Eastern Cape monitoring sites. Select a site and metric to explore recent readings and identify emerging patterns before they become problems.</p>
+        </div>
+
+        <div class="toggle-row">
+            <div class="site-group">
+                <button class="site-btn active" onclick="selectSite(this, 'site_upstream')">Upstream</button>
+                <button class="site-btn" onclick="selectSite(this, 'site_downstream')">Downstream</button>
+                <button class="site-btn" onclick="selectSite(this, 'site_reservoir')">Reservoir</button>
+            </div>
+            <div class="metric-group">
+                <button class="metric-pill active" onclick="selectMetric(this, 'ph')">pH</button>
+                <button class="metric-pill" onclick="selectMetric(this, 'turbidity')">Turbidity</button>
+                <button class="metric-pill" onclick="selectMetric(this, 'conductivity')">Conductivity</button>
+                <button class="metric-pill" onclick="selectMetric(this, 'waterTemp')">Water Temp</button>
+                <button class="metric-pill" onclick="selectMetric(this, 'waterLevel')">Water Level</button>
+                <button class="metric-pill" onclick="selectMetric(this, 'light')">Light</button>
+            </div>
+        </div>
+
+        <div class="trends-main-grid">
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title" id="chart-title">pH Over Time — Upstream</span>
+                    <span class="card-sub" id="chart-sub">Last 200 readings</span>
+                </div>
                 <div id="chart-area"></div>
-                <p class="chart-info" id="chart-status">Loading chart data...</p>
+            </div>
+
+            <div class="stat-boxes">
+                <div class="stat-box">
+                    <div class="stat-label">Latest</div>
+                    <div class="stat-val"><span id="stat-latest">—</span> <span class="stat-unit" id="stat-unit-0">pH</span></div>
+                    <span class="stat-badge badge-ok" id="stat-badge">—</span>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Average</div>
+                    <div class="stat-val"><span id="stat-avg">—</span> <span class="stat-unit" id="stat-unit-1">pH</span></div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Min</div>
+                    <div class="stat-val"><span id="stat-min">—</span> <span class="stat-unit" id="stat-unit-2">pH</span></div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Max</div>
+                    <div class="stat-val"><span id="stat-max">—</span> <span class="stat-unit" id="stat-unit-3">pH</span></div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Std Dev</div>
+                    <div class="stat-val"><span id="stat-stddev">—</span> <span class="stat-unit" id="stat-unit-4">pH</span></div>
+                    <div class="stat-sub" id="stat-variability">—</div>
+                </div>
             </div>
 
         </div>
-    </div>
 
+    </div>
 </div>
 
 <script>
-function getSavedSite() {
-    return localStorage.getItem("selectedSite") || "site_upstream";
-}
 
-let chart = null;
+    let currentSite   = 'site_upstream';
+    let currentMetric = 'ph';
+    let chart         = null;
 
-function createChart(categories, values, siteName) {
-    const options = {
-        chart: {
-            type: "area",
-            height: 380,
-            animations: { enabled: true, easing: "easeinout", speed: 800 },
-            toolbar: { show: true },
-            zoom: { enabled: true },
-            background: "transparent",
-            fontFamily: "Inter, sans-serif"
-        },
-        series: [{ name: "pH", data: values }],
-        xaxis: {
-            categories: categories,
-            tickAmount: 6,
-            labels: { style: { colors: "#5a7a9a" }, hideOverlappingLabels: true },
-            title: { text: "Timestamp", style: { color: "#5a7a9a" } }
-        },
-        yaxis: {
-            labels: { style: { colors: "#5a7a9a" } },
-            title: { text: "pH", style: { color: "#5a7a9a" } }
-        },
-        stroke: { curve: "smooth", width: 3, colors: ["#225382"] },
-        fill: {
-            type: "gradient",
-            gradient: { shadeIntensity: 1, opacityFrom: 0.35, opacityTo: 0.05, stops: [0, 90, 100] }
-        },
-        colors: ["#225382"],
-        dataLabels: { enabled: false },
-        tooltip: { theme: "light" },
-        grid: { borderColor: "rgba(34,83,130,0.1)" },
-        title: {
-            text: `pH Over Time — ${siteName}`,
-            align: "left",
-            style: { color: "#1c3a55", fontSize: "16px" }
-        },
-        legend: { labels: { colors: "#5a7a9a" } }
+    const metricConfig = {
+        ph:           { label: 'pH',           field: 'ph',                unit: 'pH',    safeMin: 6.5,  safeMax: 8.5,  decimals: 2, color: '#225382' },
+        turbidity:    { label: 'Turbidity',    field: 'turbidityNtu',      unit: 'NTU',   safeMin: null, safeMax: 4,    decimals: 1, color: '#e9820a' },
+        conductivity: { label: 'Conductivity', field: 'conductivityUsCm',  unit: 'µS/cm', safeMin: 200,  safeMax: 800,  decimals: 0, color: '#225382' },
+        waterTemp:    { label: 'Water Temp',   field: 'waterTemperatureC', unit: '°C',    safeMin: 10,   safeMax: 25,   decimals: 1, color: '#0ea5e9' },
+        waterLevel:   { label: 'Water Level',  field: 'waterLevelCm',      unit: 'cm',    safeMin: 20,   safeMax: 80,   decimals: 1, color: '#225382' },
+        light:        { label: 'Light',        field: 'lightLux',          unit: 'lux',   safeMin: null, safeMax: null, decimals: 0, color: '#f59e0b' }
     };
 
-    if (chart) chart.destroy();
-    chart = new ApexCharts(document.querySelector("#chart-area"), options);
-    chart.render();
-}
-
-async function loadTrendChart() {
-    const site = getSavedSite();
-    const chartStatus = document.getElementById("chart-status");
-
-    try {
-        chartStatus.textContent = "Loading chart data...";
-        const data = await fetch(`/trends/${site}`).then(r => r.json());
-
-        if (!Array.isArray(data) || data.length === 0) {
-            chartStatus.textContent = "No trend data found for this site.";
-            if (chart) { chart.destroy(); chart = null; }
-            return;
-        }
-
-        const siteLabel = site
-            .replace("site_", "Site ")
-            .replace("_", " ")
-            .replace(/\b\w/g, l => l.toUpperCase());
-
-        createChart(
-            data.map(d => d.timestamp),
-            data.map(d => d.ph),
-            siteLabel
-        );
-
-        chartStatus.textContent = `Showing pH trend for ${siteLabel}.`;
-
-    } catch (e) {
-        chartStatus.textContent = "Error loading trend data.";
-        if (chart) { chart.destroy(); chart = null; }
-        console.error(e);
+    function getBadgeClass(status) {
+        if (status === 'normal')   return 'badge-ok';
+        if (status === 'warning')  return 'badge-warn';
+        if (status === 'critical') return 'badge-crit';
+        return 'badge-ok';
     }
-}
 
-loadTrendChart();
+    function getStatusLabel(status) {
+        if (status === 'normal')   return 'Healthy';
+        if (status === 'warning')  return 'Moderate';
+        if (status === 'critical') return 'Critical';
+        return status;
+    }
+
+    function siteLabel(siteId) {
+        const name = siteId.replace('site_', '');
+        return name.charAt(0).toUpperCase() + name.slice(1);
+    }
+
+    function calcStdDev(values) {
+        const mean     = values.reduce((a, b) => a + b, 0) / values.length;
+        const variance = values.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / values.length;
+        return { sd: Math.sqrt(variance), mean };
+    }
+
+    function variabilityLabel(sd, mean) {
+        const cv = sd / Math.abs(mean);
+        if (cv < 0.05) return 'Low variability';
+        if (cv < 0.15) return 'Moderate variability';
+        return 'High variability';
+    }
+
+    function buildAnnotations(cfg) {
+        const lines = [];
+        if (cfg.safeMin !== null) lines.push({
+            y: cfg.safeMin,
+            borderColor: 'rgba(233,130,10,0.45)',
+            strokeDashArray: 5,
+            label: { text: 'Min safe', position: 'left', style: { color: '#e9820a', fontSize: '10px', background: 'transparent', border: 'none' } }
+        });
+        if (cfg.safeMax !== null) lines.push({
+            y: cfg.safeMax,
+            borderColor: 'rgba(233,130,10,0.45)',
+            strokeDashArray: 5,
+            label: { text: 'Max safe', position: 'left', style: { color: '#e9820a', fontSize: '10px', background: 'transparent', border: 'none' } }
+        });
+        return lines;
+    }
+
+    function renderChart(seriesData, cfg) {
+        const options = {
+            chart: {
+                type: 'area',
+                height: 300,
+                toolbar: {
+                    show: true,
+                    tools: { download: false, selection: false, zoom: true, zoomin: true, zoomout: true, pan: true, reset: true }
+                },
+                zoom: { enabled: true, type: 'x', autoScaleYaxis: true },
+                background: 'transparent',
+                fontFamily: 'Inter, sans-serif',
+                animations: { enabled: true, easing: 'easeinout', speed: 600 }
+            },
+            series: [{ name: cfg.label, data: seriesData }],
+            xaxis: {
+                type: 'datetime',
+                labels: {
+                    datetimeUTC: false,
+                    style: { colors: '#5a7a9a', fontSize: '0.62rem', fontFamily: 'Inter, sans-serif' }
+                },
+                axisBorder: { show: false },
+                axisTicks:  { show: false }
+            },
+            yaxis: {
+                labels: { style: { colors: '#5a7a9a', fontSize: '0.65rem', fontFamily: 'Inter, sans-serif' } },
+                title:  { text: cfg.unit, style: { color: '#5a7a9a', fontSize: '0.7rem', fontWeight: 600, fontFamily: 'Inter, sans-serif' } }
+            },
+            stroke: { curve: 'smooth', width: 2.5, colors: [cfg.color] },
+            fill: {
+                type: 'gradient',
+                gradient: { shadeIntensity: 1, opacityFrom: 0.35, opacityTo: 0.03, stops: [0, 90, 100] }
+            },
+            colors: [cfg.color],
+            dataLabels: { enabled: false },
+            markers: { size: 0, hover: { size: 5, colors: [cfg.color], strokeColors: '#fff', strokeWidth: 2 } },
+            annotations: { yaxis: buildAnnotations(cfg) },
+            tooltip: { theme: 'light', x: { format: 'dd MMM yyyy HH:mm' } },
+            grid: {
+                borderColor: 'rgba(34,83,130,0.08)',
+                strokeDashArray: 4,
+                padding: { left: 4, right: 4, top: 0, bottom: 0 }
+            }
+        };
+
+        if (chart) chart.destroy();
+        chart = new ApexCharts(document.querySelector('#chart-area'), options);
+        chart.render();
+    }
+
+    function updateStats(values, cfg, latestStatus) {
+        const { sd, mean } = calcStdDev(values);
+        const d = cfg.decimals;
+
+        document.getElementById('stat-latest').textContent      = values[values.length - 1].toFixed(d);
+        document.getElementById('stat-avg').textContent         = mean.toFixed(d);
+        document.getElementById('stat-min').textContent         = Math.min(...values).toFixed(d);
+        document.getElementById('stat-max').textContent         = Math.max(...values).toFixed(d);
+        document.getElementById('stat-stddev').textContent      = sd.toFixed(d);
+        document.getElementById('stat-variability').textContent = variabilityLabel(sd, mean);
+
+        [0, 1, 2, 3, 4].forEach(i => {
+            document.getElementById('stat-unit-' + i).textContent = cfg.unit;
+        });
+
+        const badge = document.getElementById('stat-badge');
+        badge.className   = 'stat-badge ' + getBadgeClass(latestStatus);
+        badge.textContent = getStatusLabel(latestStatus);
+    }
+
+    async function loadData() {
+        const cfg   = metricConfig[currentMetric];
+        const label = siteLabel(currentSite);
+
+        document.getElementById('chart-title').textContent = cfg.label + ' Over Time — ' + label;
+
+        try {
+            const [trendRes, latestRes] = await Promise.all([
+                fetch('/trends/' + currentSite),
+                fetch('/latest/' + currentSite)
+            ]);
+
+            const trendData  = await trendRes.json();
+            const latestData = await latestRes.json();
+
+            if (!Array.isArray(trendData) || trendData.length === 0) return;
+
+            document.getElementById('chart-sub').textContent = 'Last ' + trendData.length + ' readings';
+
+            const seriesData = trendData.map(d => ({
+                x: new Date(d.timestamp.replace(' ', 'T')).getTime(),
+                y: d[cfg.field]
+            }));
+
+            const values = trendData.map(d => d[cfg.field]);
+
+            renderChart(seriesData, cfg);
+            updateStats(values, cfg, latestData.status);
+
+        } catch (e) {
+            console.error('Error loading trend data', e);
+        }
+    }
+
+    function selectSite(btn, siteId) {
+        document.querySelectorAll('.site-group .site-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentSite = siteId;
+        loadData();
+    }
+
+    function selectMetric(btn, metric) {
+        document.querySelectorAll('.metric-group .metric-pill').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        currentMetric = metric;
+        loadData();
+    }
+
+    loadData();
+
 </script>
-
 </body>
 </html>
