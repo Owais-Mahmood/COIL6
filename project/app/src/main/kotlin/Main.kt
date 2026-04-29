@@ -16,6 +16,9 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.Serializable
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 
 @Serializable
 data class AlertSummary(
@@ -90,7 +93,15 @@ data class TrendPoint(
 
 fun main() {
     val filePath = "../../datasets/datasets/synthetic_outputs/water_quality.csv"
-    val waterReadings = loadWaterQualityData(filePath)
+    var waterReadings = loadWaterQualityData(filePath)
+    
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+
+    val cutoffDate = LocalDateTime.now().minusYears(3)
+
+    waterReadings = waterReadings.filter { reading ->
+        LocalDateTime.parse(reading.timestamp, formatter) <= cutoffDate
+    }
 
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
 
