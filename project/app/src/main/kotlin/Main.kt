@@ -97,11 +97,8 @@ fun main() {
     
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
-    val cutoffDate = LocalDateTime.now().minusYears(3)
-
-    waterReadings = waterReadings.filter { reading ->
-        LocalDateTime.parse(reading.timestamp, formatter) <= cutoffDate
-    }
+    val latestTimestamp = waterReadings.maxOf { LocalDateTime.parse(it.timestamp, formatter) }
+    val offset = java.time.Duration.between(latestTimestamp, LocalDateTime.now())
 
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
 
@@ -232,7 +229,7 @@ fun main() {
                 } else {
                     call.respond(
                         LatestReadingResponse(
-                            timestamp = latestReading.timestamp,
+                            timestamp = LocalDateTime.parse(latestReading.timestamp, formatter).plus(offset).format(formatter),
                             siteId = latestReading.siteId,
                             ph = latestReading.ph,
                             turbidityNtu = latestReading.turbidityNtu,
@@ -267,7 +264,7 @@ fun main() {
                 } else {
                     val trendData = siteReadings.map { reading ->
                         TrendPoint(
-                            timestamp = reading.timestamp,
+                            timestamp = LocalDateTime.parse(reading.timestamp, formatter).plus(offset).format(formatter),
                             ph = reading.ph,
                             turbidityNtu = reading.turbidityNtu,
                             conductivityUsCm = reading.conductivityUsCm,
