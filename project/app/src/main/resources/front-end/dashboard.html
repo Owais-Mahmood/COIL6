@@ -465,6 +465,24 @@
 
             <div class="hero-panels">
                 <div class="info-panel">
+                    <div class="ip-title">Latest Reading</div>
+                    <div class="ip-rows">
+
+                        <div class="ip-row">
+                            <span class="ip-icon">🕒</span>
+                            <span class="ip-label">Timestamp</span>
+                            <span class="ip-val" id="val-timestamp">—</span>
+                        </div>
+
+                        <div class="ip-row">
+                            <span class="ip-icon">📅</span>
+                            <span class="ip-label">Date</span>
+                            <span class="ip-val" id="val-date">—</span>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="info-panel">
                     <div class="ip-title">Water Quality</div>
                     <div class="ip-rows">
                         <div class="ip-row">
@@ -637,7 +655,7 @@
                         <span class="wx-val" id="wx-temp">—</span>
                     </div>
                     <div class="wx-row">
-                        <span class="wx-icon">💨</span>
+                        <span class="wx-icon">🌫️</span>
                         <span class="wx-label">Humidity</span>
                         <span class="wx-val" id="wx-rh">—</span>
                     </div>
@@ -692,22 +710,22 @@
         return lux >= 1000 ? (lux / 1000).toFixed(1) + 'k lux' : lux.toFixed(0) + ' lux';
     }
 
-    function updateClock() {
-        const now = new Date();
+function updateClock() {
+    const now = new Date();
 
-        const past = new Date(now);
-        past.setFullYear(past.getFullYear() - 3);
+    const past = new Date(now);
+    past.setFullYear(past.getFullYear() - 3);
 
-        const hours = String(past.getHours()).padStart(2, '0');
-        const mins  = String(past.getMinutes()).padStart(2, '0');
+    const hours = String(past.getHours()).padStart(2, '0');
+    const mins  = String(past.getMinutes()).padStart(2, '0');
 
-        const day   = String(past.getDate()).padStart(2, '0');
-        const month = String(past.getMonth() + 1).padStart(2, '0');
-        const year  = past.getFullYear();
+    const day   = String(past.getDate()).padStart(2, '0');
+    const month = String(past.getMonth() + 1).padStart(2, '0');
+    const year  = past.getFullYear();
 
-        document.getElementById('clock').textContent =
-            `${hours}:${mins} · ${day}/${month}/${year}`;
-    }
+    document.getElementById('clock').textContent =
+        `${hours}:${mins} · ${day}/${month}/${year}`;
+}
 
 
 
