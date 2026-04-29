@@ -71,7 +71,10 @@ data class LatestReadingResponse(
     val waterTemperatureC: Double,
     val waterLevelCm: Double,
     val lightLux: Double,
-    val status: String
+    val status: String,
+    val wxTempC: Double,
+    val wxRhPct: Double,
+    val wxRainMmHr: Double
 )
 
 @Serializable
@@ -102,12 +105,7 @@ fun main() {
 
             // Login page first
             get("/") {
-                call.respondRedirect("/login.html")
-            }
-
-            // Enter guest dashboard
-            get("/guest") {
-                call.respondRedirect("/GuestDashboard.html")
+                call.respondRedirect("/dashboard.html")
             }
 
             // Alerts route
@@ -231,7 +229,10 @@ fun main() {
                             waterTemperatureC = latestReading.waterTemperatureC,
                             waterLevelCm = latestReading.waterLevelCm,
                             lightLux = latestReading.lightLux,
-                            status = latestReading.status
+                            status = latestReading.status,
+                            wxTempC = latestReading.wxTempC,
+                            wxRhPct = latestReading.wxRhPct,
+                            wxRainMmHr = latestReading.wxRainMmHr
                         )
                     )
                 }
