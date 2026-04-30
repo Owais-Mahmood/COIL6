@@ -41,7 +41,26 @@
     }
 
     /* ---------- navbar ---------- */
-    .navbar { display: flex; align-items: center; padding: 14px 24px; gap: 16px; }
+    .navbar {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        padding: 14px 24px;
+        gap: 16px;
+    }
+
+    .nav-right {
+        display: flex; align-items: center;
+        gap: 12px; justify-content: flex-end;
+    }
+
+    .nav-clock {
+        padding: 7px 18px; border-radius: 50px;
+        font-size: 0.875rem; font-weight: 600; color: var(--blue);
+        background: rgba(255,255,255,0.65); border: 1px solid rgba(255,255,255,0.85);
+        backdrop-filter: blur(8px); white-space: nowrap; user-select: none;
+    }
+
 
     .logo {
         display: flex; align-items: center; gap: 8px;
@@ -191,7 +210,10 @@
             <a class="nav-pill active" href="/trends.html">Trends</a>
             <a class="nav-pill" href="/info.html">Information</a>
         </div>
-        <a class="login-btn" href="/login.html">Log in</a>
+        <div class="nav-right">
+            <div class="nav-clock" id="clock">--:--</div>
+            <a class="login-btn" href="/login.html">Log in</a>
+        </div>
     </nav>
 
     <div class="page">
@@ -438,7 +460,21 @@
         loadData();
     }
 
-    loadData();
+    function updateClock() {
+        const now = new Date();
+        const past = new Date(now);
+        past.setFullYear(past.getFullYear() - 3);
+        const hh = String(past.getHours()).padStart(2, '0');
+        const mm = String(past.getMinutes()).padStart(2, '0');
+        const dd = String(past.getDate()).padStart(2, '0');
+        const mo = String(past.getMonth() + 1).padStart(2, '0');
+        const yyyy = past.getFullYear();
+        document.getElementById('clock').textContent = `${hh}:${mm} · ${dd}/${mo}/${yyyy}`;
+    }
+
+updateClock();
+setInterval(updateClock, 1000);
+loadData();
 
 </script>
 </body>
