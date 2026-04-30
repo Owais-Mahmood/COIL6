@@ -246,6 +246,7 @@ fun main() {
                 }
             }
 
+
             // Trend data for a given site
             get("/trends/{siteId}") {
                 val siteId = call.parameters["siteId"]
