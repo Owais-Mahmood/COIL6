@@ -6,6 +6,14 @@
     <title>Stroomloop · Information</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        root{
+            --blue-dark: #1a3f63;
+            --blue-faint: rgba(34, 83, 130, 0.1);
+            --text-dark: #1c3a55;
+            --text-mid: #3a5a7a;
+            --text-light: #5a7a9a;
+        }
+
         *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
@@ -276,6 +284,74 @@
             font-size: 22px;
             color: #225382;
             font-weight: bold;
+            pointer-events: none;
+            text-shadow: 0 0 3px white, 0 0 3px white, 0 0 3px white;
+        }
+
+        .site-btn {
+            padding: 6px 16px; border-radius: 50px;
+            font-size: 0.8rem; font-weight: 500; border: none; cursor: pointer;
+            background: rgba(255,255,255,0.55); color: #225382;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .site-btn.active { 
+            background: #225382; 
+            color: white; 
+        }
+
+        .site-toggle-row { 
+            display: flex; 
+            gap: 8px; 
+            margin-top: 12px;
+            justify-content: flex-end;
+        }
+
+        .verdict-strip {
+            display: flex; 
+            align-items: center; 
+            gap: 12px;
+            margin-top: 12px; 
+            border-radius: 10px; 
+            padding: 12px 16px;
+            transition: background 0.4s ease, border-color 0.4s ease;
+        }
+
+        .verdict-strip.v-safe {
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .verdict-strip.v-warn {
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .verdict-strip.v-crit {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .verdict-icon { 
+            font-size: 1.4rem; 
+            flex-shrink: 0; 
+            line-height: 1; 
+        }
+
+        .verdict-body { 
+            flex: 1; 
+        }
+
+        .verdict-title {
+            font-size: 0.85rem; 
+            font-weight: 700; 
+            color: var(--text-dark);
+            margin-bottom: 2px;
+        }
+
+        .verdict-sub { 
+            font-size: 0.72rem; 
+            color: var(--text-mid); 
         }
 
     </style>
@@ -307,6 +383,11 @@
                 Know your water. Protect your health. 
                 Here is a breakdown of what your readings actually mean - all metrics are monitored in real-time and are compared against the trusted national standard to keep you and your community safe.
             </span>
+            <div class="site-toggle-row">
+                <button class="site-btn active" onclick="setSite('site_upstream')">Upstream</button>
+                <button class="site-btn" onclick="setSite('site_downstream')">Downstream</button>
+                <button class="site-btn" onclick="setSite('site_reservoir')">Reservoir</button>
+            </div>
         </div>
         
         <div class="overall-metrics">
@@ -323,12 +404,17 @@
                         <div class="bar"></div>
                         <div class="pointer" id="ph-pointer">●</div>
                     </div>
-                    <div class="labels">
-                        <div><span>0</span><br><span>acidic</span></div>
-                        <div><span>6.5</span><br><span>threshold</span></div>
-                        <div><span>6.5-8.5</span><br><span>neutral</span></div>
-                        <div><span>8.5</span><br><span>threshold</span></div>
-                        <div><span>14</span><br><span>alkaline</span></div>
+                    <div class="labels" style="position: relative; height: 35px;">
+                        <div style="position: absolute; left: 0%; transform: translateX(0%)">0</div>
+                        <div style="position: absolute; left: 46%; transform: translateX(-50%)">6.5–8.5 pH<br><span>safe</span></div>
+                        <div style="position: absolute; right: 0%; transform: translateX(0%)">14</div>
+                    </div>
+                </div>
+                <div class="verdict-strip v-safe" id="ph-verdict">
+                    <span class="verdict-icon" id="ph-verdict-icon">✓</span>
+                    <div class="verdict-body">
+                        <div class="verdict-title" id="ph-verdict-title">pH is within safe range</div>
+                        <div class="verdict-sub" id="ph-verdict-sub">Current reading is acceptable</div>
                     </div>
                 </div>
             </div>
@@ -343,15 +429,21 @@
                 </span>
                 <div class="scale">
                     <div class="bar-container">
-                        <div class="bar"></div>
+                        <div class="bar" style="background: linear-gradient(90deg, #1eff00, #ffdd00 40%, #ff0000 70%)"></div>
                         <div class="pointer" id="turbidity-pointer">●</div>
                     </div>
-                    <div class="labels">
-                        <div><span>0</span></div>
-                        <div><span>4</span></div>
-                        <div><span>4 NTU</span><br><span>healthy</span></div>
-                        <div><span>10</span></div>
-                        <div><span>100</span></div>
+                    <div class="labels" style="position: relative; height: 35px;">
+                        <div style="position: absolute; left: 0%; text-align: center;">0</div>
+                        <div style="position: absolute; left: 7%; text-align: center;">4 NTU</div>
+                        <div style="position: absolute; left: 92%; text-align: center; transform: translateX(-50%)">55+<br><span>critical</span></div>
+                        <div style="position: absolute; right: 0%; text-align: center;">60</div>
+                    </div>
+                </div>
+                <div class="verdict-strip v-safe" id="turbidity-verdict">
+                    <span class="verdict-icon" id="turbidity-verdict-icon">✓</span>
+                    <div class="verdict-body">
+                        <div class="verdict-title" id="turbidity-verdict-title">pH is within safe range</div>
+                        <div class="verdict-sub" id="turbidity-verdict-sub">Current reading is acceptable</div>
                     </div>
                 </div>
             </div>
@@ -365,18 +457,22 @@
                 </span>
                 <div class="scale">
                     <div class="bar-container">
-                        <div class="bar"></div>
+                        <div class="bar" style="background: linear-gradient(90deg, #ff0000 8%, #ffdd00 15%, #1eff00 40%, #ffdd00 75%, #ff0000 90%)"></div>
                         <div class="pointer" id="conductivity-pointer">●</div>
                     </div>
-                    <div class="labels">
-                        <div><span>0</span></div>
-                        <div><span>200</span></div>
-                        <div><span>200-800µS/cm</span><br><span>healthy</span></div>
-                        <div><span>800</span></div>
-                        <div><span>2500</span></div>
+                    <div class="labels" style="position: relative; height: 35px;">
+                            <div style="position: absolute; left: 0%;">0</div>
+                            <div style="position: absolute; left: 28%; transform: translateX(-50%)">100–600µS/cm<br><span>healthy</span></div>
+                            <div style="position: absolute; right: 0%;">2500</div>
                     </div>
                 </div>
-
+                <div class="verdict-strip v-safe" id="conductivity-verdict">
+                    <span class="verdict-icon" id="conductivity-verdict-icon">✓</span>
+                    <div class="verdict-body">
+                        <div class="verdict-title" id="conductivity-verdict-title">pH is within safe range</div>
+                        <div class="verdict-sub" id="conductivity-verdict-sub">Current reading is acceptable</div>
+                    </div>
+                </div>
             </div>
             <div class="metric-box">
                 <span class="metric-title">
@@ -388,15 +484,20 @@
                 </span>
                 <div class="scale">
                     <div class="bar-container">
-                        <div class="bar"></div>
+                        <div class="bar" style="background: linear-gradient(90deg, #ffdd00 25%, #1eff00 40%, #ffdd00 65%, #ff0000 85%)"></div>
                         <div class="pointer" id="waterTemp-pointer">●</div>
                     </div>
-                    <div class="labels">
-                        <div><span>0</span></div>
-                        <div><span>10</span></div>
-                        <div><span>10-25°C</span><br><span>healthy</span></div>
-                        <div><span>25</span></div>
-                        <div><span>40</span></div>
+                    <div class="labels" style="position: relative; height: 35px;">
+                        <div style="position: absolute; left: 0%;">0</div>
+                        <div style="position: absolute; left: 44%; transform: translateX(-50%)">10–25°C<br><span>healthy</span></div>
+                        <div style="position: absolute; right: 0%;">40</div>
+                    </div>
+                </div>
+                <div class="verdict-strip v-safe" id="water-temp-verdict">
+                    <span class="verdict-icon" id="water-temp-verdict-icon">✓</span>
+                    <div class="verdict-body">
+                        <div class="verdict-title" id="water-temp-verdict-title">pH is within safe range</div>
+                        <div class="verdict-sub" id="water-temp-verdict-sub">Current reading is acceptable</div>
                     </div>
                 </div>
             </div>
@@ -413,12 +514,17 @@
                         <div class="bar"></div>
                         <div class="pointer" id="waterLevel-pointer">●</div>
                     </div>
-                    <div class="labels">
-                        <div><span>0</span></div>
-                        <div><span>20</span></div>
-                        <div><span>50-600cm</span><br><span>healthy</span></div>
-                        <div><span>700</span></div>
-                        <div><span>800</span></div>
+                    <div class="labels" style="position: relative; height: 35px;">
+                        <div style="position: absolute; left: 0%;">0</div>
+                        <div style="position: absolute; left: 41%; transform: translateX(-50%)">50–600cm<br><span>healthy</span></div>
+                        <div style="position: absolute; right: 0%;">800</div>
+                    </div>
+                </div>
+                <div class="verdict-strip v-safe" id="water-level-verdict">
+                    <span class="verdict-icon" id="water-level-verdict-icon">✓</span>
+                    <div class="verdict-body">
+                        <div class="verdict-title" id="water-level-verdict-title">pH is within safe range</div>
+                        <div class="verdict-sub" id="water-level-verdict-sub">Current reading is acceptable</div>
                     </div>
                 </div>
             </div>
@@ -432,15 +538,20 @@
                 </span>
                  <div class="scale">
                     <div class="bar-container">
-                        <div class="bar"></div>
+                        <div class="bar" style="background: linear-gradient(90deg, #1eff00, #ffdd00 60%, #ff0000 85%)"></div>
                         <div class="pointer" id="light-pointer">●</div>
                     </div>
-                    <div class="labels">
-                        <div><span>0</span></div>
-                        <div><span>1000</span></div>
-                        <div><span>1000-15000 lux</span><br><span>healthy</span></div>
-                        <div><span>15000</span></div>
-                        <div><span>25000</span></div>
+                    <div class="labels" style="position: relative; height: 35px;">
+                        <div style="position: absolute; left: 0%;">0</div>
+                        <div style="position: absolute; left: 38%; transform: translateX(-50%)">1000–15000lux<br><span>healthy</span></div>
+                        <div style="position: absolute; right: 0%;">25000</div>
+                    </div>
+                </div>
+                <div class="verdict-strip v-safe" id="light-verdict">
+                    <span class="verdict-icon" id="light-verdict-icon">✓</span>
+                    <div class="verdict-body">
+                        <div class="verdict-title" id="light-verdict-title">pH is within safe range</div>
+                        <div class="verdict-sub" id="light-verdict-sub">Current reading is acceptable</div>
                     </div>
                 </div>
             </div>
@@ -493,20 +604,88 @@
         document.getElementById(pointerID).style.left = secure + "%"
     }
 
-    async function loadPinPoint(){
-        const site = "site_upstream"
+    let currentSite = "site_upstream"
 
-        const res = await fetch(`/latest/${site}`)
+    function setSite(site) {
+        currentSite = site
+
+        document.querySelectorAll('.site-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent.toLowerCase().includes(site.replace('site_', '')))})
+
+        loadPinPoint()
+    }
+
+    function updateVerdict(status, value, unit, stripID, iconID, titleID, subID, metricName){
+        const strip = document.getElementById(stripID)
+        const icon  = document.getElementById(iconID)
+        const title = document.getElementById(titleID)
+        const sub   = document.getElementById(subID)
+
+        if (status === 'normal') {
+            strip.className   = 'verdict-strip v-safe'
+            icon.textContent  = '✓'
+            title.textContent = metricName + ' is within safe range'
+            sub.textContent   = `Currently at ${value} ${unit} — within acceptable limits`
+        } else if (status === 'warning') {
+            strip.className   = 'verdict-strip v-warn'
+            icon.textContent  = '⚠'
+            title.textContent = metricName + ' is approaching unsafe levels'
+            sub.textContent   = `Currently at ${value} ${unit} — monitor closely`
+        } else {
+            strip.className   = 'verdict-strip v-crit'
+            icon.textContent  = '✕'
+            title.textContent = metricName + ' has exceeded safe limits'
+            sub.textContent   = `Currently at ${value} ${unit} — action may be required`
+        }
+
+    }
+
+    function getMetricStatus(metric, value){
+         if (metric === 'ph') {
+            if (value < 6.5 || value > 8.5) return 'critical'
+            else if (value < 6.8 || value > 8.2) return 'warning'
+            else return 'normal'
+        } else if (metric === 'turbidity') {
+            if (value > 55) return 'critical'
+            else if (value > 4) return 'warning'
+            else return 'normal'
+        } else if (metric === 'conductivity') {
+            if (value < 50 || value > 750) return 'critical'
+            else if (value < 100 || value > 600) return 'warning'
+            else return 'normal'
+        } else if (metric === 'waterTemp') {
+            if (value < 5 || value > 30) return 'critical'
+            else if (value < 10 || value > 25) return 'warning'
+            else return 'normal'
+        } else if (metric === 'waterLevel') {
+            if (value < 20 || value > 700) return 'critical'
+            else if (value < 50 || value > 600) return 'warning'
+            else return 'normal'
+        } else if (metric === 'light') {
+            if (value > 100000) return 'critical'
+            else if (value > 15000) return 'warning'
+            else return 'normal'
+        }
+    }
+
+    async function loadPinPoint(){
+        const res = await fetch(`/latest/${currentSite}`)
         const d = await res.json()
 
         //position each pointer
         positionPinPoint(d.ph, 0, 14, "ph-pointer")
-        positionPinPoint(d.turbidityNtu, 0, 100, "turbidity-pointer")
+        positionPinPoint(d.turbidityNtu, 0, 60, "turbidity-pointer")
         positionPinPoint(d.conductivityUsCm, 0, 2500, "conductivity-pointer")
         positionPinPoint(d.waterTemperatureC, 0, 40, "waterTemp-pointer")
         positionPinPoint(d.waterLevelCm, 0, 800, "waterLevel-pointer")
         positionPinPoint(d.lightLux, 0, 25000, "light-pointer")
 
+        updateVerdict(getMetricStatus('ph', d.ph), d.ph.toFixed(2), 'pH', 'ph-verdict', 'ph-verdict-icon', 'ph-verdict-title', 'ph-verdict-sub', 'pH')
+        updateVerdict(getMetricStatus('turbidity', d.turbidityNtu), d.turbidityNtu.toFixed(1), 'NTU', 'turbidity-verdict', 'turbidity-verdict-icon', 'turbidity-verdict-title', 'turbidity-verdict-sub', 'Turbidity')
+        updateVerdict(getMetricStatus('conductivity', d.conductivityUsCm), d.conductivityUsCm.toFixed(0), 'µS/cm', 'conductivity-verdict', 'conductivity-verdict-icon', 'conductivity-verdict-title', 'conductivity-verdict-sub', 'Conductivity')
+        updateVerdict(getMetricStatus('waterTemp', d.waterTemperatureC), d.waterTemperatureC.toFixed(1), '°C', 'water-temp-verdict', 'water-temp-verdict-icon', 'water-temp-verdict-title', 'water-temp-verdict-sub', 'Water Temperature')
+        updateVerdict(getMetricStatus('waterLevel', d.waterLevelCm), d.waterLevelCm.toFixed(1), 'cm', 'water-level-verdict', 'water-level-verdict-icon', 'water-level-verdict-title', 'water-level-verdict-sub', 'Water Level')
+        updateVerdict(getMetricStatus('light', d.lightLux), d.lightLux.toFixed(0), 'lux', 'light-verdict', 'light-verdict-icon', 'light-verdict-title', 'light-verdict-sub', 'Light Intensity')
     }
 
     function updateClock() {
