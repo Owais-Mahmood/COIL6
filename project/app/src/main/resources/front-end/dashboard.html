@@ -84,7 +84,7 @@
 
     .nav-clock {
         padding: 7px 18px; border-radius: 50px;
-        font-size: 0.875rem; font-weight: 600; color: var(--blue);
+        font-size: 0.875rem; font-weight: 600; color: #225382;
         background: rgba(255,255,255,0.65); border: 1px solid rgba(255,255,255,0.85);
         backdrop-filter: blur(8px); white-space: nowrap; user-select: none;
     }
@@ -602,7 +602,6 @@
                 <div class="card-sub">Across all monitoring sites based on the full dataset</div>
                 <div class="sb-donut-wrap">
                     <svg width="130" height="130" viewBox="0 0 90 90">
-                                stroke-dasharray="188.5 37.7" transform="rotate(120 45 45)"/>
                         <circle cx="45" cy="45" r="36" fill="none" stroke="#22c55e" stroke-width="12"
                                 id="sb-arc-normal" stroke-dasharray="0 226.2" transform="rotate(120 45 45)"/>
                         <circle cx="45" cy="45" r="36" fill="none" stroke="#f59e0b" stroke-width="12"
@@ -786,7 +785,6 @@
             data.forEach(d => { if (counts[d.status] !== undefined) counts[d.status] = d.count; });
 
             const total  = (counts.normal + counts.warning + counts.critical) || 1;
-            const FULL_C = 226.2;
             const C      = 188.5;
 
             const normalPct   = counts.normal   / total * 100;
