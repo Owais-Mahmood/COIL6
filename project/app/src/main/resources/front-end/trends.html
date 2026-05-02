@@ -244,6 +244,50 @@
     .dropdown-item:hover { background: rgba(34,83,130,0.07); }
     .dropdown-item.active { background: var(--blue); color: white; }
 
+    .comparison-strip {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 16px;
+    }
+
+    .comparison-card {
+        background: rgba(255,255,255,0.65);
+        border-radius: 12px;
+        padding: 12px 16px;
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255,255,255,0.8);
+        box-shadow: 0 4px 18px rgba(34,83,130,0.07);
+    }
+
+    .comparison-card.selected {
+        border-color: var(--blue);
+        box-shadow: 0 4px 18px rgba(34,83,130,0.18);
+    }
+
+    .comp-site {
+        font-size: 0.62rem;
+        font-weight: 700;
+        color: var(--text-light);
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        margin-bottom: 6px;
+    }
+
+    .comp-val {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--text-dark);
+        line-height: 1.2;
+        margin-bottom: 5px;
+    }
+
+    .comp-unit {
+        font-size: 0.68rem;
+        color: var(--text-light);
+        font-weight: 500;
+    }
+
 </style>
 </head>
 <body>
@@ -339,9 +383,23 @@
                     <div class="stat-sub" id="stat-variability">—</div>
                 </div>
             </div>
+</div>
 
-        </div>
-
+<div class="comparison-strip">
+    <div class="comparison-card" id="comp-card-upstream">
+        <div class="comp-site">Upstream</div>
+        <div class="comp-val"><span id="comp-val-upstream">—</span> <span class="comp-unit" id="comp-unit-upstream"></span></div>
+        <span class="stat-badge badge-ok" id="comp-badge-upstream">—</span>
+    </div>
+    <div class="comparison-card" id="comp-card-downstream">
+        <div class="comp-site">Downstream</div>
+        <div class="comp-val"><span id="comp-val-downstream">—</span> <span class="comp-unit" id="comp-unit-downstream"></span></div>
+        <span class="stat-badge badge-ok" id="comp-badge-downstream">—</span>
+    </div>
+    <div class="comparison-card" id="comp-card-reservoir">
+        <div class="comp-site">Reservoir</div>
+        <div class="comp-val"><span id="comp-val-reservoir">—</span> <span class="comp-unit" id="comp-unit-reservoir"></span></div>
+        <span class="stat-badge badge-ok" id="comp-badge-reservoir">—</span>
     </div>
 </div>
 
@@ -530,6 +588,31 @@
         badge.textContent = getStatusLabel(latestStatus);
     }
 
+    async function loadComparison() {
+        const cfg = metricConfig[currentMetric];
+        const sites = ['upstream', 'downstream', 'reservoir'];
+
+        const results = await Promise.all(
+            sites.map(s => fetch('/latest/site_' + s).then(r => r.json()).catch(() => null))
+        );
+
+        sites.forEach((s, i) => {
+            const d = results[i];
+            const val = d ? d[cfg.field] : null;
+
+            document.getElementById('comp-val-' + s).textContent = val != null ?
+    parseFloat(val).toFixed(cfg.decimals) : '—';
+            document.getElementById('comp-unit-' + s).textContent = cfg.unit;
+
+            const badge = document.getElementById('comp-badge-' + s);
+            badge.className = 'stat-badge ' + (d ? getBadgeClass(d.status) : 'badge-ok');
+            badge.textContent = d ? getStatusLabel(d.status) : '—';
+
+            document.getElementById('comp-card-' + s).classList.toggle('selected', currentSite === 'site_' + s);
+        });
+    }
+
+
     async function loadData() {
         const cfg   = metricConfig[currentMetric];
         const label = siteLabel(currentSite);
@@ -558,6 +641,7 @@
 
             renderChart(seriesData, cfg);
             updateStats(values, cfg, latestData.status);
+            loadComparison();
 
         } catch (e) {
             console.error('Error loading trend data', e);
