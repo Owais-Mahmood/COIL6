@@ -122,9 +122,10 @@
     .hero {
         padding: 20px 0 16px;
         display: grid;
-        grid-template-columns: 1fr 260px 280px;
+        grid-template-columns: 1.2fr 1fr;
         gap: 20px;
         align-items: start;
+        grid-auto-rows: min-content;
     }
 
     .hero-left { display: flex; flex-direction: column; height: 100%; }
@@ -231,6 +232,55 @@
         font-size: 0.68rem;
         min-width: 70px;
         text-align: right;
+    }
+
+
+    /* ---------- circular mini charts ---------- */
+    .cq-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 6px;
+    }
+
+    .cq-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .cq-circle {
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        background: conic-gradient(var(--c, var(--blue)) calc(var(--p) * 1%), var(--blue-faint) 0);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        font-weight: 700;
+        font-size: 0.75rem;
+        color: var(--text-dark);
+    }
+
+    .cq-circle::after {
+        content: "";
+        position: absolute;
+        width: 42px;
+        height: 42px;
+        background: rgba(255,255,255,0.85);
+        border-radius: 50%;
+    }
+
+    .cq-circle span {
+        position: relative;
+        z-index: 2;
+    }
+
+    .cq-label {
+        font-size: 0.7rem;
+        color: var(--text-light);
     }
 
     /* ---------- cards ---------- */
@@ -480,60 +530,53 @@
                 <!-- Water Quality -->
                 <div class="wq-alerts info-panel">
                     <div class="ip-title">Water Quality</div>
-                    <div class="ip-rows">
 
-                        <div class="ip-row">
-                            <span class="ip-icon">⬡</span>
-                            <span class="ip-label">pH Level</span>
-                            <span class="ip-val" id="val-ph">—</span>
-                            <span class="ip-badge badge-ok" id="badge-ph">—</span>
+                    <div class="cq-grid">
+
+                        <div class="cq-item">
+                            <div class="cq-circle" id="cq-ph" style="--p:0"><span id="val-ph">—</span></div>
+                            <div class="cq-label">pH</div>
                         </div>
 
-                        <div class="ip-row">
-                            <span class="ip-icon">〜</span>
-                            <span class="ip-label">Turbidity</span>
-                            <span class="ip-val" id="val-turb">—</span>
-                            <span class="ip-badge badge-ok" id="badge-turb">—</span>
+                        <div class="cq-item">
+                            <div class="cq-circle" id="cq-turb" style="--p:0"><span id="val-turb">—</span></div>
+                            <div class="cq-label">Turbidity</div>
                         </div>
 
-                        <div class="ip-row">
-                            <span class="ip-icon">⚡</span>
-                            <span class="ip-label">Conductivity</span>
-                            <span class="ip-val" id="val-cond">—</span>
-                            <span class="ip-badge badge-ok" id="badge-cond">—</span>
+                        <div class="cq-item">
+                            <div class="cq-circle" id="cq-cond" style="--p:0"><span id="val-cond">—</span></div>
+                            <div class="cq-label">Conductivity</div>
                         </div>
+
                     </div>
                 </div>
 
                 <!-- Environmental -->
                 <div class="e-alerts info-panel">
                     <div class="ip-title">Environmental</div>
-                    <div class="ip-rows">
 
-                        <div class="ip-row">
-                            <span class="ip-icon">💧</span>
-                            <span class="ip-label">Water Temp</span>
-                            <span class="ip-val" id="val-temp">—</span>
-                            <span class="ip-badge badge-ok" id="badge-temp">—</span>
+                    <div class="cq-grid">
+
+                        <div class="cq-item">
+                            <div class="cq-circle" id="cq-temp" style="--p:0"><span id="val-temp">—</span></div>
+                            <div class="cq-label">Temp</div>
                         </div>
 
-                        <div class="ip-row">
-                            <span class="ip-icon">📏</span>
-                            <span class="ip-label">Water Level</span>
-                            <span class="ip-val" id="val-level">—</span>
-                            <span class="ip-badge badge-ok" id="badge-level">—</span>
+                        <div class="cq-item">
+                            <div class="cq-circle" id="cq-level" style="--p:0"><span id="val-level">—</span></div>
+                            <div class="cq-label">Level</div>
                         </div>
 
-                        <div class="ip-row">
-                            <span class="ip-icon">☀</span>
-                            <span class="ip-label">Light</span>
-                            <span class="ip-val" id="val-light">—</span>
-                            <span class="ip-badge badge-ok" id="badge-light">—</span>
+                        <div class="cq-item">
+                            <div class="cq-circle" id="cq-light" style="--p:0"><span id="val-light">—</span></div>
+                            <div class="cq-label">Light</div>
                         </div>
+
                     </div>
                 </div>
             </div>
         </div>
+        
 
         <div class="cards-row">
 
@@ -756,6 +799,65 @@
         loadRecentAlerts();
     }
 
+    // functions for converting data into percentages for circles
+    function setCircle(id, percent, color) {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        el.style.setProperty('--p', percent);
+        el.style.setProperty('--c', color);
+    }
+
+    function clamp(v, min, max) {
+        return Math.max(min, Math.min(max, v));
+    }
+
+    function toPercent(value, min, max) {
+        return clamp(((value - min) / (max - min)) * 100, 0, 100);
+    }
+
+    // setting the colour of the circles depending on alert type
+    function getCircleColor(metric, value) {
+
+        if (metric === 'ph') {
+            if (value < 6.5 || value > 8.5) return '#dc2626'; // critical
+            if (value < 6.8 || value > 8.2) return '#d97706'; // warning
+            return '#225382'; // normal
+        }
+
+        if (metric === 'turbidity') {
+            if (value > 25) return '#dc2626';
+            if (value > 10) return '#d97706';
+            return '#225382';
+        }
+
+        if (metric === 'conductivity') {
+            if (value > 1500) return '#dc2626';
+            if (value > 800) return '#d97706';
+            return '#225382';
+        }
+
+        if (metric === 'temperature') {
+            if (value > 30 || value < 5) return '#dc2626';
+            if (value > 25 || value < 8) return '#d97706';
+            return '#225382';
+        }
+
+        if (metric === 'level') {
+            if (value > 250) return '#dc2626';
+            if (value > 180) return '#d97706';
+            return '#225382';
+        }
+
+        if (metric === 'light') {
+            if (value > 8000) return '#dc2626';
+            if (value > 5000) return '#d97706';
+            return '#225382';
+        }
+
+        return '#225382';
+    }   
+
     async function loadSiteStatuses() {
         try {
             const sites = ['site_upstream', 'site_downstream', 'site_reservoir'];
@@ -843,6 +945,37 @@
             const d         = await latestRes.json();
             const breakdown = await breakdownRes.json();
             const trendData = await trendRes.json();
+
+            // alert circles
+            setCircle('cq-ph',
+                toPercent(d.ph, 6, 9),
+                getCircleColor('ph', d.ph)
+            );
+
+            setCircle('cq-turb',
+                toPercent(d.turbidityNtu, 0, 50),
+                getCircleColor('turbidity', d.turbidityNtu)
+            );
+
+            setCircle('cq-cond',
+                toPercent(d.conductivityUsCm, 0, 2000),
+                getCircleColor('conductivity', d.conductivityUsCm)
+            );
+
+            setCircle('cq-temp',
+                toPercent(d.waterTemperatureC, 0, 40),
+                getCircleColor('temperature', d.waterTemperatureC)
+            );
+
+            setCircle('cq-level',
+                toPercent(d.waterLevelCm, 0, 300),
+                getCircleColor('level', d.waterLevelCm)
+            );
+
+            setCircle('cq-light',
+                toPercent(d.lightLux, 0, 10000),
+                getCircleColor('light', d.lightLux)
+            );
 
             // live reading panels
             document.getElementById('val-ph').textContent    = d.ph.toFixed(2);

@@ -91,6 +91,15 @@ data class TrendPoint(
     val lightLux: Double
 )
 
+
+@Serializable
+data class RecentAlert(
+    val metric: String,
+    val value: Double,
+    val status: String,
+    val timestamp: String
+)
+
 fun main() {
     val filePath = "../../datasets/datasets/synthetic_outputs/water_quality.csv"
     var waterReadings = loadWaterQualityData(filePath)
@@ -244,6 +253,39 @@ fun main() {
                         )
                     )
                 }
+            }
+
+            //Getting last 10 alerts
+            get("/alerts/{siteId}/recent") {
+                val siteId = call.parameters["siteId"]
+
+                if (siteId.isNullOrBlank()) {
+                    call.respond(ErrorResponse("No site ID provided."))
+                    return@get
+                }
+
+                val alerts = getAlertReadingsForSite(waterReadings, siteId)
+                    .sortedByDescending { it.timestamp }
+                    .take(10)
+                    .flatMap { reading ->
+
+                        val ts = LocalDateTime.parse(reading.timestamp, formatter)
+                            .plus(offset)
+                            .format(formatter)
+
+                        listOfNotNull(
+                            if (reading.ph < 6.5 || reading.ph > 8.5)
+                                RecentAlert("ph", reading.ph, reading.status, ts) else null,
+
+                            if (reading.turbidityNtu > 1)
+                                RecentAlert("turbidity", reading.turbidityNtu, reading.status, ts) else null,
+
+                            if (reading.conductivityUsCm > 1700)
+                                RecentAlert("conductivity", reading.conductivityUsCm, reading.status, ts) else null
+                        )
+                    }
+
+                call.respond(alerts.take(5))
             }
 
 
