@@ -151,6 +151,7 @@
     .card {
         background: rgba(255,255,255,0.65); border-radius: 14px;
         padding: 14px 16px; backdrop-filter: blur(8px);
+        border: 1px solid rgba(255,255,255,0.8);
     }
 
     .card-header {
@@ -195,6 +196,54 @@
     .badge-warn { background: #fef3c7; color: #d97706; }
     .badge-crit { background: #fee2e2; color: #dc2626; }
 
+    .custom-dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-btn {
+        padding: 6px 14px; border-radius: 50px;
+        font-size: 0.78rem; font-weight: 500;
+        border: 1px solid rgba(34,83,130,0.2);
+        background: rgba(255,255,255,0.55); color: var(--blue);
+        cursor: pointer; font-family: 'Inter', sans-serif;
+        display: flex; align-items: center; gap: 6px;
+    }
+
+    .dropdown-btn:hover { background: rgba(255,255,255,0.75); }
+
+    .dropdown-btn::after {
+        content: '▾';
+        font-size: 0.7rem;
+    }
+
+    .dropdown-list {
+        display: none;
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.9);
+        border-radius: 14px;
+        box-shadow: 0 8px 24px rgba(34,83,130,0.12);
+        padding: 6px;
+        z-index: 100;
+        min-width: 130px;
+    }
+
+    .dropdown-list.open { display: block; }
+
+    .dropdown-item {
+        padding: 7px 14px; border-radius: 50px;
+        font-size: 0.78rem; font-weight: 500; color: var(--blue);
+        cursor: pointer; white-space: nowrap;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .dropdown-item:hover { background: rgba(34,83,130,0.07); }
+    .dropdown-item.active { background: var(--blue); color: white; }
+
 </style>
 </head>
 <body>
@@ -227,6 +276,24 @@
                 <button class="site-btn active" onclick="selectSite(this, 'site_upstream')">Upstream</button>
                 <button class="site-btn" onclick="selectSite(this, 'site_downstream')">Downstream</button>
                 <button class="site-btn" onclick="selectSite(this, 'site_reservoir')">Reservoir</button>
+                
+                <div class="custom-dropdown" id="range-dropdown">
+                    <button class="dropdown-btn" onclick="toggleDropdown()">7 days</button>
+                    <div class="dropdown-list" id="dropdown-list">
+                    <div class="dropdown-item" onclick="selectRange('1', '24 hours')">24 hours</div>
+                        <div class="dropdown-item" onclick="selectRange('3', '72 hours')">72 hours</div>
+                        <div class="dropdown-item active" onclick="selectRange('7', '7 days')">7 days</div>
+                        <div class="dropdown-item" onclick="selectRange('15', '15 days')">15 days</div>
+                        <div class="dropdown-item" onclick="selectRange('20', '20 days')">20 days</div>
+                        <div class="dropdown-item" onclick="selectRange('30', '30 days')">30 days</div>
+                        <div class="dropdown-item" onclick="selectRange('60', '2 months')">2 months</div>
+                        <div class="dropdown-item" onclick="selectRange('90', '3 months')">3 months</div>
+                        <div class="dropdown-item" onclick="selectRange('180', '6 months')">6 months</div>
+                        <div class="dropdown-item" onclick="selectRange('270', '9 months')">9 months</div>
+                        <div class="dropdown-item" onclick="selectRange('365', '12 months')">12 months</div>
+                        <div class="dropdown-item" onclick="selectRange('', 'All')">All</div>
+                    </div>
+            </div>
             </div>
             <div class="metric-group">
                 <button class="metric-pill active" onclick="selectMetric(this, 'ph')">pH</button>
@@ -282,6 +349,7 @@
 
     let currentSite   = 'site_upstream';
     let currentMetric = 'ph';
+    let currentDays   = 7;
     let chart         = null;
 
     const metricConfig = {
@@ -342,23 +410,68 @@
         return lines;
     }
 
+    function computeDiscrete(seriesData, min, max, cfg) {
+        const visibleIdx = [];
+        seriesData.forEach((p, i) => {
+            if (p.x >= min && p.x <= max) visibleIdx.push(i);
+        });
+        const visible = visibleIdx.length;
+        if (visible === 0) return [];
+        const target = Math.min(visible, Math.max(8, Math.ceil(Math.sqrt(visible))));
+        if (visible <= target) {
+            return visibleIdx.map(i => ({
+                seriesIndex: 0, dataPointIndex: i,
+                fillColor: cfg.color, strokeColor: '#fff', size: 4
+            }));
+        }
+        const result = [];
+        for (let j = 0; j < target; j++) {
+            const pick = Math.round(j * (visible - 1) / (target - 1));
+            result.push({ seriesIndex: 0, dataPointIndex: visibleIdx[pick], fillColor: cfg.color, strokeColor: '#fff', size: 4 });
+        }
+        return result;
+    }
+
     function renderChart(seriesData, cfg) {
+        let dotsTimer = null;
         const options = {
             chart: {
                 type: 'area',
                 height: 300,
-                toolbar: {
-                    show: true,
-                    tools: { download: false, selection: false, zoom: true, zoomin: true, zoomout: true, pan: true, reset: true }
-                },
+                toolbar: { show: false },
                 zoom: { enabled: true, type: 'x', autoScaleYaxis: true },
                 background: 'transparent',
                 fontFamily: 'Inter, sans-serif',
-                animations: { enabled: true, easing: 'easeinout', speed: 600 }
-            },
+                animations: { enabled: true, easing: 'easeinout', speed: 600 },
+                events: {
+                    zoomed: function(ctx, { xaxis }) { 
+                        clearTimeout(dotsTimer);
+                        dotsTimer = setTimeout(() => {
+                            ctx.updateOptions({
+                                markers: {
+                                    discrete: computeDiscrete(seriesData, xaxis.min ?? -Infinity, xaxis.max ?? Infinity, cfg),
+                                    hover: { size: 6 }
+                                }
+                            }, false, false);
+                        }, 200);
+                    },
+                    scrolled: function(ctx, { xaxis }) {
+                        clearTimeout(dotsTimer);
+                        dotsTimer = setTimeout(() => {
+                            ctx.updateOptions({
+                                markers: {
+                                    discrete: computeDiscrete(seriesData, xaxis.min ?? -Infinity, xaxis.max ?? Infinity, cfg),
+                                    hover: { size: 6 }
+                                }
+                            }, false, false);
+                        }, 200);
+                    }
+                },
+            },            
             series: [{ name: cfg.label, data: seriesData }],
             xaxis: {
                 type: 'datetime',
+                min: new Date().getTime() - (12 * 60 * 60 * 1000),
                 labels: {
                     datetimeUTC: false,
                     style: { colors: '#5a7a9a', fontSize: '0.62rem', fontFamily: 'Inter, sans-serif' }
@@ -377,7 +490,12 @@
             },
             colors: [cfg.color],
             dataLabels: { enabled: false },
-            markers: { size: 0, hover: { size: 5, colors: [cfg.color], strokeColors: '#fff', strokeWidth: 2 } },
+            
+            markers: {
+                discrete: computeDiscrete(seriesData, new Date().getTime() - 12 * 3600 * 1000, Infinity, cfg),
+                hover: { size: 6 }
+            },
+            
             annotations: { yaxis: buildAnnotations(cfg) },
             tooltip: { theme: 'light', x: { format: 'dd MMM yyyy HH:mm' } },
             grid: {
@@ -420,7 +538,7 @@
 
         try {
             const [trendRes, latestRes] = await Promise.all([
-                fetch('/trends/' + currentSite),
+                fetch('/trends/' + currentSite + (currentDays ? '?days=' + currentDays : '')),
                 fetch('/latest/' + currentSite)
             ]);
 
@@ -452,6 +570,25 @@
         currentSite = siteId;
         loadData();
     }
+
+    function toggleDropdown() {
+        document.getElementById('dropdown-list').classList.toggle('open');
+    }
+
+    function selectRange(val, label) {
+        currentDays = val;
+        document.querySelector('.dropdown-btn').textContent = label;
+        document.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
+        event.target.classList.add('active');
+        document.getElementById('dropdown-list').classList.remove('open');
+        loadData();
+    }
+
+    document.addEventListener('click', e => {
+        if (!document.getElementById('range-dropdown').contains(e.target)) {
+            document.getElementById('dropdown-list').classList.remove('open');
+        }
+    });
 
     function selectMetric(btn, metric) {
         document.querySelectorAll('.metric-group .metric-pill').forEach(p => p.classList.remove('active'));

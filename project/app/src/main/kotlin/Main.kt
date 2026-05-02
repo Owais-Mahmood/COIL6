@@ -256,9 +256,17 @@ fun main() {
                     return@get
                 }
 
-                val siteReadings = getReadingsForSite(waterReadings, siteId)
+                val days = call.request.queryParameters["days"]?.toIntOrNull()
+
+                val allSiteReadings = getReadingsForSite(waterReadings, siteId)
                     .sortedBy { it.timestamp }
-                    .takeLast(200)
+                
+                val siteReadings = if (days != null) {
+                    val cutoff = latestTimestamp.minusDays(days.toLong())
+                    allSiteReadings.filter { LocalDateTime.parse(it.timestamp, formatter).isAfter(cutoff) }
+                } else {
+                    allSiteReadings
+}
 
                 if (siteReadings.isEmpty()) {
                     call.respond(ErrorResponse("No readings found for site: $siteId"))
