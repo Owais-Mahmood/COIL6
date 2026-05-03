@@ -45,11 +45,21 @@
         font-weight: 700;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        color: #92610a;
-        background: rgba(245,158,11,0.12);
-        border: 1px solid rgba(245,158,11,0.35);
+        background: linear-gradient(90deg, #b8860b, #ffd700, #b8860b, #ffd700);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: shimmer 7.5s linear infinite;
+        background-color: rgba(212,160,23,0.22);
+        border: 1px solid rgba(196,140,10,0.6);
         padding: 3px 10px;
         border-radius: 50px;
+    }
+
+    @keyframes shimmer {
+        0%   { background-position: 0% center; }
+        100% { background-position: 200% center; }
     }
 
     .left-heading {
