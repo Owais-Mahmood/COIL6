@@ -37,7 +37,7 @@
     }
 
     /* ---------- left ---------- */
-    .left-logo { margin-bottom: 36px; }
+    .left-logo { margin-bottom: 40px; }
 
     .access-tag {
         display: inline-block;
@@ -45,12 +45,11 @@
         font-weight: 700;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        color: var(--blue);
-        background: rgba(34,83,130,0.1);
-        border: 1px solid rgba(34,83,130,0.18);
+        color: #92610a;
+        background: rgba(245,158,11,0.12);
+        border: 1px solid rgba(245,158,11,0.35);
         padding: 3px 10px;
         border-radius: 50px;
-        margin-bottom: 16px;
     }
 
     .left-heading {
@@ -67,6 +66,10 @@
         line-height: 1.75;
         margin-bottom: 36px;
         max-width: 400px;
+    }
+
+    .left-col {
+        transform: translateX(-80px);
     }
 
     .feature-list {
@@ -119,7 +122,8 @@
         display: flex;
         flex-direction: column;
         gap: 16px;
-        transform: translateX(40px);
+        transform: translateX(80px);
+        margin-top: 70px;
     }
 
     .login-card {
@@ -247,9 +251,10 @@
 
         <div class="left-logo">
             <img src="images/stroomloop.png" width="190">
+            <div style="margin-top: 10px; margin-bottom: 0px;">
+                <span class="access-tag" style="position: relative; top: -20px;">Official Access</span>
+            </div>
         </div>
-
-        <span class="access-tag">Official Access</span>
 
         <div class="left-heading">Monitor. Analyse. Protect.</div>
 
