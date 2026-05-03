@@ -99,7 +99,7 @@
     .login-btn:hover { background: var(--blue-dark); }
 
     /* ---------- page ---------- */
-    .page { padding: 0 24px 32px; }
+    .page { padding: 40px 24px 32px; }
 
     /* ---------- status badges ---------- */
     .ip-badge {
@@ -124,7 +124,7 @@
 
     /* ---------- hero ---------- */
     .hero {
-        padding: 20px 0 16px;
+        padding: 8px 0 16px;
         display: grid;
         grid-template-columns: 1fr 260px 280px;
         gap: 20px;
@@ -176,6 +176,7 @@
     .info-panel {
         background: rgba(255,255,255,0.5); border-radius: 12px;
         padding: 14px 16px; backdrop-filter: blur(6px);
+        border: 1px solid transparent; transition: border-color 0.4s, background 0.4s;
     }
 
     .ip-title {
@@ -458,18 +459,18 @@
             </div>
 
             <div class="hero-panels">
-                <div class="info-panel">
+                <div class="info-panel" id="panel-latest">
                     <div class="ip-title">Latest Reading</div>
                     <div class="ip-rows">
                         <div class="ip-row">
                             <span class="ip-icon">🕒</span>
-                            <span class="ip-label">Timestamp</span>
-                            <span class="ip-val" id="val-timestamp">—</span>
+                            <span class="ip-label">Last Updated</span>
+                            <span class="ip-val" id="val-last-updated">—</span>
                         </div>
                         <div class="ip-row">
-                            <span class="ip-icon">📅</span>
-                            <span class="ip-label">Date</span>
-                            <span class="ip-val" id="val-date">—</span>
+                            <span class="ip-icon">🔄</span>
+                            <span class="ip-label" id="val-staleness">—</span>
+                            <button onclick="manualRefresh()" style="font-size:0.7rem;padding:2px 10px;border-radius:50px;border:1px solid rgba(34,83,130,0.2);background:rgba(255,255,255,0.7);color:var(--blue);cursor:pointer;font-family:'Inter',sans-serif;">Refresh</button>
                         </div>
                     </div>
                 </div>
@@ -661,6 +662,36 @@
 
     let donutData = { normal: 0, warning: 0, critical: 0 };
     let currentSite = 'site_upstream';
+    let lastRefreshTime = null;
+
+    function updateStaleness() {
+        if (!lastRefreshTime) return;
+        const secs = Math.floor((Date.now() - lastRefreshTime) / 1000);
+        const mins = Math.floor(secs / 60);
+        const panel = document.getElementById('panel-latest');
+
+        if (secs < 60)       document.getElementById('val-staleness').textContent = 'Just now';
+        else if (mins === 1) document.getElementById('val-staleness').textContent = '1 min ago';
+        else                 document.getElementById('val-staleness').textContent = mins + ' mins ago';
+
+        if (mins >= 20) {
+            panel.style.borderColor = 'rgba(239,68,68,0.4)';
+            panel.style.background  = 'rgba(239,68,68,0.05)';
+        } else if (mins >= 10) {
+            panel.style.borderColor = 'rgba(245,158,11,0.4)';
+            panel.style.background  = 'rgba(245,158,11,0.05)';
+        } else {
+            panel.style.borderColor = 'transparent';
+            panel.style.background  = 'rgba(255,255,255,0.5)';
+        }
+    }
+
+    function manualRefresh() {
+        loadData();
+        loadSiteStatuses();
+        loadSiteComparison();
+        loadStatusBreakdown();
+    }
 
     function getBadgeClass(status) {
         if (status === 'normal')   return 'badge-ok';
@@ -682,14 +713,12 @@
 
     function updateClock() {
         const now  = new Date();
-        const past = new Date(now);
-        past.setFullYear(past.getFullYear() - 3);
 
-        const hh   = String(past.getHours()).padStart(2, '0');
-        const mm   = String(past.getMinutes()).padStart(2, '0');
-        const dd   = String(past.getDate()).padStart(2, '0');
-        const mo   = String(past.getMonth() + 1).padStart(2, '0');
-        const yyyy = past.getFullYear();
+        const hh   = String(now.getHours()).padStart(2, '0');
+        const mm   = String(now.getMinutes()).padStart(2, '0');
+        const dd   = String(now.getDate()).padStart(2, '0');
+        const mo   = String(now.getMonth() + 1).padStart(2, '0');
+        const yyyy = now.getFullYear();
 
         document.getElementById('clock').textContent = `${hh}:${mm} · ${dd}/${mo}/${yyyy}`;
     }
@@ -890,6 +919,17 @@
                 sub.textContent   = 'One or more parameters have exceeded safe limits';
             }
 
+        lastRefreshTime = Date.now();
+            const now = new Date();
+            document.getElementById('val-last-updated').textContent =
+                String(now.getHours()).padStart(2,'0') + ':' +
+                String(now.getMinutes()).padStart(2,'0') + ':' +
+                String(now.getSeconds()).padStart(2,'0');
+            document.getElementById('val-staleness').textContent = 'Just now';
+            const panel = document.getElementById('panel-latest');
+            panel.style.borderColor = 'transparent';
+            panel.style.background  = 'rgba(255,255,255,0.5)';
+        
         } catch (e) {
             console.error('Error loading dashboard data', e);
         }
@@ -902,11 +942,12 @@
     loadStatusBreakdown();
     initDonutHover();
 
-    setInterval(loadData,            15000);
-    setInterval(loadSiteStatuses,    15000);
-    setInterval(loadSiteComparison,  60000);
-    setInterval(loadStatusBreakdown, 60000);
-    setInterval(updateClock,          1000);
+    setInterval(loadData, 900000);
+    setInterval(loadSiteStatuses, 900000);
+    setInterval(loadSiteComparison,  900000);
+    setInterval(loadStatusBreakdown, 900000);
+    setInterval(updateClock,      1000);
+    setInterval(updateStaleness,  1000);
 
     function initDonutHover() {
         const svg  = document.querySelector('.sb-donut-wrap svg');

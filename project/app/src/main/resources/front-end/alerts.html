@@ -727,20 +727,15 @@
     }
 
     function updateClock() {
-        const now = new Date();
+        const now  = new Date();
 
-        const past = new Date(now);
-        past.setFullYear(past.getFullYear() - 3);
+        const hh   = String(now.getHours()).padStart(2, '0');
+        const mm   = String(now.getMinutes()).padStart(2, '0');
+        const dd   = String(now.getDate()).padStart(2, '0');
+        const mo   = String(now.getMonth() + 1).padStart(2, '0');
+        const yyyy = now.getFullYear();
 
-        const hours = String(past.getHours()).padStart(2, '0');
-        const mins  = String(past.getMinutes()).padStart(2, '0');
-
-        const day   = String(past.getDate()).padStart(2, '0');
-        const month = String(past.getMonth() + 1).padStart(2, '0');
-        const year  = past.getFullYear();
-
-        document.getElementById('clock').textContent =
-            `${hours}:${mins} · ${day}/${month}/${year}`;
+        document.getElementById('clock').textContent = `${hh}:${mm} · ${dd}/${mo}/${yyyy}`;
     }
 
 
