@@ -4,7 +4,7 @@ plugins {
 }
 
 kotlin {
-    jvmToolchain(25) // match your Java version
+    jvmToolchain(24) // match your Java version
 }
 
 repositories {
@@ -14,8 +14,8 @@ repositories {
 
 
 dependencies {
-    implementation("io.ktor:ktor-server-core:2.3.0")
-    implementation("io.ktor:ktor-server-netty:2.3.0")
+    implementation("io.ktor:ktor-server-core:3.4.1")
+    implementation("io.ktor:ktor-server-netty:3.4.1")
 }
 
 application {

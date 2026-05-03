@@ -12,13 +12,18 @@ import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondRedirect
+import io.ktor.server.request.receiveParameters
+import io.ktor.server.sessions.*
 import io.ktor.server.routing.get
+import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+@Serializable
+data class UserSession(val isOfficial: Boolean)
 
 @Serializable
 data class AlertSummary(
@@ -106,6 +111,13 @@ fun main() {
             json()
         }
 
+        install(Sessions) {
+            cookie<UserSession>("user_session") {
+                cookie.path = "/"
+                cookie.maxAgeInSeconds = 3600
+            }
+        }
+
         routing {
 
             // Serve frontend files
@@ -114,6 +126,24 @@ fun main() {
             // Login page first
             get("/") {
                 call.respondRedirect("/dashboard.html")
+            }
+
+            post("/login") {
+                val params = call.receiveParameters()
+                val email    = params["email"]    ?: ""
+                val password = params["password"] ?: ""
+
+                if (email == "official@gov.za" && password == "demo2026") {
+                    call.sessions.set(UserSession(isOfficial = true))
+                    call.respondRedirect("/dashboard-government.html")
+                } else {
+                    call.respondRedirect("/login.html?error=1")
+                }
+            }
+
+            get("/logout") {
+                call.sessions.clear<UserSession>()
+                call.respondRedirect("/login.html")
             }
 
             // Alerts route

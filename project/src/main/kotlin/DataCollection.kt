@@ -24,6 +24,10 @@ data class WaterQualityReading(
 )
 
 
+fun safeDouble(value: String, fieldName: String, lineNumber: Int): Double {
+    return value.toDoubleOrNull() ?: 0.0
+}
+
 fun safeInt(value: String, fieldName: String, lineNumber: Int): Int {
     return value.toIntOrNull() ?: 0
 }
