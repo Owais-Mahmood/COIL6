@@ -31,7 +31,7 @@ tasks.withType<JavaCompile>().configureEach {
 }
 
 application {
-    mainClass = "MainKt"
+    mainClass = "backend.MainKt"
 }
 
 tasks.named<Test>("test") {
