@@ -170,14 +170,6 @@
     .toggle-spacer   { flex: 1; }
     .site-toggle-row { display: flex; gap: 8px; margin-top: 28px; }
 
-    /* map */
-    .hero-map {
-        display: flex; align-items: center; justify-content: center;
-        margin-left: -185px; margin-top: 15px;
-    }
-
-    .map-container svg { width: 100%; height: auto; }
-
     /* info panels */
     .hero-panels {
         display: grid;
@@ -325,72 +317,36 @@
     .ao-sub { font-size: 0.72rem; color: var(--text-mid); margin-bottom: 25px; }
 
     /* alert overview bars */
-    .ao-bars     { display: flex; flex-direction: column; gap: 6px; }
-    .ao-bar-row  { display: flex; align-items: center; gap: 8px; }
-
-    .ao-bar-label { font-size: 0.7rem; color: var(--text-light); width: 76px; flex-shrink: 0; }
-
-    .ao-bar-track {
-        flex: 1; height: 6px; border-radius: 3px;
-        background: var(--blue-faint); overflow: hidden;
+/* Alert overview grid */
+    .ao-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 6px;
     }
 
-    .ao-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
-    .ao-bar-fill.c-warn { background: #f59e0b; }
-    .ao-bar-fill.c-crit { background: #ef4444; }
-    .ao-bar-fill.c-blue { background: var(--blue); }
-
-    .ao-bar-count {
-        font-size: 0.7rem; font-weight: 600; color: var(--text-dark);
-        width: 44px; text-align: right;
+    .ao-box {
+        background: rgba(255,255,255,0.7);
+        border-radius: 12px;
+        padding: 12px;
+        backdrop-filter: blur(6px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 
-    /* pH trend chart */
-    .fc-bar {
-        flex: 1;
-        border-radius: 3px 3px 0 0;
-        background: rgba(34, 83, 130, 0.15);
-        transition: height 0.4s ease;
-        position: relative;
-        z-index: 2;
+    .ao-box-label {
+        font-size: 0.7rem;
+        color: var(--text-light);
+        margin-bottom: 6px;
     }
 
-    .fc-bar.ph-normal { background: var(--blue); }
-    .fc-bar.ph-warn   { background: #e9820a; }
-    .fc-bar.ph-crit   { background: #dc2626; }
-
-    .ph-chart-outer { display: flex; gap: 6px; margin-top: 2px; }
-
-    .ph-yaxis { position: relative; height: 60px; width: 22px; flex-shrink: 0; }
-
-    .ph-yaxis-lbl {
-        position: absolute; right: 0;
-        font-size: 0.58rem; color: #e9820a;
-        line-height: 1; transform: translateY(50%);
+    .ao-box-value {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--text-dark);
     }
 
-    .ph-unit-lbl {
-        position: absolute; right: 0; top: -14px;
-        font-size: 0.58rem; color: var(--text-light); line-height: 1;
-    }
-
-    .ph-chart-right { flex: 1; display: flex; flex-direction: column; }
-
-    .fake-chart {
-        display: flex; align-items: flex-end; gap: 4px;
-        height: 60px; position: relative;
-    }
-
-    .ph-ref-line {
-        position: absolute; left: 0; right: 0; height: 0;
-        border-top: 1px dashed rgba(233, 130, 10, 0.4);
-        pointer-events: none; z-index: 1;
-    }
-
-    .ph-xlabel {
-        display: flex; justify-content: space-between;
-        font-size: 0.58rem; color: var(--text-light); margin-top: 4px;
-    }
 
     /* ---------- site comparison ---------- */
     .sc-sub {
@@ -433,14 +389,6 @@
     .sc-badge.best   { background: #dcfce7; color: #16a34a; }
     .sc-badge.worst  { background: #fee2e2; color: #dc2626; }
     .sc-badge.hidden { visibility: hidden; }
-
-    /* ---------- weather conditions ---------- */
-    .wx-rows { display: flex; flex-direction: column; gap: 16px; margin-top: 6px; }
-    .wx-row  { display: flex; align-items: center; gap: 12px; }
-
-    .wx-icon  { font-size: 1.4rem; width: 28px; text-align: center; flex-shrink: 0; }
-    .wx-label { font-size: 0.72rem; color: var(--text-light); flex: 1; }
-    .wx-val   { font-size: 0.88rem; font-weight: 600; color: var(--text-dark); white-space: nowrap; }
 
     /* ---------- verdict strip ---------- */
     .verdict-strip {
@@ -634,99 +582,61 @@
                     <span class="card-title">Alert Overview</span>
                     <span class="card-arrow">↗</span>
                 </div>
-                <div class="ao-big" id="ao-total">—</div>
-                <div class="ao-sub">Readings that triggered an alert</div>
-                <div class="ao-bars">
-                    <div class="ao-bar-row">
-                        <span class="ao-bar-label">pH</span>
-                        <div class="ao-bar-track">
-                            <div class="ao-bar-fill c-crit" id="ao-bar-ph" style="width:0%"></div>
-                        </div>
-                        <span class="ao-bar-count" id="ao-count-ph">—</span>
+
+                <div class="ao-grid">
+
+                    <div class="ao-box">
+                        <div class="ao-box-label">Total</div>
+                        <div class="ao-box-value" id="ao-total">—</div>
                     </div>
-                    <div class="ao-bar-row">
-                        <span class="ao-bar-label">Turbidity</span>
-                        <div class="ao-bar-track">
-                            <div class="ao-bar-fill c-warn" id="ao-bar-turb" style="width:0%"></div>
-                        </div>
-                        <span class="ao-bar-count" id="ao-count-turb">—</span>
+
+                    <div class="ao-box">
+                        <div class="ao-box-label">This Month</div>
+                        <div class="ao-box-value" id="ao-month">—</div>
                     </div>
-                    <div class="ao-bar-row">
-                        <span class="ao-bar-label">Conductivity</span>
-                        <div class="ao-bar-track">
-                            <div class="ao-bar-fill c-blue" id="ao-bar-cond" style="width:0%"></div>
-                        </div>
-                        <span class="ao-bar-count" id="ao-count-cond">—</span>
+
+                    <div class="ao-box">
+                        <div class="ao-box-label">This Week</div>
+                        <div class="ao-box-value" id="ao-week">—</div>
                     </div>
+
+                    <div class="ao-box">
+                        <div class="ao-box-label">Today</div>
+                        <div class="ao-box-value" id="ao-day">—</div>
+                    </div>
+
                 </div>
             </div>
 
             <!-- Card 3: pH Trend -->
             <div class="card">
                 <div class="card-header">
-                    <span class="card-title">pH Trend</span>
-                    <span class="card-arrow">↗</span>
+                    <span class="card-title">Top Water Alert</span>
                 </div>
-                <div class="ao-big" id="ph-trend-val">—</div>
-                <div class="ao-sub">Latest reading · Last 12 measurements shown</div>
-                <div class="ph-chart-outer">
-                    <div class="ph-yaxis">
-                        <span class="ph-unit-lbl">pH</span>
-                        <span class="ph-yaxis-lbl" style="bottom:70%">8.5</span>
-                        <span class="ph-yaxis-lbl" style="bottom:30%">6.5</span>
-                    </div>
-                    <div class="ph-chart-right">
-                        <div class="fake-chart">
-                            <div class="ph-ref-line" style="bottom:70%"></div>
-                            <div class="ph-ref-line" style="bottom:30%"></div>
-                            <div class="fc-bar" style="height:50%"></div>
-                            <div class="fc-bar" style="height:50%"></div>
-                            <div class="fc-bar" style="height:50%"></div>
-                            <div class="fc-bar" style="height:50%"></div>
-                            <div class="fc-bar" style="height:50%"></div>
-                            <div class="fc-bar" style="height:50%"></div>
-                            <div class="fc-bar" style="height:50%"></div>
-                            <div class="fc-bar" style="height:50%"></div>
-                            <div class="fc-bar" style="height:50%"></div>
-                            <div class="fc-bar" style="height:50%"></div>
-                            <div class="fc-bar" style="height:50%"></div>
-                            <div class="fc-bar" style="height:50%"></div>
-                        </div>
-                        <div class="ph-xlabel">
-                            <span>older</span>
-                            <span>now</span>
-                        </div>
-                    </div>
+
+                <div class="ao-big" id="top-water-metric">—</div>
+                <div class="ao-sub">Most frequently triggered metric</div>
+
+                <div class="ao-box">
+                    <div class="ao-box-label">Total Alerts</div>
+                    <div class="ao-box-value" id="top-water-count">—</div>
                 </div>
             </div>
 
             <!-- Card 4: Weather Conditions -->
             <div class="card">
                 <div class="card-header">
-                    <span class="card-title">Weather</span>
-                    <span class="card-arrow">↗</span>
+                    <span class="card-title">Top Environmental Alert</span>
                 </div>
-                <p class="sc-sub">Ambient weather recorded at the selected monitoring site alongside the latest water quality reading.</p>
-                <div class="wx-rows">
-                    <div class="wx-row">
-                        <span class="wx-icon">🌡️</span>
-                        <span class="wx-label">Air Temperature</span>
-                        <span class="wx-val" id="wx-temp">—</span>
-                    </div>
-                    <div class="wx-row">
-                        <span class="wx-icon">🌫️</span>
-                        <span class="wx-label">Humidity</span>
-                        <span class="wx-val" id="wx-rh">—</span>
-                    </div>
-                    <div class="wx-row">
-                        <span class="wx-icon">☔</span>
-                        <span class="wx-label">Rainfall Rate</span>
-                        <span class="wx-val" id="wx-rain">—</span>
-                    </div>
+
+                <div class="ao-big" id="top-env-metric">—</div>
+                <div class="ao-sub">Most frequently triggered metric</div>
+
+                <div class="ao-box">
+                    <div class="ao-box-label">Total Alerts</div>
+                    <div class="ao-box-value" id="top-env-count">—</div>
                 </div>
             </div>
-
-        </div>
 
         <!-- Verdict strip -->
         <div class="verdict-strip v-safe" id="verdict-strip">
@@ -1008,11 +918,11 @@
             });
 
             // alert overview
-            document.getElementById('ao-total').textContent      = breakdown.total.toLocaleString();
-            document.getElementById('ao-count-ph').textContent   = breakdown.ph.toLocaleString();
-            document.getElementById('ao-count-turb').textContent = breakdown.turbidity.toLocaleString();
-            document.getElementById('ao-count-cond').textContent = breakdown.conductivity.toLocaleString();
-
+            document.getElementById('ao-total').textContent = breakdown.total.toLocaleString();
+            document.getElementById('ao-month').textContent = breakdown.month.toLocaleString();
+            document.getElementById('ao-week').textContent  = breakdown.week.toLocaleString();
+            document.getElementById('ao-day').textContent   = breakdown.day.toLocaleString();
+                        
             const maxAlerts = Math.max(breakdown.ph, breakdown.turbidity, breakdown.conductivity, 1);
             document.getElementById('ao-bar-ph').style.width   = (breakdown.ph           / maxAlerts * 100) + '%';
             document.getElementById('ao-bar-turb').style.width = (breakdown.turbidity    / maxAlerts * 100) + '%';

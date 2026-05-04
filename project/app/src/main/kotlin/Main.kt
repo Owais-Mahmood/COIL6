@@ -100,6 +100,15 @@ data class RecentAlert(
     val timestamp: String
 )
 
+@Serializable
+data class AlertTimeSummaryResponse(
+    val siteId: String,
+    val total: Int,
+    val daily: Int,
+    val weekly: Int,
+    val monthly: Int
+)
+
 fun main() {
     val filePath = "../../datasets/datasets/synthetic_outputs/water_quality.csv"
     var waterReadings = loadWaterQualityData(filePath)
@@ -288,6 +297,47 @@ fun main() {
                 call.respond(alerts.take(5))
             }
 
+
+            // Displaying alert no. by time frame
+            get("/alerts/{siteId}/summary") {
+                val siteIdRaw = call.parameters["siteId"]
+
+                val siteId = siteIdRaw
+                    ?.replace("site_", "")
+                    ?.replaceFirstChar { it.uppercase() }
+
+                if (siteId.isNullOrBlank()) {
+                    call.respond(ErrorResponse("No site ID provided."))
+                    return@get
+                }
+
+                val alerts = getAlertReadingsForSite(waterReadings, siteId)
+
+                val now = LocalDateTime.now()
+
+                val dailyCutoff   = now.minusDays(1)
+                val weeklyCutoff  = now.minusWeeks(1)
+                val monthlyCutoff = now.minusMonths(1)
+
+                val parsedAlerts = alerts.map {
+                    LocalDateTime.parse(it.timestamp, formatter)
+                }
+
+                val total   = parsedAlerts.size
+                val daily   = parsedAlerts.count { it.isAfter(dailyCutoff) }
+                val weekly  = parsedAlerts.count { it.isAfter(weeklyCutoff) }
+                val monthly = parsedAlerts.count { it.isAfter(monthlyCutoff) }
+
+                call.respond(
+                    AlertTimeSummaryResponse(
+                        siteId = siteId,
+                        total = total,
+                        daily = daily,
+                        weekly = weekly,
+                        monthly = monthly
+                    )
+                )
+            }
 
             // Trend data for a given site
             get("/trends/{siteId}") {
