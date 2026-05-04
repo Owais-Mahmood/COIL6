@@ -354,6 +354,50 @@
             color: var(--text-mid); 
         }
 
+        .stat-box {
+            background: rgba(255,255,255,0.65);
+            border-radius: 12px;
+            padding: 10px 12px;
+            backdrop-filter: blur(8px);
+        }
+        
+        .stat-label {
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: #5a7a9a;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            margin-bottom: 2px;
+        }
+
+        .stat-val {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #1c3a55;
+            line-height: 1.2;
+        }
+
+        .stat-badge {
+            display: inline-block;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-top: 3px;
+        }
+
+        .badge-ok   { background: #dcfce7; color: #16a34a; }
+        .badge-warn { background: #fef3c7; color: #d97706; }
+        .badge-crit { background: #fee2e2; color: #dc2626; }
+
+        .site-stats {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+
     </style>
 </head>
 <body>
@@ -570,6 +614,24 @@
                     Captures baseline water quality above the settlement,
                     before agricultural and residential contamination sources.
                 </span>
+                <div class="site-stats">
+                    <div class="stat-box">
+                        <div class="stat-label">Total Readings</div>
+                        <div class="stat-val" id="upstream-total-readings">--</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Total Alerts</div>
+                        <div class="stat-val" id="upstream-total-alerts">--</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Alert Rate</div>
+                        <div class="stat-val" id="upstream-alert-rate">--</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Latest Status</div>
+                        <span class="stat-badge badge-ok" id="upstream-status-badge">--</span>
+                    </div>
+                </div>
             </div>
             <div class="monitoring-sites-box">
                 <span class="monitoring-sites-title">
@@ -579,6 +641,24 @@
                     Captures cumulative effects of all upstream activity
                     before water reaches the reservoir supply point.
                 </span>
+                <div class="site-stats">
+                    <div class="stat-box">
+                        <div class="stat-label">Total Readings</div>
+                        <div class="stat-val" id="downstream-total-readings">--</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Total Alerts</div>
+                        <div class="stat-val" id="downstream-total-alerts">--</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Alert Rate</div>
+                        <div class="stat-val" id="downstream-alert-rate">--</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Latest Status</div>
+                        <span class="stat-badge badge-ok" id="downstream-status-badge">--</span>
+                    </div>
+                </div>
             </div>
             <div class="monitoring-sites-box">
                 <span class="monitoring-sites-title">
@@ -587,6 +667,24 @@
                 <span class="monitoring-sites-contents">
                     The most critical site - monitors water quality at the main community supply reservoir for treatment decisions.
                 </span>
+                <div class="site-stats">
+                    <div class="stat-box">
+                        <div class="stat-label">Total Readings</div>
+                        <div class="stat-val" id="reservoir-total-readings">--</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Total Alerts</div>
+                        <div class="stat-val" id="reservoir-total-alerts">--</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Alert Rate</div>
+                        <div class="stat-val" id="reservoir-alert-rate">--</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Latest Status</div>
+                        <span class="stat-badge badge-ok" id="reservoir-status-badge">--</span>
+                    </div>
+                </div>
             </div>
         </div>
         </div> 
@@ -699,6 +797,40 @@
 
         document.getElementById('clock').textContent = `${hh}:${mm} · ${dd}/${mo}/${yyyy}`;
     }
+
+    async function loadSiteAlerts() {
+        const sites = [
+            {id: "site_upstream", prefix: "upstream"},
+            {id: "site_downstream", prefix: "downstream"},
+            {id: "site_reservoir", prefix: "reservoir"}
+        ]
+
+        for (const site of sites){
+            const latest_res = await fetch(`/latest/${site.id}`)
+            const latest_d = await latest_res.json()
+
+            const readings_res = await fetch(`/site/${site.id}`)
+            const readings_d = await readings_res.json()
+
+            const alerts_res = await fetch(`/alerts/${site.id}/summary`)
+            const alerts_d = await alerts_res.json()
+
+            const status = latest_d.status
+            const badgeClass = status === 'normal' ? 'badge-ok' : status === 'warning' ? 'badge-warn' : 'badge-crit'
+            const label = status.charAt(0).toUpperCase() + status.slice(1)
+
+            document.getElementById(`${site.prefix}-status-badge`).className = `stat-badge ${badgeClass}`
+            document.getElementById(`${site.prefix}-status-badge`).textContent = label
+            document.getElementById(`${site.prefix}-total-readings`).textContent = readings_d.count
+            document.getElementById(`${site.prefix}-total-alerts`).textContent = alerts_d.total
+
+            const alertRate = ((alerts_d.total / readings_d.count) * 100).toFixed(1)
+            document.getElementById(`${site.prefix}-alert-rate`).textContent = alertRate + "%"
+
+        }
+    }
+
+loadSiteAlerts();
 
 updateClock();
 setInterval(updateClock, 1000);

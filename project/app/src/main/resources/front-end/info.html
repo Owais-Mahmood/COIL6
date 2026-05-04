@@ -700,6 +700,27 @@
         document.getElementById('clock').textContent = `${hh}:${mm} · ${dd}/${mo}/${yyyy}`;
     }
 
+    async function loadSiteAlerts() {
+        const sites = [
+            {id: "site_upstream", elementId: "upstream"},
+            {id: "site_downstream", elementId: "downstream"},
+            {id: "site_reservoir", elementId: "reservoir"}
+        ]
+
+        for (const site of sites){
+            const latest_res = await fetch(`/latest/${site.id}`)
+            const latest_d = await latest_res.json()
+
+            const alert_res = await fetch(`/alerts`)
+            const alert_d = await alert_res.json()
+        }
+        
+        document.getElementById(`${site.elementId}-status`).textContent = latest.status.charAt(0).toUpperCase() + latest.status.slice(2)
+        document.getElementById(`${site.elementId}-status`).className = `status-badge status-${latest.status}`
+        document.getElementById(`${site.elementId}-alerts`).textContent = alertData.count
+    }
+
+loadSiteAlerts();
 updateClock();
 setInterval(updateClock, 1000);
 loadPinPoint();
