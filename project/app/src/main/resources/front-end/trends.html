@@ -418,6 +418,7 @@
     </div>
 </div>
 
+<script src="/thresholds.js"></script>
 <script>
 
     let currentSite   = 'site_upstream';
@@ -426,12 +427,12 @@
     let chart         = null;
 
     const metricConfig = {
-        ph:           { label: 'pH',           field: 'ph',                unit: 'pH',    safeMin: 6.5,  safeMax: 8.5,  decimals: 2, color: '#225382' },
-        turbidity:    { label: 'Turbidity',    field: 'turbidityNtu',      unit: 'NTU',   safeMin: null, safeMax: 4,    decimals: 1, color: '#e9820a' },
-        conductivity: { label: 'Conductivity', field: 'conductivityUsCm',  unit: 'µS/cm', safeMin: 200,  safeMax: 800,  decimals: 0, color: '#9b8ec4' },
-        waterTemp:    { label: 'Water Temp',   field: 'waterTemperatureC', unit: '°C',    safeMin: 10,   safeMax: 30,   decimals: 1, color: '#0ea5e9' },
-        waterLevel:   { label: 'Water Level',  field: 'waterLevelCm',      unit: 'cm',    safeMin: 20,   safeMax: 80,   decimals: 1, color: '#0d9488' },
-        light:        { label: 'Light',        field: 'lightLux',          unit: 'lux',   safeMin: null, safeMax: null, decimals: 0, color: '#eab308' }
+        ph:           { label: 'pH',           field: 'ph',                unit: 'pH',    safeMin: THRESHOLDS.ph.warnMin,        safeMax: THRESHOLDS.ph.warnMax,        decimals: 2, color: '#225382' },
+        turbidity:    { label: 'Turbidity',    field: 'turbidityNtu',      unit: 'NTU',   safeMin: null,                         safeMax: THRESHOLDS.turbidity.warn,    decimals: 1, color: '#e9820a' },
+        conductivity: { label: 'Conductivity', field: 'conductivityUsCm',  unit: 'µS/cm', safeMin: null,                         safeMax: THRESHOLDS.conductivity.warn, decimals: 0, color: '#9b8ec4' },
+        waterTemp:    { label: 'Water Temp',   field: 'waterTemperatureC', unit: '°C',    safeMin: THRESHOLDS.waterTemp.warnMin,  safeMax: THRESHOLDS.waterTemp.warnMax, decimals: 1, color: '#0ea5e9' },
+        waterLevel:   { label: 'Water Level',  field: 'waterLevelCm',      unit: 'cm',    safeMin: THRESHOLDS.waterLevel.warnMin, safeMax: THRESHOLDS.waterLevel.warnMax,decimals: 1, color: '#0d9488' },
+        light:        { label: 'Light',        field: 'lightLux',          unit: 'lux',   safeMin: null,                         safeMax: null,                         decimals: 0, color: '#eab308' }
     };
 
     function getBadgeClass(status) {

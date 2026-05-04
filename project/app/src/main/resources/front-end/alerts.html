@@ -702,6 +702,7 @@
     </div>
 </div>
 
+<script src="/thresholds.js"></script>
 <script>
     let currentSite = 'site_upstream';
 
@@ -787,43 +788,41 @@
     function getCircleColor(metric, value) {
 
         if (metric === 'ph') {
-            if (value < 6.5 || value > 8.5) return '#dc2626'; // critical
-            if (value < 6.8 || value > 8.2) return '#d97706'; // warning
-            return '#16a34a'; // normal
+            if (value < THRESHOLDS.ph.critMin || value > THRESHOLDS.ph.critMax) return '#dc2626';
+            if (value < THRESHOLDS.ph.warnMin || value > THRESHOLDS.ph.warnMax) return '#d97706';
+            return '#16a34a';
         }
 
         if (metric === 'turbidity') {
-            if (value > 25) return '#dc2626';
-            if (value > 10) return '#d97706';
+            if (value > THRESHOLDS.turbidity.crit) return '#dc2626';
+            if (value > THRESHOLDS.turbidity.warn) return '#d97706';
             return '#16a34a';
         }
 
         if (metric === 'conductivity') {
-            if (value > 1500) return '#dc2626';
-            if (value > 800) return '#d97706';
+            if (value > THRESHOLDS.conductivity.crit) return '#dc2626';
+            if (value > THRESHOLDS.conductivity.warn) return '#d97706';
             return '#16a34a';
         }
 
         if (metric === 'temperature') {
-            if (value > 30 || value < 5) return '#dc2626';
-            if (value > 25 || value < 8) return '#d97706';
+            if (value > THRESHOLDS.waterTemp.critMax || value < THRESHOLDS.waterTemp.critMin) return '#dc2626';
+            if (value > THRESHOLDS.waterTemp.warnMax || value < THRESHOLDS.waterTemp.warnMin) return '#d97706';
             return '#16a34a';
         }
 
         if (metric === 'level') {
-            if (value > 250) return '#dc2626';
-            if (value > 180) return '#d97706';
+            if (value > THRESHOLDS.waterLevel.critMax || value < THRESHOLDS.waterLevel.critMin) return '#dc2626';
+            if (value > THRESHOLDS.waterLevel.warnMax || value < THRESHOLDS.waterLevel.warnMin) return '#d97706';
             return '#16a34a';
         }
 
         if (metric === 'light') {
-            if (value > 8000) return '#dc2626';
-            if (value > 5000) return '#d97706';
             return '#16a34a';
         }
 
         return '#16a34a';
-    }  
+    }
 
     // picking metric that has produced the most alerts
     function getTopWaterAlert(breakdown) {
