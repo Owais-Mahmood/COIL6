@@ -1,0 +1,829 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stroomloop · Trends</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<style>
+
+    :root {
+        --blue: #225382;
+        --blue-dark: #1a3f63;
+        --blue-faint: rgba(34, 83, 130, 0.1);
+        --text-dark: #1c3a55;
+        --text-mid: #3a5a7a;
+        --text-light: #5a7a9a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(180deg, #81C3DB 0%, #F2FCFF 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 24px 16px;
+    }
+
+    .app {
+        width: 100%;
+        max-width: 1200px;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 24px 64px rgba(34, 83, 130, 0.2);
+        background: linear-gradient(to bottom,
+            #c8eaf3 0%, #d8f0f7 18%, #e4f6fa 36%,
+            #edfafc 58%, #f3fdfe 78%, #F2FCFF 100%);
+    }
+
+    .navbar {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        padding: 14px 24px;
+        gap: 16px;
+    }
+
+    .nav-right {
+        display: flex; align-items: center;
+        gap: 12px; justify-content: flex-end;
+    }
+
+    .nav-clock {
+        padding: 7px 18px; border-radius: 50px;
+        font-size: 0.875rem; font-weight: 600; color: var(--blue);
+        background: rgba(255,255,255,0.65); border: 1px solid rgba(255,255,255,0.85);
+        backdrop-filter: blur(8px); white-space: nowrap; user-select: none;
+    }
+
+    .logo {
+        display: flex; align-items: center; gap: 8px;
+        font-size: 1rem; font-weight: 700; color: var(--blue);
+        text-decoration: none; white-space: nowrap;
+    }
+
+    .nav-pills {
+        display: flex; gap: 2px;
+        background: rgba(255,255,255,0.55);
+        border: 1px solid rgba(255,255,255,0.8);
+        border-radius: 50px; padding: 5px; margin: 0 auto;
+        backdrop-filter: blur(8px);
+    }
+
+    .nav-pill {
+        padding: 7px 20px; border-radius: 50px;
+        font-size: 0.875rem; font-weight: 500; color: var(--blue);
+        text-decoration: none; display: inline-block;
+        transition: all 0.2s; user-select: none;
+    }
+
+    .nav-pill:hover  { background: rgba(255,255,255,0.6); }
+    .nav-pill.active { background: white; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+    .login-btn {
+        padding: 7px 18px; border-radius: 50px;
+        font-size: 0.875rem; font-weight: 600; color: white;
+        background: var(--blue); border: none; cursor: pointer;
+        text-decoration: none; display: inline-block; white-space: nowrap;
+    }
+
+    .login-btn:hover { background: var(--blue-dark); }
+
+    .page { padding: 0 24px 32px; }
+
+    .trends-desc { padding: 20px 0 0; max-width: 760px; }
+    .trends-desc p { font-size: 0.84rem; color: var(--text-mid); line-height: 1.65; }
+
+    .site-btn {
+        padding: 6px 16px; border-radius: 50px;
+        font-size: 0.8rem; font-weight: 500; border: none; cursor: pointer;
+        background: rgba(255,255,255,0.55); color: var(--blue);
+        font-family: 'Inter', sans-serif;
+    }
+    .site-btn.active { background: var(--blue); color: white; }
+
+    .metric-pill {
+        padding: 6px 14px; border-radius: 50px;
+        font-size: 0.78rem; font-weight: 500;
+        border: 1px solid rgba(34,83,130,0.2);
+        background: transparent; color: var(--blue);
+        cursor: pointer; font-family: 'Inter', sans-serif;
+        transition: all 0.2s;
+    }
+    .metric-pill.active { background: var(--blue); color: white; border-color: var(--blue); }
+
+    .toggle-row {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 14px 0; gap: 12px; flex-wrap: wrap;
+    }
+    .site-group   { display: flex; gap: 8px; }
+    .metric-group { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    .trends-main-grid {
+        display: grid; grid-template-columns: 1fr 180px;
+        gap: 16px; align-items: center;
+    }
+
+    .card {
+        background: rgba(255,255,255,0.65); border-radius: 14px;
+        padding: 14px 16px; backdrop-filter: blur(8px);
+        border: 1px solid rgba(255,255,255,0.8);
+    }
+    .card-header {
+        display: flex; align-items: center;
+        justify-content: space-between; margin-bottom: 4px;
+    }
+    .card-title {
+        font-size: 0.78rem; font-weight: 700; color: var(--blue);
+        text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .card-sub { font-size: 0.67rem; color: var(--text-light); }
+
+    .stat-boxes { display: flex; flex-direction: column; gap: 8px; }
+    .stat-box {
+        background: rgba(255,255,255,0.65); border-radius: 12px;
+        padding: 10px 12px; backdrop-filter: blur(8px);
+    }
+    .stat-label {
+        font-size: 0.6rem; font-weight: 700; color: var(--text-light);
+        text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 2px;
+    }
+    .stat-val { font-size: 1.1rem; font-weight: 800; color: var(--text-dark); line-height: 1.2; }
+    .stat-unit { font-size: 0.65rem; color: var(--text-light); font-weight: 500; }
+    .stat-sub { font-size: 0.6rem; color: var(--text-light); margin-top: 2px; }
+    .stat-badge {
+        display: inline-block; font-size: 0.6rem; font-weight: 700;
+        padding: 2px 8px; border-radius: 10px; margin-top: 3px;
+    }
+    .badge-ok   { background: #dcfce7; color: #16a34a; }
+    .badge-warn { background: #fef3c7; color: #d97706; }
+    .badge-crit { background: #fee2e2; color: #dc2626; }
+
+    .custom-dropdown { position: relative; display: inline-block; }
+    .dropdown-btn {
+        padding: 6px 14px; border-radius: 50px;
+        font-size: 0.78rem; font-weight: 500;
+        border: 1px solid rgba(34,83,130,0.2);
+        background: rgba(255,255,255,0.55); color: var(--blue);
+        cursor: pointer; font-family: 'Inter', sans-serif;
+        display: flex; align-items: center; gap: 6px;
+    }
+    .dropdown-btn:hover { background: rgba(255,255,255,0.75); }
+    .dropdown-btn::after { content: '▾'; font-size: 0.7rem; }
+    .dropdown-list {
+        display: none;
+        position: absolute; top: calc(100% + 6px); left: 0;
+        background: rgba(255,255,255,0.95); backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.9); border-radius: 14px;
+        box-shadow: 0 8px 24px rgba(34,83,130,0.12);
+        padding: 6px; z-index: 100; min-width: 130px;
+    }
+    .dropdown-list.open { display: block; }
+    .dropdown-item {
+        padding: 7px 14px; border-radius: 50px;
+        font-size: 0.78rem; font-weight: 500; color: var(--blue);
+        cursor: pointer; white-space: nowrap; font-family: 'Inter', sans-serif;
+    }
+    .dropdown-item:hover { background: rgba(34,83,130,0.07); }
+    .dropdown-item.active { background: var(--blue); color: white; }
+
+    /* ---------- comparison strip ---------- */
+    .comparison-strip {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 16px;
+    }
+    .comparison-card {
+        background: rgba(255,255,255,0.65); border-radius: 12px;
+        padding: 12px 16px; backdrop-filter: blur(8px);
+        border: 1px solid rgba(255,255,255,0.8);
+        box-shadow: 0 4px 18px rgba(34,83,130,0.07);
+    }
+    .comparison-card.selected {
+        border-color: var(--blue);
+        box-shadow: 0 4px 18px rgba(34,83,130,0.18);
+    }
+    .comp-site {
+        font-size: 0.62rem; font-weight: 700; color: var(--text-light);
+        text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px;
+    }
+    .comp-val {
+        font-size: 1.4rem; font-weight: 800; color: var(--text-dark);
+        line-height: 1.2; margin-bottom: 5px;
+    }
+    .comp-unit { font-size: 0.68rem; color: var(--text-light); font-weight: 500; }
+
+    /* ---------- bottom row ---------- */
+    .trends-bottom-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        align-items: stretch;
+        margin-top: 16px;
+    }
+
+    /* ---------- trend direction ---------- */
+    .trend-direction-card {
+        background: rgba(255,255,255,0.65); border-radius: 12px;
+        padding: 16px 20px; backdrop-filter: blur(8px);
+        border: 1px solid rgba(255,255,255,0.8);
+        box-shadow: 0 4px 18px rgba(34,83,130,0.07);
+        text-align: left;
+    }
+    .trend-dir-label {
+        font-size: 0.62rem; font-weight: 700; color: var(--text-light);
+        text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 12px;
+    }
+    .trend-dir-main {
+        display: flex; flex-direction: row; align-items: center;
+        justify-content: flex-start; gap: 8px; margin-bottom: 14px;
+    }
+    .trend-arrow { font-size: 2rem; font-weight: 800; line-height: 1; display: inline-block; }
+    .trend-dir-text { font-size: 1.3rem; font-weight: 800; }
+    .trend-diff { font-size: 0.78rem; color: var(--text-mid); margin-bottom: 3px; }
+    .trend-basis { font-size: 0.62rem; color: var(--text-light); }
+
+    /* ---------- heatmap ---------- */
+    .heatmap-card {
+        background: rgba(255,255,255,0.65); border-radius: 12px;
+        padding: 16px 20px; backdrop-filter: blur(8px);
+        border: 1px solid rgba(255,255,255,0.8);
+        box-shadow: 0 4px 18px rgba(34,83,130,0.07);
+    }
+    .heatmap-title {
+        font-size: 0.62rem; font-weight: 700; color: var(--text-light);
+        text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 12px;
+    }
+    .heatmap-grid {
+        display: grid;
+        grid-template-columns: repeat(24, 1fr);
+        gap: 2px;
+        height: 64px;
+        align-items: end;
+        margin-bottom: 4px;
+    }
+    .heatmap-cell {
+        border-radius: 3px 3px 2px 2px;
+        cursor: default;
+        transition: transform 0.15s;
+        min-height: 4px;
+    }
+    .heatmap-cell:hover { transform: scaleY(1.08); }
+    .heatmap-labels {
+        display: grid;
+        grid-template-columns: repeat(24, 1fr);
+        gap: 2px;
+    }
+    .heatmap-label { font-size: 0.5rem; color: var(--text-light); text-align: center; }
+    .heatmap-sub { font-size: 0.62rem; color: var(--text-light); margin-top: 10px; }
+    .logout-btn {
+        padding: 7px 18px; border-radius: 50px;
+        font-size: 0.875rem; font-weight: 600; color: var(--blue);
+        background: rgba(255,255,255,0.65); border: 1px solid rgba(255,255,255,0.85);
+        cursor: pointer; text-decoration: none; display: inline-block;
+        white-space: nowrap; backdrop-filter: blur(8px);
+    }
+    .logout-btn:hover { background: rgba(255,255,255,0.9); }
+
+    .official-badge {
+        font-size: 0.68rem; font-weight: 700;
+        letter-spacing: 0.06em; text-transform: uppercase;
+        background: linear-gradient(90deg, #b8860b, #ffd700, #b8860b, #ffd700);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: shimmer 7.5s linear infinite;
+        background-color: rgba(212,160,23,0.22);
+        border: 1px solid rgba(196,140,10,0.6);
+        padding: 3px 10px; border-radius: 50px;
+        white-space: nowrap;
+    }
+
+    @keyframes shimmer {
+        0%   { background-position: 0% center; }
+        100% { background-position: 200% center; }
+    }
+
+</style>
+</head>
+<body>
+<div class="app">
+
+    <nav class="navbar">
+        <div style="display:flex; flex-direction:column; align-items:flex-start; gap:8px;">
+            <img src="images/stroomloop.png" width="200">
+            <span class="official-badge" style="position: relative; top: -13px;">Official Access</span>
+        </div>
+        <div class="nav-pills">
+            <a class="nav-pill" href="/dashboard-government.html">Dashboard</a>
+            <a class="nav-pill" href="/alerts-government.html">Alerts</a>
+            <a class="nav-pill active" href="/trends-government.html">Trends</a>
+            <a class="nav-pill" href="/information-government.html">Information</a>
+        </div>
+        <div class="nav-right">
+            <div class="nav-clock" id="clock">--:--</div>
+            <a class="logout-btn" href="/logout">Log out</a>
+        </div>
+    </nav>
+
+    <div class="page">
+
+        <div class="trends-desc">
+            <p>Track how water quality parameters change over time across your Eastern Cape monitoring sites. Select a site and metric to explore recent readings and identify emerging patterns before they become problems.</p>
+        </div>
+
+        <div class="toggle-row">
+            <div class="site-group">
+                <button class="site-btn active" onclick="selectSite(this, 'site_upstream')">Upstream</button>
+                <button class="site-btn" onclick="selectSite(this, 'site_downstream')">Downstream</button>
+                <button class="site-btn" onclick="selectSite(this, 'site_reservoir')">Reservoir</button>
+
+                <div class="custom-dropdown" id="range-dropdown">
+                    <button class="dropdown-btn" onclick="toggleDropdown()">7 days</button>
+                    <div class="dropdown-list" id="dropdown-list">
+                        <div class="dropdown-item" onclick="selectRange('1', '24 hours')">24 hours</div>
+                        <div class="dropdown-item" onclick="selectRange('3', '72 hours')">72 hours</div>
+                        <div class="dropdown-item active" onclick="selectRange('7', '7 days')">7 days</div>
+                        <div class="dropdown-item" onclick="selectRange('15', '15 days')">15 days</div>
+                        <div class="dropdown-item" onclick="selectRange('20', '20 days')">20 days</div>
+                        <div class="dropdown-item" onclick="selectRange('30', '30 days')">30 days</div>
+                        <div class="dropdown-item" onclick="selectRange('60', '2 months')">2 months</div>
+                        <div class="dropdown-item" onclick="selectRange('90', '3 months')">3 months</div>
+                        <div class="dropdown-item" onclick="selectRange('180', '6 months')">6 months</div>
+                        <div class="dropdown-item" onclick="selectRange('270', '9 months')">9 months</div>
+                        <div class="dropdown-item" onclick="selectRange('365', '12 months')">12 months</div>
+                        <div class="dropdown-item" onclick="selectRange('', 'All')">All</div>
+                    </div>
+                </div>
+            </div>
+            <div class="metric-group">
+                <button class="metric-pill active" onclick="selectMetric(this, 'ph')">pH</button>
+                <button class="metric-pill" onclick="selectMetric(this, 'turbidity')">Turbidity</button>
+                <button class="metric-pill" onclick="selectMetric(this, 'conductivity')">Conductivity</button>
+                <button class="metric-pill" onclick="selectMetric(this, 'waterTemp')">Water Temp</button>
+                <button class="metric-pill" onclick="selectMetric(this, 'waterLevel')">Water Level</button>
+                <button class="metric-pill" onclick="selectMetric(this, 'light')">Light</button>
+            </div>
+        </div>
+
+        <div class="trends-main-grid">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title" id="chart-title">pH Over Time — Upstream</span>
+                    <span class="card-sub" id="chart-sub">Last 200 readings</span>
+                </div>
+                <div id="chart-area"></div>
+            </div>
+
+            <div class="stat-boxes">
+                <div class="stat-box">
+                    <div class="stat-label">Latest</div>
+                    <div class="stat-val"><span id="stat-latest">—</span> <span class="stat-unit" id="stat-unit-0">pH</span></div>
+                    <span class="stat-badge badge-ok" id="stat-badge">—</span>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Average</div>
+                    <div class="stat-val"><span id="stat-avg">—</span> <span class="stat-unit" id="stat-unit-1">pH</span></div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Min</div>
+                    <div class="stat-val"><span id="stat-min">—</span> <span class="stat-unit" id="stat-unit-2">pH</span></div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Max</div>
+                    <div class="stat-val"><span id="stat-max">—</span> <span class="stat-unit" id="stat-unit-3">pH</span></div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Std Dev</div>
+                    <div class="stat-val"><span id="stat-stddev">—</span> <span class="stat-unit" id="stat-unit-4">pH</span></div>
+                    <div class="stat-sub" id="stat-variability">—</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="comparison-strip">
+            <div class="comparison-card" id="comp-card-upstream">
+                <div class="comp-site">Upstream</div>
+                <div class="comp-val"><span id="comp-val-upstream">—</span> <span class="comp-unit" id="comp-unit-upstream"></span></div>
+                <span class="stat-badge badge-ok" id="comp-badge-upstream">—</span>
+            </div>
+            <div class="comparison-card" id="comp-card-downstream">
+                <div class="comp-site">Downstream</div>
+                <div class="comp-val"><span id="comp-val-downstream">—</span> <span class="comp-unit" id="comp-unit-downstream"></span></div>
+                <span class="stat-badge badge-ok" id="comp-badge-downstream">—</span>
+            </div>
+            <div class="comparison-card" id="comp-card-reservoir">
+                <div class="comp-site">Reservoir</div>
+                <div class="comp-val"><span id="comp-val-reservoir">—</span> <span class="comp-unit" id="comp-unit-reservoir"></span></div>
+                <span class="stat-badge badge-ok" id="comp-badge-reservoir">—</span>
+            </div>
+        </div>
+
+        <div class="trends-bottom-row">
+            <div class="trend-direction-card">
+                <div class="trend-dir-label">Trend Direction</div>
+                <div class="trend-dir-main">
+                    <span class="trend-dir-text" id="trend-label">—</span>
+                    <span class="trend-arrow" id="trend-arrow">—</span>
+                </div>
+                <div class="trend-diff" id="trend-diff">—</div>
+                <div class="trend-basis">Based on latest reading vs previous 10-reading average</div>
+            </div>
+
+            <div class="heatmap-card">
+                <div class="heatmap-title">Hourly Pattern</div>
+                <div class="heatmap-grid" id="heatmap-grid"></div>
+                <div class="heatmap-labels" id="heatmap-labels"></div>
+                <div class="heatmap-sub" id="heatmap-sub">Average value by hour of day</div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+    let currentSite   = 'site_upstream';
+    let currentMetric = 'ph';
+    let currentDays   = 7;
+    let chart         = null;
+
+    const metricConfig = {
+        ph:           { label: 'pH',           field: 'ph',                unit: 'pH',    safeMin: 6.5,  safeMax: 8.5,  decimals: 2, color: '#225382' },
+        turbidity:    { label: 'Turbidity',    field: 'turbidityNtu',      unit: 'NTU',   safeMin: null, safeMax: 4,    decimals: 1, color: '#e9820a' },
+        conductivity: { label: 'Conductivity', field: 'conductivityUsCm',  unit: 'µS/cm', safeMin: 200,  safeMax: 800,  decimals: 0, color: '#9b8ec4' },
+        waterTemp:    { label: 'Water Temp',   field: 'waterTemperatureC', unit: '°C',    safeMin: 10,   safeMax: 30,   decimals: 1, color: '#0ea5e9' },
+        waterLevel:   { label: 'Water Level',  field: 'waterLevelCm',      unit: 'cm',    safeMin: 20,   safeMax: 80,   decimals: 1, color: '#0d9488' },
+        light:        { label: 'Light',        field: 'lightLux',          unit: 'lux',   safeMin: null, safeMax: null, decimals: 0, color: '#eab308' }
+    };
+
+    function getBadgeClass(status) {
+        if (status === 'normal')   return 'badge-ok';
+        if (status === 'warning')  return 'badge-warn';
+        if (status === 'critical') return 'badge-crit';
+        return 'badge-ok';
+    }
+
+    function getStatusLabel(status) {
+        if (status === 'normal')   return 'Healthy';
+        if (status === 'warning')  return 'Moderate';
+        if (status === 'critical') return 'Critical';
+        return status;
+    }
+
+    function siteLabel(siteId) {
+        const name = siteId.replace('site_', '');
+        return name.charAt(0).toUpperCase() + name.slice(1);
+    }
+
+    function calcStdDev(values) {
+        const mean     = values.reduce((a, b) => a + b, 0) / values.length;
+        const variance = values.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / values.length;
+        return { sd: Math.sqrt(variance), mean };
+    }
+
+    function variabilityLabel(sd, mean) {
+        const cv = sd / Math.abs(mean);
+        if (cv < 0.05) return 'Low variability';
+        if (cv < 0.15) return 'Moderate variability';
+        return 'High variability';
+    }
+
+    function buildAnnotations(cfg) {
+        const lines = [];
+        if (cfg.safeMin !== null) lines.push({
+            y: cfg.safeMin,
+            borderColor: 'rgba(233,130,10,0.45)',
+            strokeDashArray: 5,
+            label: { text: 'Min safe', position: 'left', style: { color: '#e9820a', fontSize: '10px', background: 'transparent', border: 'none' } }
+        });
+        if (cfg.safeMax !== null) lines.push({
+            y: cfg.safeMax,
+            borderColor: 'rgba(233,130,10,0.45)',
+            strokeDashArray: 5,
+            label: { text: 'Max safe', position: 'left', style: { color: '#e9820a', fontSize: '10px', background: 'transparent', border: 'none' } }
+        });
+        return lines;
+    }
+
+    function computeDiscrete(seriesData, min, max, cfg) {
+        const visibleIdx = [];
+        seriesData.forEach((p, i) => {
+            if (p.x >= min && p.x <= max) visibleIdx.push(i);
+        });
+        const visible = visibleIdx.length;
+        if (visible === 0) return [];
+        const target = Math.min(visible, Math.max(8, Math.ceil(Math.sqrt(visible))));
+        if (visible <= target) {
+            return visibleIdx.map(i => ({
+                seriesIndex: 0, dataPointIndex: i,
+                fillColor: cfg.color, strokeColor: '#fff', size: 4
+            }));
+        }
+        const result = [];
+        for (let j = 0; j < target; j++) {
+            const pick = Math.round(j * (visible - 1) / (target - 1));
+            result.push({ seriesIndex: 0, dataPointIndex: visibleIdx[pick], fillColor: cfg.color, strokeColor: '#fff', size: 4 });
+        }
+        return result;
+    }
+
+    function hexToRgba(hex, alpha) {
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    function renderChart(seriesData, cfg) {
+        let dotsTimer = null;
+        const options = {
+            chart: {
+                type: 'area',
+                height: 300,
+                toolbar: { show: false },
+                zoom: { enabled: true, type: 'x', autoScaleYaxis: true },
+                background: 'transparent',
+                fontFamily: 'Inter, sans-serif',
+                animations: { enabled: true, easing: 'easeinout', speed: 600 },
+                events: {
+                    zoomed: function(ctx, { xaxis }) {
+                        clearTimeout(dotsTimer);
+                        dotsTimer = setTimeout(() => {
+                            ctx.updateOptions({
+                                markers: {
+                                    discrete: computeDiscrete(seriesData, xaxis.min ?? -Infinity, xaxis.max ?? Infinity, cfg),
+                                    hover: { size: 6 }
+                                }
+                            }, false, false);
+                        }, 200);
+                    },
+                    scrolled: function(ctx, { xaxis }) {
+                        clearTimeout(dotsTimer);
+                        dotsTimer = setTimeout(() => {
+                            ctx.updateOptions({
+                                markers: {
+                                    discrete: computeDiscrete(seriesData, xaxis.min ?? -Infinity, xaxis.max ?? Infinity, cfg),
+                                    hover: { size: 6 }
+                                }
+                            }, false, false);
+                        }, 200);
+                    }
+                },
+            },
+            series: [{ name: cfg.label, data: seriesData }],
+            xaxis: {
+                type: 'datetime',
+                min: new Date().getTime() - (12 * 60 * 60 * 1000),
+                labels: {
+                    datetimeUTC: false,
+                    style: { colors: '#5a7a9a', fontSize: '0.62rem', fontFamily: 'Inter, sans-serif' }
+                },
+                axisBorder: { show: false },
+                axisTicks:  { show: false }
+            },
+            yaxis: {
+                labels: { style: { colors: '#5a7a9a', fontSize: '0.65rem', fontFamily: 'Inter, sans-serif' } },
+                title:  { text: cfg.unit, style: { color: '#5a7a9a', fontSize: '0.7rem', fontWeight: 600, fontFamily: 'Inter, sans-serif' } }
+            },
+            stroke: { curve: 'smooth', width: 2.5, colors: [cfg.color] },
+            fill: {
+                type: 'gradient',
+                gradient: { shadeIntensity: 1, opacityFrom: 0.35, opacityTo: 0.03, stops: [0, 90, 100] }
+            },
+            colors: [cfg.color],
+            dataLabels: { enabled: false },
+            markers: {
+                discrete: computeDiscrete(seriesData, new Date().getTime() - 12 * 3600 * 1000, Infinity, cfg),
+                hover: { size: 6 }
+            },
+            annotations: { yaxis: buildAnnotations(cfg) },
+            tooltip: { theme: 'light', x: { format: 'dd MMM yyyy HH:mm' } },
+            grid: {
+                borderColor: 'rgba(34,83,130,0.08)',
+                strokeDashArray: 4,
+                padding: { left: 4, right: 4, top: 0, bottom: 0 }
+            }
+        };
+
+        if (chart) chart.destroy();
+        chart = new ApexCharts(document.querySelector('#chart-area'), options);
+        chart.render();
+    }
+
+    function updateStats(values, cfg, latestStatus) {
+        const { sd, mean } = calcStdDev(values);
+        const d = cfg.decimals;
+
+        document.getElementById('stat-latest').textContent      = values[values.length - 1].toFixed(d);
+        document.getElementById('stat-avg').textContent         = mean.toFixed(d);
+        document.getElementById('stat-min').textContent         = Math.min(...values).toFixed(d);
+        document.getElementById('stat-max').textContent         = Math.max(...values).toFixed(d);
+        document.getElementById('stat-stddev').textContent      = sd.toFixed(d);
+        document.getElementById('stat-variability').textContent = variabilityLabel(sd, mean);
+
+        [0, 1, 2, 3, 4].forEach(i => {
+            document.getElementById('stat-unit-' + i).textContent = cfg.unit;
+        });
+
+        const badge = document.getElementById('stat-badge');
+        badge.className   = 'stat-badge ' + getBadgeClass(latestStatus);
+        badge.textContent = getStatusLabel(latestStatus);
+    }
+
+    async function loadComparison() {
+        const cfg = metricConfig[currentMetric];
+        const sites = ['upstream', 'downstream', 'reservoir'];
+
+        const results = await Promise.all(
+            sites.map(s => fetch('/latest/site_' + s).then(r => r.json()).catch(() => null))
+        );
+
+        sites.forEach((s, i) => {
+            const d = results[i];
+            const val = d ? d[cfg.field] : null;
+
+            document.getElementById('comp-val-' + s).textContent = val != null ? parseFloat(val).toFixed(cfg.decimals) : '—';
+            document.getElementById('comp-unit-' + s).textContent = cfg.unit;
+
+            const badge = document.getElementById('comp-badge-' + s);
+            badge.className = 'stat-badge ' + (d ? getBadgeClass(d.status) : 'badge-ok');
+            badge.textContent = d ? getStatusLabel(d.status) : '—';
+
+            document.getElementById('comp-card-' + s).classList.toggle('selected', currentSite === 'site_' + s);
+        });
+    }
+
+    function updateTrendDirection(values, cfg) {
+        if (values.length < 2) return;
+
+        const latest = values[values.length - 1];
+        const prev = values.slice(Math.max(0, values.length - 11), values.length - 1);
+        const prevAvg = prev.reduce((a, b) => a + b, 0) / prev.length;
+        const diff = latest - prevAvg;
+        const threshold = Math.abs(prevAvg) * 0.02;
+
+        let arrow, label, color;
+        if (diff > threshold) {
+            arrow = '→'; label = 'Rising'; color = '#225382';
+            document.getElementById('trend-arrow').style.transform = 'rotate(-90deg)';
+        } else if (diff < -threshold) {
+            arrow = '→'; label = 'Falling'; color = '#dc2626';
+            document.getElementById('trend-arrow').style.transform = 'rotate(90deg)';
+        } else {
+            arrow = '→'; label = 'Stable'; color = '#16a34a';
+            document.getElementById('trend-arrow').style.transform = 'rotate(0deg) translateY(-2px)';
+        }
+
+        const sign = diff >= 0 ? '+' : '';
+        const absDiff = Math.abs(diff).toFixed(cfg.decimals);
+        const direction = diff >= 0 ? 'above' : 'below';
+
+        document.getElementById('trend-arrow').textContent = arrow;
+        document.getElementById('trend-arrow').style.color = color;
+        document.getElementById('trend-label').textContent = label;
+        document.getElementById('trend-label').style.color = color;
+        document.getElementById('trend-diff').textContent =
+            `${cfg.label} is ${sign}${absDiff} ${cfg.unit} ${direction} the recent average (avg: ${prevAvg.toFixed(cfg.decimals)} ${cfg.unit})`;
+    }
+
+    function updateHeatmap(trendData, cfg) {
+        const latestTs = Math.max(...trendData.map(d => new Date(d.timestamp.replace(' ', 'T')).getTime()));
+        const cutoff = latestTs - 24 * 60 * 60 * 1000;
+        const recent = trendData.filter(d => new Date(d.timestamp.replace(' ', 'T')).getTime() >= cutoff);
+
+        const hourBuckets = Array.from({ length: 24 }, () => []);
+
+        recent.forEach(d => {
+            const hour = parseInt(d.timestamp.split(' ')[1].split(':')[0], 10);
+            const val = parseFloat(d[cfg.field]);
+            if (!isNaN(val)) hourBuckets[hour].push(val);
+        });
+
+        const avgs = hourBuckets.map(b => b.length > 0 ? b.reduce((a, v) => a + v, 0) / b.length : null);
+        const valid = avgs.filter(v => v !== null);
+        const min = Math.min(...valid);
+        const max = Math.max(...valid);
+        const range = max - min || 1;
+
+        const grid = document.getElementById('heatmap-grid');
+        const labels = document.getElementById('heatmap-labels');
+        grid.innerHTML = '';
+        labels.innerHTML = '';
+
+        avgs.forEach((avg, hour) => {
+            const cell = document.createElement('div');
+            cell.className = 'heatmap-cell';
+            const intensity = avg !== null ? (avg - min) / range : 0;
+            cell.style.height = `${4 + Math.round(intensity * 56)}px`;
+            cell.style.background = hexToRgba(cfg.color, 0.12 + intensity * 0.78);
+            if (avg !== null) {
+                cell.title = `${String(hour).padStart(2, '0')}:00 — avg: ${avg.toFixed(cfg.decimals)} ${cfg.unit}`;
+            }
+            grid.appendChild(cell);
+
+            const lbl = document.createElement('div');
+            lbl.className = 'heatmap-label';
+            lbl.textContent = hour % 6 === 0 ? `${String(hour).padStart(2, '0')}h` : '';
+            labels.appendChild(lbl);
+         });
+
+        document.getElementById('heatmap-sub').textContent =
+            `Avg ${cfg.label} by hour · last 24 hours · ${recent.length} readings`;
+        }
+
+    async function loadData() {
+        const cfg   = metricConfig[currentMetric];
+        const label = siteLabel(currentSite);
+
+        document.getElementById('chart-title').textContent = cfg.label + ' Over Time — ' + label;
+
+        try {
+            const [trendRes, latestRes] = await Promise.all([
+                fetch('/trends/' + currentSite + (currentDays ? '?days=' + currentDays : '')),
+                fetch('/latest/' + currentSite)
+            ]);
+
+            const trendData  = await trendRes.json();
+            const latestData = await latestRes.json();
+
+            if (!Array.isArray(trendData) || trendData.length === 0) return;
+
+            document.getElementById('chart-sub').textContent = 'Last ' + trendData.length + ' readings';
+
+            const seriesData = trendData.map(d => ({
+                x: new Date(d.timestamp.replace(' ', 'T')).getTime(),
+                y: d[cfg.field]
+            }));
+
+            const values = trendData.map(d => d[cfg.field]);
+
+            renderChart(seriesData, cfg);
+            updateStats(values, cfg, latestData.status);
+            loadComparison();
+            updateTrendDirection(values, cfg);
+            updateHeatmap(trendData, cfg);
+
+        } catch (e) {
+            console.error('Error loading trend data', e);
+        }
+    }
+
+    function selectSite(btn, siteId) {
+        document.querySelectorAll('.site-group .site-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentSite = siteId;
+        loadData();
+    }
+
+    function toggleDropdown() {
+        document.getElementById('dropdown-list').classList.toggle('open');
+    }
+
+    function selectRange(val, label) {
+        currentDays = val;
+        document.querySelector('.dropdown-btn').textContent = label;
+        document.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
+        event.target.classList.add('active');
+        document.getElementById('dropdown-list').classList.remove('open');
+        loadData();
+    }
+
+    document.addEventListener('click', e => {
+        if (!document.getElementById('range-dropdown').contains(e.target)) {
+            document.getElementById('dropdown-list').classList.remove('open');
+        }
+    });
+
+    function selectMetric(btn, metric) {
+        document.querySelectorAll('.metric-group .metric-pill').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        currentMetric = metric;
+        loadData();
+    }
+
+    function updateClock() {
+        const now  = new Date();
+
+        const hh   = String(now.getHours()).padStart(2, '0');
+        const mm   = String(now.getMinutes()).padStart(2, '0');
+        const dd   = String(now.getDate()).padStart(2, '0');
+        const mo   = String(now.getMonth() + 1).padStart(2, '0');
+        const yyyy = now.getFullYear();
+
+        document.getElementById('clock').textContent = `${hh}:${mm} · ${dd}/${mo}/${yyyy}`;
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+    loadData();
+
+</script>
+</body>
+</html>
