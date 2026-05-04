@@ -1,3 +1,4 @@
+package backend
 import backend.getAlertReadings
 import backend.getAlertReadingsForSite
 import backend.getAlertTypeBreakdownForSite
@@ -12,13 +13,18 @@ import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondRedirect
+import io.ktor.server.request.receiveParameters
+import io.ktor.server.sessions.*
 import io.ktor.server.routing.get
+import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+@Serializable
+data class UserSession(val isOfficial: Boolean)
 
 @Serializable
 data class AlertSummary(
@@ -124,6 +130,13 @@ fun main() {
             json()
         }
 
+        install(Sessions) {
+            cookie<UserSession>("user_session") {
+                cookie.path = "/"
+                cookie.maxAgeInSeconds = 3600
+            }
+        }
+
         routing {
 
             // Serve frontend files
@@ -132,6 +145,24 @@ fun main() {
             // Login page first
             get("/") {
                 call.respondRedirect("/dashboard.html")
+            }
+
+            post("/login") {
+                val params = call.receiveParameters()
+                val email    = params["email"]    ?: ""
+                val password = params["password"] ?: ""
+
+                if (email == "official@gov.za" && password == "demo2026") {
+                    call.sessions.set(UserSession(isOfficial = true))
+                    call.respondRedirect("/dashboard-government.html")
+                } else {
+                    call.respondRedirect("/login.html?error=1")
+                }
+            }
+
+            get("/logout") {
+                call.sessions.clear<UserSession>()
+                call.respondRedirect("/login.html")
             }
 
             // Alerts route
@@ -348,9 +379,17 @@ fun main() {
                     return@get
                 }
 
-                val siteReadings = getReadingsForSite(waterReadings, siteId)
+                val days = call.request.queryParameters["days"]?.toIntOrNull()
+
+                val allSiteReadings = getReadingsForSite(waterReadings, siteId)
                     .sortedBy { it.timestamp }
-                    .takeLast(200)
+                
+                val siteReadings = if (days != null) {
+                    val cutoff = latestTimestamp.minusDays(days.toLong())
+                    allSiteReadings.filter { LocalDateTime.parse(it.timestamp, formatter).isAfter(cutoff) }
+                } else {
+                    allSiteReadings
+}
 
                 if (siteReadings.isEmpty()) {
                     call.respond(ErrorResponse("No readings found for site: $siteId"))

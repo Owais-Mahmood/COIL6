@@ -1,161 +1,337 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="color-scheme" content="light dark">
-    <title>Login</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stroomloop · Log in</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
 
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.sand.min.css">
+    :root {
+        --blue: #225382;
+        --blue-dark: #1a3f63;
+        --text-dark: #1c3a55;
+        --text-mid: #3a5a7a;
+        --text-light: #5a7a9a;
+    }
 
-    <style>
-        :root {
-            /* making this original variable so can refer to throughout code */
-            --stroomloop-blue: #225382;
-            --stroomloop-blue-transparent: #2254825a;
-        }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        html, body{
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(180deg, #81C3DB 0%, #F2FCFF 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 48px 40px;
+    }
 
-        body {
-            /* added image as background */
-            background-image: url("images/CapeTown.png");
-            background-size: cover;
-            width: 100%;
-            height: 100%;
-        
-        }
+    .layout {
+        width: 100%;
+        max-width: 1000px;
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        gap: 80px;
+        align-items: center;
+    }
 
-        main.container {
-            max-width: 100%;
-            width: 100%;
-        }
+    /* ---------- left ---------- */
+    .left-logo { margin-bottom: 40px; }
 
-        .loginpage {
-            /* turning page into grid to get spacing correct */
-            display: grid;
-            /* splitting page in two equally */
-            grid-template-columns: 1fr 1fr;
-        }
+    .access-tag {
+        display: inline-block;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        background: linear-gradient(90deg, #b8860b, #ffd700, #b8860b, #ffd700);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: shimmer 7.5s linear infinite;
+        background-color: rgba(212,160,23,0.22);
+        border: 1px solid rgba(196,140,10,0.6);
+        padding: 3px 10px;
+        border-radius: 50px;
+    }
 
-        .leftside {
-            /* same colour as the background of logo */
-            background: var(--stroomloop-blue-transparent);
-            padding: 52px 44px;
-            /* sets text in section to white */
-            color: white;
-        }
+    @keyframes shimmer {
+        0%   { background-position: 0% center; }
+        100% { background-position: 200% center; }
+    }
 
-        .rightside {
-            background: rgba(255, 255, 255, 0.250);
-            padding: 52px 48px;
-        }
+    .left-heading {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: var(--text-dark);
+        line-height: 1.2;
+        margin-bottom: 14px;
+    }
 
-        .blurb {
-            /* making transparent box for blurb text */
-            background: rgba(255, 255, 255, 0.600);
-            padding: 20px;
-            color: var(--stroomloop-blue);
-            font-size: 0.92rem;
-            text-align: center;
-        }
+    .left-sub {
+        font-size: 0.86rem;
+        color: var(--text-mid);
+        line-height: 1.75;
+        margin-bottom: 36px;
+        max-width: 400px;
+    }
 
-        .blurb-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
+    .left-col {
+        transform: translateX(-80px);
+    }
 
-        input[type = "email"], input[type = "password"] {
-            width: 100%;
-            font-size: 0.97rem;
-        }
+    .feature-list {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        margin-bottom: 40px;
+    }
 
-        button[type ="submit"] {
-            background-color: var(--stroomloop-blue);
-            color: #ffffff;
-            font-size: 1rem;
-            width: 100%;
-        }
+    .feature-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+    }
 
-        button:hover {
-            /* change colour of button when hovering over it */
-            background-color: #2254828f;
-        }
+    .feature-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        background: rgba(34,83,130,0.08);
+        border: 1px solid rgba(34,83,130,0.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+        flex-shrink: 0;
+    }
 
-        .OR-option {
-            font-size: 1.5rem;
-            text-align: center;
-            transform: translateY(25px);
-        }
+    .feature-title {
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 2px;
+    }
 
-        .continue-guest {
-            font-size: 1.5rem;
-            text-align: center;
-        }
+    .feature-desc {
+        font-size: 0.74rem;
+        color: var(--text-light);
+        line-height: 1.5;
+    }
 
-        .tagline {
-            font-size: 1rem;
-            color: #ffffff;
-            text-align: center;
-            transform: translateY(-50px);
-        }
+    .left-footer {
+        font-size: 0.74rem;
+        font-weight: 600;
+        color: var(--text-light);
+    }
 
-    </style>
+    /* ---------- right ---------- */
+    .right-col {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        transform: translateX(80px);
+        margin-top: 70px;
+    }
+
+    .login-card {
+        width: 100%;
+        background: rgba(255,255,255,0.72);
+        border-radius: 20px;
+        padding: 32px 36px;
+        backdrop-filter: blur(16px);
+        box-shadow: 0 16px 48px rgba(34,83,130,0.13);
+        border: 1px solid rgba(255,255,255,0.9);
+    }
+
+    .login-title {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: var(--text-dark);
+        margin-bottom: 4px;
+    }
+
+    .login-sub {
+        font-size: 0.78rem;
+        color: var(--text-light);
+        margin-bottom: 24px;
+    }
+
+    .field { margin-bottom: 14px; }
+
+    .field label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-mid);
+        margin-bottom: 6px;
+    }
+
+    .field input {
+        width: 100%;
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: 1px solid rgba(34,83,130,0.2);
+        background: rgba(255,255,255,0.7);
+        font-family: 'Inter', sans-serif;
+        font-size: 0.86rem;
+        color: var(--text-dark);
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .field input:focus {
+        border-color: var(--blue);
+        box-shadow: 0 0 0 3px rgba(34,83,130,0.1);
+    }
+
+    .field input::placeholder { color: #aabbc8; }
+
+    .login-btn {
+        width: 100%;
+        padding: 11px;
+        border-radius: 50px;
+        background: var(--blue);
+        color: white;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.88rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        margin-top: 8px;
+        transition: background 0.2s;
+    }
+
+    .login-btn:hover { background: var(--blue-dark); }
+
+    .divider {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 18px 0;
+        color: var(--text-light);
+        font-size: 0.72rem;
+        font-weight: 500;
+    }
+
+    .divider::before,
+    .divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: rgba(34,83,130,0.12);
+    }
+
+    .guest-btn {
+        width: 100%;
+        padding: 11px;
+        border-radius: 50px;
+        background: rgba(255,255,255,0.55);
+        color: var(--blue);
+        font-family: 'Inter', sans-serif;
+        font-size: 0.88rem;
+        font-weight: 600;
+        border: 1px solid rgba(34,83,130,0.18);
+        cursor: pointer;
+        text-decoration: none;
+        display: block;
+        text-align: center;
+        transition: background 0.2s;
+    }
+
+    .guest-btn:hover { background: rgba(255,255,255,0.85); }
+
+    .login-note {
+        font-size: 0.68rem;
+        color: var(--text-light);
+        text-align: center;
+        line-height: 1.6;
+    }
+
+</style>
 </head>
-
 <body>
-    <!--using container fluid so it fills the screen and is adaptable-->
-    <main class = "container-fluid">
-        <div class="loginpage">
 
-            <div class = "leftside">
-                <div class = "logo">
-                    <img src = "images/stroomloop_transparent.png" alt = "Stroomloop logo">
-                    <!--add tagline and blurb down below-->
-                    <p class = "tagline"><b>Know your water. Protect your health.</b></p>
-                    <div class = "blurb">
-                        <span class = "blurb-title">Welcome to Stroomloop</span><br>
-                        an online interface innovating water monitoring systems to empower your choices and support a healthy life. Tailored for South African locals fueled by smart sensors and intuitive dashboards we aim to turn live readings into safer every-day practices. Our company’s vision is to help you understand your equally complex and beautiful environment, take valuable insights and protect communities.
-                    </div>
+<div class="layout">
+
+    <!-- left -->
+    <div class="left-col">
+
+        <div class="left-logo">
+            <img src="images/stroomloop.png" width="190">
+            <div style="margin-top: 10px; margin-bottom: 0px;">
+                <span class="access-tag" style="position: relative; top: -20px;">Official Access</span>
+            </div>
+        </div>
+
+        <div class="left-heading">Monitor. Analyse. Protect.</div>
+
+        <p class="left-sub">
+            This portal is reserved for verified government officials and water authority personnel. Log in to access the full suite of monitoring tools across all Eastern Cape sites.
+        </p>
+
+        <div class="feature-list">
+            <div class="feature-item">
+                <div class="feature-icon">📊</div>
+                <div>
+                    <div class="feature-title">Export &amp; Reporting</div>
+                    <div class="feature-desc">Download full datasets and generate compliance reports across all monitoring sites.</div>
                 </div>
             </div>
-
-            <div class = "rightside">
-                <h2>Log in</h2>
-                <!--using method post to ensure the info is not seen in URL-->
-                <form action="/login" method="post">
-                    <!--input for email-->
-                    <label for = "email">Email:</label>
-                    <input
-                        type="email"
-                        name="email"
-                        placeholder="name@example.com"
-                        required
-                    >
-
-                    <!--input for password-->
-                    <label for = "password">Password:</label>
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="*********"
-                        required
-                    >
-                    <button type="submit">Log in</button>
-                </form>
-
-                <p class = "OR-option"><b>OR</b></p>
-
-                <!--alternate option of continuing as guest without logging in-->
-                <div class="continue-guest">
-                    Continue as guest <a href="/dashboard.html">here</a>
+            <div class="feature-item">
+                <div class="feature-icon">⚙️</div>
+                <div>
+                    <div class="feature-title">Alert Configuration</div>
+                    <div class="feature-desc">Set and adjust alert thresholds for each parameter and receive notifications when limits are breached.</div>
                 </div>
-            </div>  
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🗂️</div>
+                <div>
+                    <div class="feature-title">Full Historical Access</div>
+                    <div class="feature-desc">Query the complete archive of sensor readings across Upstream, Downstream and Reservoir sites.</div>
+                </div>
+            </div>
         </div>
-    </main>
+
+        <div class="left-footer">Know your water. Protect your health.</div>
+
+    </div>
+
+    <!-- right -->
+    <div class="right-col">
+
+        <div class="login-card">
+            <div class="login-title">Welcome back</div>
+            <div class="login-sub">Sign in with your official credentials</div>
+
+            <form action="/login" method="post">
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="name@gov.za" required>
+                </div>
+                <div class="field">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required>
+                </div>
+                <button class="login-btn" type="submit">Log in</button>
+            </form>
+
+            <div class="divider">or</div>
+
+            <a class="guest-btn" href="/dashboard.html">Continue as guest</a>
+        </div>
+
+        <div class="login-note">
+            Guest access provides read-only access to live dashboard data.<br>
+            Official features require verified credentials.
+        </div>
+
+    </div>
+
+</div>
+
 </body>
+</html>

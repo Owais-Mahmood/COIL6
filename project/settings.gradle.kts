@@ -12,5 +12,3 @@ plugins {
 
 rootProject.name = "COIL6"
 include("app")
-
-
