@@ -924,7 +924,6 @@
             const d = await latestRes.json();
             const breakdown = await breakdownRes.json();
             const summary = await summaryRes.json();
-            console.log("SUMMARY RAW RESPONSE:", summary);
             const trendData = await trendRes.json();
 
             console.log("2. data loaded", d, breakdown, summary);
@@ -990,6 +989,9 @@
             document.getElementById('ao-bar-ph').style.width   = (breakdown.ph           / maxAlerts * 100) + '%';
             document.getElementById('ao-bar-turb').style.width = (breakdown.turbidity    / maxAlerts * 100) + '%';
             document.getElementById('ao-bar-cond').style.width = (breakdown.conductivity / maxAlerts * 100) + '%';
+
+
+            // Top Water Alert
 
             // pH trend
             const last12 = trendData.slice(-12);

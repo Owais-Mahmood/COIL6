@@ -366,6 +366,37 @@ fun main() {
                 )
             }
 
+            get("/alerts/{siteId}/water-top") {
+                val siteId = call.parameters["siteId"]
+
+                if (siteId.isNullOrBlank()) {
+                    call.respond(ErrorResponse("No site ID provided."))
+                    return@get
+                }
+
+                val alerts = getAlertReadingsForSite(waterReadings, siteId)
+
+                val breakdown = alerts.flatMap { reading ->
+                    listOfNotNull(
+                        if (reading.ph < 6.5 || reading.ph > 8.5) "ph" else null,
+                        if (reading.turbidityNtu > 1) "turbidity" else null,
+                        if (reading.conductivityUsCm > 1700) "conductivity" else null
+                    )
+                }
+                    .groupingBy { it }
+                    .eachCount()
+
+                val top = breakdown.maxByOrNull { it.value }
+
+                call.respond(
+                    mapOf(
+                        "metric" to (top?.key ?: "none"),
+                        "count" to (top?.value ?: 0),
+                        "breakdown" to breakdown
+                    )
+                )
+            }
+
             // Trend data for a given site
             get("/trends/{siteId}") {
                 val siteId = call.parameters["siteId"]
