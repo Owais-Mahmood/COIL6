@@ -331,11 +331,7 @@ fun main() {
 
             // Displaying alert no. by time frame
             get("/alerts/{siteId}/summary") {
-                val siteIdRaw = call.parameters["siteId"]
-
-                val siteId = siteIdRaw
-                    ?.replace("site_", "")
-                    ?.replaceFirstChar { it.uppercase() }
+                val siteId = call.parameters["siteId"]
 
                 if (siteId.isNullOrBlank()) {
                     call.respond(ErrorResponse("No site ID provided."))
@@ -346,18 +342,18 @@ fun main() {
 
                 val now = LocalDateTime.now()
 
-                val dailyCutoff   = now.minusDays(1)
-                val weeklyCutoff  = now.minusWeeks(1)
+                val dailyCutoff = now.minusDays(1)
+                val weeklyCutoff = now.minusWeeks(1)
                 val monthlyCutoff = now.minusMonths(1)
 
-                val parsedAlerts = alerts.map {
-                    LocalDateTime.parse(it.timestamp, formatter)
+                val parsedTimestamps = alerts.map {
+                    LocalDateTime.parse(it.timestamp, formatter).plus(offset)
                 }
 
-                val total   = parsedAlerts.size
-                val daily   = parsedAlerts.count { it.isAfter(dailyCutoff) }
-                val weekly  = parsedAlerts.count { it.isAfter(weeklyCutoff) }
-                val monthly = parsedAlerts.count { it.isAfter(monthlyCutoff) }
+                val total = parsedTimestamps.size
+                val daily = parsedTimestamps.count { it.isAfter(dailyCutoff) }
+                val weekly = parsedTimestamps.count { it.isAfter(weeklyCutoff) }
+                val monthly = parsedTimestamps.count { it.isAfter(monthlyCutoff) }
 
                 call.respond(
                     AlertTimeSummaryResponse(

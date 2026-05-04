@@ -535,18 +535,27 @@
                     <div class="cq-grid">
 
                         <div class="cq-item">
-                            <div class="cq-circle" id="cq-ph" style="--p:0"><span id="val-ph">—</span></div>
+                            <div class="cq-circle" id="cq-ph" style="--p:0">
+                                <span id="val-ph">—</span>
+                            </div>
                             <div class="cq-label">pH</div>
+                            <span class="ip-badge" id="badge-ph">—</span>
                         </div>
 
                         <div class="cq-item">
-                            <div class="cq-circle" id="cq-turb" style="--p:0"><span id="val-turb">—</span></div>
+                            <div class="cq-circle" id="cq-turb" style="--p:0">
+                                <span id="val-turb">—</span>
+                            </div>
                             <div class="cq-label">Turbidity</div>
+                            <span class="ip-badge" id="badge-turb">—</span>
                         </div>
 
                         <div class="cq-item">
-                            <div class="cq-circle" id="cq-cond" style="--p:0"><span id="val-cond">—</span></div>
+                            <div class="cq-circle" id="cq-cond" style="--p:0">
+                                <span id="val-cond">—</span>
+                            </div>
                             <div class="cq-label">Conductivity</div>
+                            <span class="ip-badge" id="badge-cond">—</span>
                         </div>
 
                     </div>
@@ -559,18 +568,27 @@
                     <div class="cq-grid">
 
                         <div class="cq-item">
-                            <div class="cq-circle" id="cq-temp" style="--p:0"><span id="val-temp">—</span></div>
+                            <div class="cq-circle" id="cq-temp" style="--p:0">
+                                <span id="val-temp">—</span>
+                            </div>
                             <div class="cq-label">Temp</div>
+                            <span class="ip-badge" id="badge-temp">—</span>
                         </div>
 
                         <div class="cq-item">
-                            <div class="cq-circle" id="cq-level" style="--p:0"><span id="val-level">—</span></div>
+                            <div class="cq-circle" id="cq-level" style="--p:0">
+                                <span id="val-level">—</span>
+                            </div>
                             <div class="cq-label">Level</div>
+                            <span class="ip-badge" id="badge-level">—</span>
                         </div>
 
                         <div class="cq-item">
-                            <div class="cq-circle" id="cq-light" style="--p:0"><span id="val-light">—</span></div>
+                            <div class="cq-circle" id="cq-light" style="--p:0">
+                                <span id="val-light">—</span>
+                            </div>
                             <div class="cq-label">Light</div>
+                            <span class="ip-badge" id="badge-light">—</span>
                         </div>
 
                     </div>
@@ -891,21 +909,28 @@
     }
 
     async function loadData() {
+
+        console.log("1. loadData started");
         try {
-            const [latestRes, breakdownRes, trendRes] = await Promise.all([
+            const [latestRes, breakdownRes, summaryRes, trendRes] = await Promise.all([
                 fetch('/latest/' + currentSite),
                 fetch('/alerts/' + currentSite + '/breakdown'),
+                fetch('/alerts/' + currentSite + '/summary'),
                 fetch('/trends/' + currentSite)
             ]);
 
-            const d         = await latestRes.json();
+        
+
+            const d = await latestRes.json();
             const breakdown = await breakdownRes.json();
-            console.log('BREAKDOWN DATA:', breakdown);
+            const summary = await summaryRes.json();
+            console.log("SUMMARY RAW RESPONSE:", summary);
             const trendData = await trendRes.json();
 
-            
+            console.log("2. data loaded", d, breakdown, summary);
 
             // alert circles
+            console.log("3. about to render circles");
             setCircle('cq-ph',
                 toPercent(d.ph, 6, 9),
                 getCircleColor('ph', d.ph)
@@ -953,11 +978,13 @@
                 badge.textContent = statusLabel;
             });
 
+            console.log("4. about to render alert overview");
+
             // alert overview
-            document.getElementById('ao-total').textContent = breakdown.total.toLocaleString();
-            document.getElementById('ao-month').textContent = breakdown.month.toLocaleString();
-            document.getElementById('ao-week').textContent  = breakdown.week.toLocaleString();
-            document.getElementById('ao-day').textContent   = breakdown.day.toLocaleString();
+            document.getElementById('ao-total').textContent = summary.total;
+            document.getElementById('ao-month').textContent = summary.monthly;
+            document.getElementById('ao-week').textContent = summary.weekly;
+            document.getElementById('ao-day').textContent = summary.daily;
                         
             const maxAlerts = Math.max(breakdown.ph, breakdown.turbidity, breakdown.conductivity, 1);
             document.getElementById('ao-bar-ph').style.width   = (breakdown.ph           / maxAlerts * 100) + '%';
