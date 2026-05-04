@@ -472,7 +472,6 @@
 </head>
 <body>
 <div class="app">
-
     <nav class="navbar">
         <div class="logo">
             <img src="images/stroomloop.png" width="200">
@@ -490,9 +489,7 @@
     </nav>
 
     <div class="page">
-
         <div class="hero">
-
             <div class="hero-left">
                 <div class="hero-heading">Stay informed. Act on time.</div>
                 <p class="hero-sub">
@@ -518,7 +515,6 @@
                     <button class="site-btn" onclick="selectSite(this, 'site_reservoir')">Reservoir</button>
                 </div>
             </div>
-
     
             <div class="hero-panels">
 
@@ -596,7 +592,6 @@
             </div>
         </div>
         
-
         <div class="cards-row">
 
             <!-- Card 1: Site Comparison -->
@@ -708,7 +703,6 @@
 </div>
 
 <script>
-
     let currentSite = 'site_upstream';
 
     function phStatus(ph) {
@@ -746,7 +740,6 @@
 
         document.getElementById('clock').textContent = `${hh}:${mm} · ${dd}/${mo}/${yyyy}`;
     }
-
 
     function minutesAgo(timestamp) {
         const now = new Date();
@@ -830,7 +823,20 @@
         }
 
         return '#16a34a';
-    }   
+    }  
+
+    // picking metric that has produced the most alerts
+    function getTopWaterAlert(breakdown) {
+        const entries = [
+            { name: 'ph', value: breakdown.ph || 0 },
+            { name: 'turbidity', value: breakdown.turbidity || 0 },
+            { name: 'conductivity', value: breakdown.conductivity || 0 }
+        ];
+
+        return entries.reduce((max, item) => {
+            return item.value > max.value ? item : max;
+        }, { name: 'none', value: 0 });
+    }
 
     async function loadSiteStatuses() {
         try {
@@ -919,12 +925,11 @@
                 fetch('/trends/' + currentSite)
             ]);
 
-        
-
             const d = await latestRes.json();
             const breakdown = await breakdownRes.json();
             const summary = await summaryRes.json();
             const trendData = await trendRes.json();
+            const topWater = getTopWaterAlert(breakdown);
 
             console.log("2. data loaded", d, breakdown, summary);
 
@@ -984,32 +989,13 @@
             document.getElementById('ao-month').textContent = summary.monthly;
             document.getElementById('ao-week').textContent = summary.weekly;
             document.getElementById('ao-day').textContent = summary.daily;
-                        
-            const maxAlerts = Math.max(breakdown.ph, breakdown.turbidity, breakdown.conductivity, 1);
-            document.getElementById('ao-bar-ph').style.width   = (breakdown.ph           / maxAlerts * 100) + '%';
-            document.getElementById('ao-bar-turb').style.width = (breakdown.turbidity    / maxAlerts * 100) + '%';
-            document.getElementById('ao-bar-cond').style.width = (breakdown.conductivity / maxAlerts * 100) + '%';
-
 
             // Top Water Alert
+            document.getElementById('top-water-metric').textContent =
+                topWater.name.toUpperCase();
 
-            // pH trend
-            const last12 = trendData.slice(-12);
-            if (last12.length > 0) {
-                const phValues = last12.map(p => p.ph);
-
-                document.querySelectorAll('.fake-chart .fc-bar').forEach((bar, i) => {
-                    if (i < phValues.length) {
-                        const heightPct = ((phValues[i] - 6.0) / (9.5 - 6.0)) * 70 + 20;
-                        bar.style.height = Math.min(100, Math.max(10, heightPct)) + '%';
-                        const st = phStatus(phValues[i]);
-                        bar.className = 'fc-bar ' + (st === 'c' ? 'ph-crit' : st === 'w' ? 'ph-warn' : 'ph-normal');
-                    }
-                });
-
-                document.getElementById('ph-trend-val').textContent =
-                    phValues[phValues.length - 1].toFixed(2);
-            }
+            document.getElementById('top-water-count').textContent =
+                topWater.value;
 
             // weather conditions
             document.getElementById('wx-temp').textContent = d.wxTempC.toFixed(1) + '°C';
