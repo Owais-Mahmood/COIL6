@@ -174,14 +174,21 @@
     .hero-panels {
         display: grid;
         grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr; /* KEY LINE */
         gap: 12px;
         align-items: stretch;
+        height: 100%; /* ensures it respects left column height */
     }
 
     /* Left column (full height) */
     .recent-alerts {
-        grid-column: 1;
-        grid-row: 1 / span 2;
+        background: rgba(255,255,255,0.9);
+        border-radius: 16px;
+        padding: 18px;
+        
+        box-shadow: 0 12px 32px rgba(34,83,130,0.18);
+        border: 1px solid rgba(34,83,130,0.12);
+        grid-row: 1 / span 2; /* spans both rows */
     }
 
     /* Right column (stacked) */
@@ -190,10 +197,11 @@
         grid-row: 1;
     }
 
-    .e-alerts{
+    .e-alerts {
         grid-column: 2;
         grid-row: 2;
     }
+    
     .info-panel {
         background: rgba(255,255,255,0.5); border-radius: 12px;
         padding: 14px 16px; backdrop-filter: blur(6px);
@@ -211,10 +219,42 @@
     .ip-val   { font-size: 0.82rem; font-weight: 600; color: var(--text-dark); white-space: nowrap; flex-shrink: 0; }
 
     .alert-row {
-        display: flex;
+        display: grid;
+        grid-template-columns: 20px 1fr auto auto auto;
         align-items: center;
-        gap: 10px;
-        font-size: 0.75rem;
+
+        gap: 12px;
+        padding: 10px 12px;
+        border-radius: 10px;
+
+        background: rgba(255,255,255,0.75);
+        transition: all 0.2s ease;
+        position: relative;
+    }
+
+    .alert-row::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 6px;
+        bottom: 6px;
+        width: 4px;
+        border-radius: 3px;
+        background: #d97706; /* default warning */
+    }
+
+    .alert-row:has(.badge-crit)::before {
+        background: #dc2626;
+    }
+
+    .alert-row:has(.badge-ok)::before {
+        background: #16a34a;
+    }
+
+
+    .alert-row:hover {
+        background: rgba(255,255,255,0.95);
+        transform: translateX(2px);
     }
 
     .alert-metric {
@@ -738,40 +778,40 @@
         if (metric === 'ph') {
             if (value < 6.5 || value > 8.5) return '#dc2626'; // critical
             if (value < 6.8 || value > 8.2) return '#d97706'; // warning
-            return '#225382'; // normal
+            return '#16a34a'; // normal
         }
 
         if (metric === 'turbidity') {
             if (value > 25) return '#dc2626';
             if (value > 10) return '#d97706';
-            return '#225382';
+            return '#16a34a';
         }
 
         if (metric === 'conductivity') {
             if (value > 1500) return '#dc2626';
             if (value > 800) return '#d97706';
-            return '#225382';
+            return '#16a34a';
         }
 
         if (metric === 'temperature') {
             if (value > 30 || value < 5) return '#dc2626';
             if (value > 25 || value < 8) return '#d97706';
-            return '#225382';
+            return '#16a34a';
         }
 
         if (metric === 'level') {
             if (value > 250) return '#dc2626';
             if (value > 180) return '#d97706';
-            return '#225382';
+            return '#16a34a';
         }
 
         if (metric === 'light') {
             if (value > 8000) return '#dc2626';
             if (value > 5000) return '#d97706';
-            return '#225382';
+            return '#16a34a';
         }
 
-        return '#225382';
+        return '#16a34a';
     }   
 
     async function loadSiteStatuses() {
@@ -860,7 +900,10 @@
 
             const d         = await latestRes.json();
             const breakdown = await breakdownRes.json();
+            console.log('BREAKDOWN DATA:', breakdown);
             const trendData = await trendRes.json();
+
+            
 
             // alert circles
             setCircle('cq-ph',
