@@ -165,7 +165,7 @@
     /* map */
     .hero-map {
         display: fixed; align-items: center; justify-content: center;
-        margin-left: -250px; margin-top: 15px;
+        margin-left: -230px; margin-top: -10px;
     }
 
     .map-container {
@@ -393,7 +393,7 @@
         <div class="hero">
 
             <div class="hero-left">
-                <div style="position: relative; top: -20px;">
+                <div style="position: relative; top: 10px;">
                 <div class="hero-heading">Know your water. Protect your health.</div>
                 <p class="hero-sub">
                     Stroomloop is an online platform designed to support<br>
@@ -407,7 +407,7 @@
                     and access, the platform helps communitites stay informed<br>
                     and respond quickly to potential risks. This supports<br>
                     safer water use, improves awareness and contributes<br>
-                    to better long-term health outcomes
+                    to better long-term health outcomes.
                 </p>
                 </div>
                 <div class="toggle-spacer"></div>
@@ -417,13 +417,8 @@
                         <span class="spill amber" id="pill-moderate">— Moderate</span>
                         <span class="spill" id="pill-critical" style="background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.35);color:#dc2626">— Critical</span>
                     </div>
-                    <div class="spill-line">
-                        <span class="spill">70k Readings</span>
-                        <span class="spill">6 Metrics</span>
-                    </div>
                 </div>
-                <div class="toggle-spacer"></div>
-                <div class="site-toggle-row">
+                <div class="site-toggle-row" style="margin-top:10px;">
                     <button class="site-btn active" onclick="selectSite(this, 'site_upstream')">Upstream</button>
                     <button class="site-btn" onclick="selectSite(this, 'site_downstream')">Downstream</button>
                     <button class="site-btn" onclick="selectSite(this, 'site_reservoir')">Reservoir</button>
@@ -434,17 +429,17 @@
                 <div class="map-container">
                     <img src="images/southafrica-infographic.png" width = "500">
                     <svg class="map-overlay" viewBox= "0 0 500 500" xmlns="http://www.w3.org/2000/svg" overflow="visible">
-                        <circle cx="190" cy="370" r="10" fill="rgba(76,175,80,0.15)"/>
-                        <circle cx="190" cy="370" r="5"  fill="#4CAF50" stroke="white" stroke-width="1.5"/>
-                        <text x="125" y="340" class="mlabel" style=font-size:15px; fill:rgba(34,83,130,0.8); font-weight:800">Upstream</text>
+                        <circle cx="190" cy="370" r="10" id="dot-glow-upstream" fill="rgba(76,175,80,0.15)"/>
+                        <circle cx="190" cy="370" r="5"  id="dot-upstream" fill="#4CAF50" stroke="white" stroke-width="1.5"/>
+                        <text x="135" y="343" class="mlabel" style=font-size:15px; fill:rgba(34,83,130,0.8); font-weight:800">Upstream</text>
 
-                        <circle cx="310" cy="284" r="10" fill="rgba(76,175,80,0.15)"/>
-                        <circle cx="310" cy="284" r="5"  fill="#4CAF50" stroke="white" stroke-width="1.5"/>
-                        <text x="245" y="265" class="mlabel" style=font-size:15px; fill:rgba(34,83,130,0.8); font-weight:800">Reservoir</text>
+                        <circle cx="310" cy="284" r="10" id="dot-glow-reservoir" fill="rgba(76,175,80,0.15)"/>
+                        <circle cx="310" cy="284" r="5"  id="dot-reservoir" fill="#4CAF50" stroke="white" stroke-width="1.5"/>
+                        <text x="265" y="265" class="mlabel" style=font-size:15px; fill:rgba(34,83,130,0.8); font-weight:800">Reservoir</text>
 
-                        <circle cx="370" cy="360" r="10" fill="rgba(255,193,7,0.2)"/>
-                        <circle cx="370" cy="360" r="5"  fill="#FFC107" stroke="white" stroke-width="1.5"/>
-                        <text x="260" y="360" class="mlabel" style=font-size:15px; fill:rgba(34,83,130,0.8); font-weight:800">Downstream</text>    
+                        <circle cx="370" cy="360" r="10" id="dot-glow-downstream" fill="rgba(255,193,7,0.2)"/>
+                        <circle cx="370" cy="360" r="5"  id="dot-downstream" fill="#FFC107" stroke="white" stroke-width="1.5"/>
+                        <text x="264" y="367" class="mlabel" style=font-size:15px; fill:rgba(34,83,130,0.8); font-weight:800">Downstream</text>    
                     </svg>
                 </div>
             </div>
@@ -645,7 +640,7 @@
             </div>
             <div class="verdict-site" id="verdict-site">Upstream</div>
         </div>
-
+        <p style="font-size:0.72rem; color:var(--text-light); text-align:center; margin-top:20px;">Stroomloop has collected over 70,000 readings across 6 water quality metrics from 3 active monitoring sites.</p>
     </div>
 </div>
 
@@ -742,6 +737,17 @@
             pillHealthy.style.display  = counts.normal   > 0 ? '' : 'none';
             pillModerate.style.display = counts.warning  > 0 ? '' : 'none';
             pillCritical.style.display = counts.critical > 0 ? '' : 'none';
+
+            const dotColors = {
+                normal:   { fill: '#4CAF50', glow: 'rgba(76,175,80,0.15)' },
+                warning:  { fill: '#FFC107', glow: 'rgba(255,193,7,0.2)'  },
+                critical: { fill: '#ef4444', glow: 'rgba(239,68,68,0.2)'  }
+            };
+            ['upstream', 'downstream', 'reservoir'].forEach((key, i) => {
+                const c = dotColors[results[i].status] || dotColors.normal;
+                document.getElementById('dot-'      + key).setAttribute('fill', c.fill);
+                document.getElementById('dot-glow-' + key).setAttribute('fill', c.glow);
+            });
 
         } catch (e) {
             console.error('Could not load site statuses', e);

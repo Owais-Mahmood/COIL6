@@ -306,7 +306,7 @@ fun main() {
 
                 val alerts = getAlertReadingsForSite(waterReadings, siteId)
                     .sortedByDescending { it.timestamp }
-                    .take(10)
+                    .take(30)
                     .flatMap { reading ->
 
                         val ts = LocalDateTime.parse(reading.timestamp, formatter)
@@ -325,7 +325,7 @@ fun main() {
                         )
                     }
 
-                call.respond(alerts.take(5))
+                call.respond(alerts.take(15))
             }
 
 
