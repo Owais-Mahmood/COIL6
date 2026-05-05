@@ -249,79 +249,38 @@
     }
 
     .ao-sub {
-        font-size: 0.72rem;
-        color: var(--text-mid);
-        line-height: 1.6;
-        margin-top: 10px;
-        margin-bottom: 16px;
+        font-size: 0.72rem; color: var(--text-mid);
+        line-height: 1.6; margin-top: 10px; margin-bottom: 16px;
     }
 
     .card-sub {
-        font-size: 0.72rem;
-        color: var(--text-mid);
-        line-height: 1.6;
-        margin-bottom: 8px;
+        font-size: 0.72rem; color: var(--text-mid);
+        line-height: 1.6; margin-bottom: 8px;
     }
 
     /* alert overview bars */
     .ao-bars     { display: flex; flex-direction: column; gap: 6px; }
     .ao-bar-row  { display: flex; align-items: center; gap: 8px; }
-
     .ao-bar-label { font-size: 0.7rem; color: var(--text-light); width: 76px; flex-shrink: 0; }
-
-    .ao-bar-track {
-        flex: 1; height: 6px; border-radius: 3px;
-        background: var(--blue-faint); overflow: hidden;
-    }
-
+    .ao-bar-track { flex: 1; height: 6px; border-radius: 3px; background: var(--blue-faint); overflow: hidden; }
     .ao-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
     .ao-bar-fill.c-warn { background: #f59e0b; }
     .ao-bar-fill.c-crit { background: #ef4444; }
     .ao-bar-fill.c-blue { background: var(--blue); }
-
-    .ao-bar-count {
-        font-size: 0.7rem; font-weight: 600; color: var(--text-dark);
-        width: 44px; text-align: right;
-    }
+    .ao-bar-count { font-size: 0.7rem; font-weight: 600; color: var(--text-dark); width: 44px; text-align: right; }
 
     /* ---------- site comparison ---------- */
-    .sc-sub {
-        font-size: 0.72rem; color: var(--text-mid);
-        line-height: 1.6; margin-bottom: 16px;
-    }
-
+    .sc-sub { font-size: 0.72rem; color: var(--text-mid); line-height: 1.6; margin-bottom: 16px; }
     .sc-rows { display: flex; flex-direction: column; gap: 14px; }
     .sc-row  { display: flex; align-items: center; gap: 10px; }
-
-    .sc-label {
-        font-size: 0.72rem; color: var(--text-light);
-        width: 76px; flex-shrink: 0;
-    }
-
-    .sc-track {
-        flex: 1; height: 8px; background: var(--blue-faint);
-        border-radius: 4px; overflow: hidden;
-    }
-
-    .sc-fill {
-        height: 100%; border-radius: 4px; transition: width 0.6s ease;
-    }
-
+    .sc-label { font-size: 0.72rem; color: var(--text-light); width: 76px; flex-shrink: 0; }
+    .sc-track { flex: 1; height: 8px; background: var(--blue-faint); border-radius: 4px; overflow: hidden; }
+    .sc-fill  { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
     .sc-fill.healthy  { background: linear-gradient(90deg, #16a34a, #4ade80); }
     .sc-fill.moderate { background: linear-gradient(90deg, #d97706, #fbbf24); }
     .sc-fill.poor     { background: linear-gradient(90deg, #dc2626, #f87171); }
-
-    .sc-val {
-        font-size: 0.72rem; font-weight: 600; color: var(--text-dark);
-        width: 36px; text-align: right; flex-shrink: 0;
-    }
-
-    .sc-badge {
-        font-size: 0.6rem; font-weight: 600;
-        padding: 1px 6px; border-radius: 50px;
-        white-space: nowrap; flex-shrink: 0;
-    }
-
+    .sc-val { font-size: 0.72rem; font-weight: 600; color: var(--text-dark); width: 36px; text-align: right; flex-shrink: 0; }
+    .sc-badge { font-size: 0.6rem; font-weight: 600; padding: 1px 6px; border-radius: 50px; white-space: nowrap; flex-shrink: 0; }
     .sc-badge.best   { background: #dcfce7; color: #16a34a; }
     .sc-badge.worst  { background: #fee2e2; color: #dc2626; }
     .sc-badge.hidden { visibility: hidden; }
@@ -337,65 +296,59 @@
     /* ---------- weather conditions ---------- */
     .wx-rows { display: flex; flex-direction: column; gap: 16px; margin-top: 6px; }
     .wx-row  { display: flex; align-items: center; gap: 12px; }
-
     .wx-icon  { font-size: 1.4rem; width: 28px; text-align: center; flex-shrink: 0; }
     .wx-label { font-size: 0.72rem; color: var(--text-light); flex: 1; }
     .wx-val   { font-size: 0.88rem; font-weight: 600; color: var(--text-dark); white-space: nowrap; }
 
+    /* ---------- SANS 241:2015 compliance ---------- */
+    .compliance-section { margin-top: 16px; }
+    .compliance-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 10px; }
+    .compliance-title { font-size: 0.78rem; font-weight: 700; color: var(--blue); text-transform: uppercase; letter-spacing: 0.04em; }
+    .compliance-sub { font-size: 0.7rem; color: var(--text-light); }
+    .compliance-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .comp-site-card {
+        background: rgba(255,255,255,0.65); border-radius: 12px;
+        padding: 14px 16px; backdrop-filter: blur(8px);
+        border: 1px solid rgba(255,255,255,0.8);
+        box-shadow: 0 4px 18px rgba(34,83,130,0.07);
+    }
+    .comp-site-name { font-size: 0.72rem; font-weight: 700; color: var(--blue); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+    .comp-metrics { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+    .comp-metric-row { display: flex; align-items: center; gap: 8px; }
+    .comp-metric-label { font-size: 0.72rem; color: var(--text-light); flex: 1; }
+    .comp-metric-val { font-size: 0.78rem; font-weight: 600; color: var(--text-dark); }
+    .comp-tick { font-size: 0.72rem; font-weight: 700; width: 16px; text-align: center; }
+    .comp-tick.pass { color: #16a34a; }
+    .comp-tick.fail { color: #dc2626; }
+    .comp-overall { display: inline-block; font-size: 0.65rem; font-weight: 700; padding: 3px 10px; border-radius: 50px; letter-spacing: 0.04em; text-transform: uppercase; }
+    .comp-overall.compliant { background: #dcfce7; color: #16a34a; }
+    .comp-overall.partial { background: #fef3c7; color: #d97706; }
+    .comp-overall.non-compliant { background: #fee2e2; color: #dc2626; }
+
     /* ---------- verdict strip ---------- */
     .verdict-strip {
         display: flex; align-items: center; gap: 20px;
-        margin-top: 32px; border-radius: 14px; padding: 20px 24px;
+        margin-top: 16px; border-radius: 14px; padding: 20px 24px;
         transition: background 0.4s ease, border-color 0.4s ease;
     }
-
-    .verdict-strip.v-safe {
-        background: rgba(34, 197, 94, 0.12);
-        border: 1px solid rgba(34, 197, 94, 0.3);
-    }
-
-    .verdict-strip.v-warn {
-        background: rgba(245, 158, 11, 0.12);
-        border: 1px solid rgba(245, 158, 11, 0.3);
-    }
-
-    .verdict-strip.v-crit {
-        background: rgba(239, 68, 68, 0.12);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-    }
+    .verdict-strip.v-safe { background: rgba(34, 197, 94, 0.12); border: 1px solid rgba(34, 197, 94, 0.3); }
+    .verdict-strip.v-warn { background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.3); }
+    .verdict-strip.v-crit { background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); }
 
     .verdict-icon { font-size: 2rem; flex-shrink: 0; line-height: 1; }
-
     .verdict-body { flex: 1; }
-
-    .verdict-title {
-        font-size: 1rem; font-weight: 700; color: var(--text-dark);
-        margin-bottom: 2px;
-    }
-
+    .verdict-title { font-size: 1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 2px; }
     .verdict-sub { font-size: 0.75rem; color: var(--text-mid); }
+    .verdict-site { font-size: 0.78rem; font-weight: 600; color: var(--text-light); text-align: right; flex-shrink: 0; }
 
-    .verdict-site {
-        font-size: 0.78rem; font-weight: 600;
-        color: var(--text-light); text-align: right; flex-shrink: 0;
-    }
-
-    #sb-arc-normal, #sb-arc-warning, #sb-arc-critical {
-        transition: stroke-width 0.15s ease;
-    }
+    #sb-arc-normal, #sb-arc-warning, #sb-arc-critical { transition: stroke-width 0.15s ease; }
     .sb-donut-wrap svg { cursor: default; }
 
     .access-tag {
-        display: inline-block;
-        font-size: 0.68rem;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: #92610a;
-        background: rgba(245,158,11,0.12);
-        border: 1px solid rgba(245,158,11,0.35);
-        padding: 3px 10px;
-        border-radius: 50px;
+        display: inline-block; font-size: 0.68rem; font-weight: 700;
+        letter-spacing: 0.08em; text-transform: uppercase; color: #92610a;
+        background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.35);
+        padding: 3px 10px; border-radius: 50px;
     }
 
 </style>
@@ -413,6 +366,7 @@
             <a class="nav-pill" href="/alerts-government.html">Alerts</a>
             <a class="nav-pill" href="/trends-government.html">Trends</a>
             <a class="nav-pill" href="/information-government.html">Information</a>
+            <a class="nav-pill" href="/exports-government.html">Exports & Insights</a>
         </div>
         <div class="nav-right">
             <div class="nav-clock" id="clock">--:--</div>
@@ -433,8 +387,7 @@
                         combining smart sensors with intuitive dashboards, it<br>
                         transforms live readings into clear, actionable insights for<br>
                         healthier everyday decisions.
-                        <br>
-                        <br>
+                        <br><br>
                         By making water quality data easy to understand<br>
                         and access, the platform helps communitites stay informed<br>
                         and respond quickly to potential risks. This supports<br>
@@ -582,25 +535,19 @@
                 <div class="sc-rows">
                     <div class="sc-row">
                         <span class="sc-label">Upstream</span>
-                        <div class="sc-track">
-                            <div class="sc-fill" id="sc-fill-upstream" style="width:0%"></div>
-                        </div>
+                        <div class="sc-track"><div class="sc-fill" id="sc-fill-upstream" style="width:0%"></div></div>
                         <span class="sc-val" id="sc-val-upstream">—</span>
                         <span class="sc-badge hidden" id="sc-badge-upstream">—</span>
                     </div>
                     <div class="sc-row">
                         <span class="sc-label">Downstream</span>
-                        <div class="sc-track">
-                            <div class="sc-fill" id="sc-fill-downstream" style="width:0%"></div>
-                        </div>
+                        <div class="sc-track"><div class="sc-fill" id="sc-fill-downstream" style="width:0%"></div></div>
                         <span class="sc-val" id="sc-val-downstream">—</span>
                         <span class="sc-badge hidden" id="sc-badge-downstream">—</span>
                     </div>
                     <div class="sc-row">
                         <span class="sc-label">Reservoir</span>
-                        <div class="sc-track">
-                            <div class="sc-fill" id="sc-fill-reservoir" style="width:0%"></div>
-                        </div>
+                        <div class="sc-track"><div class="sc-fill" id="sc-fill-reservoir" style="width:0%"></div></div>
                         <span class="sc-val" id="sc-val-reservoir">—</span>
                         <span class="sc-badge hidden" id="sc-badge-reservoir">—</span>
                     </div>
@@ -618,23 +565,17 @@
                 <div class="ao-bars">
                     <div class="ao-bar-row">
                         <span class="ao-bar-label">pH</span>
-                        <div class="ao-bar-track">
-                            <div class="ao-bar-fill c-crit" id="ao-bar-ph" style="width:0%"></div>
-                        </div>
+                        <div class="ao-bar-track"><div class="ao-bar-fill c-crit" id="ao-bar-ph" style="width:0%"></div></div>
                         <span class="ao-bar-count" id="ao-count-ph">—</span>
                     </div>
                     <div class="ao-bar-row">
                         <span class="ao-bar-label">Turbidity</span>
-                        <div class="ao-bar-track">
-                            <div class="ao-bar-fill c-warn" id="ao-bar-turb" style="width:0%"></div>
-                        </div>
+                        <div class="ao-bar-track"><div class="ao-bar-fill c-warn" id="ao-bar-turb" style="width:0%"></div></div>
                         <span class="ao-bar-count" id="ao-count-turb">—</span>
                     </div>
                     <div class="ao-bar-row">
                         <span class="ao-bar-label">Conductivity</span>
-                        <div class="ao-bar-track">
-                            <div class="ao-bar-fill c-blue" id="ao-bar-cond" style="width:0%"></div>
-                        </div>
+                        <div class="ao-bar-track"><div class="ao-bar-fill c-blue" id="ao-bar-cond" style="width:0%"></div></div>
                         <span class="ao-bar-count" id="ao-count-cond">—</span>
                     </div>
                 </div>
@@ -691,6 +632,79 @@
 
         </div>
 
+        <!-- SANS 241:2015 Compliance -->
+        <div class="compliance-section">
+            <div class="compliance-header">
+                <span class="compliance-title">SANS 241:2015 Compliance</span>
+                <span class="compliance-sub">South African National Standard — drinking water quality</span>
+            </div>
+            <div class="compliance-grid">
+                <div class="comp-site-card">
+                    <div class="comp-site-name">Upstream</div>
+                    <div class="comp-metrics">
+                        <div class="comp-metric-row">
+                            <span class="comp-metric-label">pH</span>
+                            <span class="comp-metric-val" id="sans-up-ph">—</span>
+                            <span class="comp-tick" id="sans-up-ph-tick">—</span>
+                        </div>
+                        <div class="comp-metric-row">
+                            <span class="comp-metric-label">Turbidity</span>
+                            <span class="comp-metric-val" id="sans-up-turb">—</span>
+                            <span class="comp-tick" id="sans-up-turb-tick">—</span>
+                        </div>
+                        <div class="comp-metric-row">
+                            <span class="comp-metric-label">Conductivity</span>
+                            <span class="comp-metric-val" id="sans-up-cond">—</span>
+                            <span class="comp-tick" id="sans-up-cond-tick">—</span>
+                        </div>
+                    </div>
+                    <span class="comp-overall" id="sans-up-overall">—</span>
+                </div>
+                <div class="comp-site-card">
+                    <div class="comp-site-name">Downstream</div>
+                    <div class="comp-metrics">
+                        <div class="comp-metric-row">
+                            <span class="comp-metric-label">pH</span>
+                            <span class="comp-metric-val" id="sans-dn-ph">—</span>
+                            <span class="comp-tick" id="sans-dn-ph-tick">—</span>
+                        </div>
+                        <div class="comp-metric-row">
+                            <span class="comp-metric-label">Turbidity</span>
+                            <span class="comp-metric-val" id="sans-dn-turb">—</span>
+                            <span class="comp-tick" id="sans-dn-turb-tick">—</span>
+                        </div>
+                        <div class="comp-metric-row">
+                            <span class="comp-metric-label">Conductivity</span>
+                            <span class="comp-metric-val" id="sans-dn-cond">—</span>
+                            <span class="comp-tick" id="sans-dn-cond-tick">—</span>
+                        </div>
+                    </div>
+                    <span class="comp-overall" id="sans-dn-overall">—</span>
+                </div>
+                <div class="comp-site-card">
+                    <div class="comp-site-name">Reservoir</div>
+                    <div class="comp-metrics">
+                        <div class="comp-metric-row">
+                            <span class="comp-metric-label">pH</span>
+                            <span class="comp-metric-val" id="sans-rs-ph">—</span>
+                            <span class="comp-tick" id="sans-rs-ph-tick">—</span>
+                        </div>
+                        <div class="comp-metric-row">
+                            <span class="comp-metric-label">Turbidity</span>
+                            <span class="comp-metric-val" id="sans-rs-turb">—</span>
+                            <span class="comp-tick" id="sans-rs-turb-tick">—</span>
+                        </div>
+                        <div class="comp-metric-row">
+                            <span class="comp-metric-label">Conductivity</span>
+                            <span class="comp-metric-val" id="sans-rs-cond">—</span>
+                            <span class="comp-tick" id="sans-rs-cond-tick">—</span>
+                        </div>
+                    </div>
+                    <span class="comp-overall" id="sans-rs-overall">—</span>
+                </div>
+            </div>
+        </div>
+
         <!-- Verdict strip -->
         <div class="verdict-strip v-safe" id="verdict-strip">
             <span class="verdict-icon" id="verdict-icon">✓</span>
@@ -737,6 +751,7 @@
         loadSiteStatuses();
         loadSiteComparison();
         loadStatusBreakdown();
+        loadSansCompliance();
     }
 
     function getBadgeClass(status) {
@@ -759,13 +774,11 @@
 
     function updateClock() {
         const now  = new Date();
-
         const hh   = String(now.getHours()).padStart(2, '0');
         const mm   = String(now.getMinutes()).padStart(2, '0');
         const dd   = String(now.getDate()).padStart(2, '0');
         const mo   = String(now.getMonth() + 1).padStart(2, '0');
         const yyyy = now.getFullYear();
-
         document.getElementById('clock').textContent = `${hh}:${mm} · ${dd}/${mo}/${yyyy}`;
     }
 
@@ -782,7 +795,6 @@
             const results = await Promise.all(
                 sites.map(s => fetch('/latest/' + s).then(r => r.json()))
             );
-
             const counts = { normal: 0, warning: 0, critical: 0 };
             results.forEach(d => { if (counts[d.status] !== undefined) counts[d.status]++; });
 
@@ -797,7 +809,6 @@
             pillHealthy.style.display  = counts.normal   > 0 ? '' : 'none';
             pillModerate.style.display = counts.warning  > 0 ? '' : 'none';
             pillCritical.style.display = counts.critical > 0 ? '' : 'none';
-
         } catch (e) {
             console.error('Could not load site statuses', e);
         }
@@ -829,8 +840,8 @@
                 const val   = document.getElementById('sc-val-'   + keys[i]);
                 const badge = document.getElementById('sc-badge-' + keys[i]);
 
-                fill.style.width    = pct.toFixed(1) + '%';
-                val.textContent     = pct.toFixed(0) + '%';
+                fill.style.width = pct.toFixed(1) + '%';
+                val.textContent  = pct.toFixed(0) + '%';
 
                 if (pct >= 70)      fill.className = 'sc-fill healthy';
                 else if (pct >= 40) fill.className = 'sc-fill moderate';
@@ -846,7 +857,6 @@
                     badge.className = 'sc-badge hidden';
                 }
             });
-
         } catch (e) {
             console.error('Could not load site comparison', e);
         }
@@ -855,12 +865,11 @@
     async function loadStatusBreakdown() {
         try {
             const data = await fetch('/summary/status-counts').then(r => r.json());
-
             const counts = { normal: 0, warning: 0, critical: 0 };
             data.forEach(d => { if (counts[d.status] !== undefined) counts[d.status] = d.count; });
 
-            const total  = (counts.normal + counts.warning + counts.critical) || 1;
-            const C      = 188.5;
+            const total = (counts.normal + counts.warning + counts.critical) || 1;
+            const C     = 188.5;
 
             const normalPct   = counts.normal   / total * 100;
             const warningPct  = counts.warning  / total * 100;
@@ -873,24 +882,65 @@
             const arcNormal   = document.getElementById('sb-arc-normal');
             const arcWarning  = document.getElementById('sb-arc-warning');
             const arcCritical = document.getElementById('sb-arc-critical');
-            
             const GAP = 2;
 
             arcNormal.setAttribute('stroke-dasharray',  `${Math.max(0, normalArc - GAP).toFixed(1)} ${(C - Math.max(0, normalArc - GAP)).toFixed(1)}`);
             arcNormal.setAttribute('stroke-dashoffset', '0');
-
             arcWarning.setAttribute('stroke-dasharray',  `${Math.max(0, warnArc - GAP).toFixed(1)} ${(C - Math.max(0, warnArc - GAP)).toFixed(1)}`);
             arcWarning.setAttribute('stroke-dashoffset', `${(-normalArc).toFixed(1)}`);
-
             arcCritical.setAttribute('stroke-dasharray',  `${Math.max(0, critArc - GAP).toFixed(1)} ${(C - Math.max(0, critArc - GAP)).toFixed(1)}`);
             arcCritical.setAttribute('stroke-dashoffset', `${(-(normalArc + warnArc)).toFixed(1)}`);
 
             donutData = { normal: normalPct, warning: warningPct, critical: criticalPct };
             document.getElementById('sb-center-label').textContent = 'Healthy';
             document.getElementById('sb-center-pct').textContent   = normalPct.toFixed(1) + '%';
-
         } catch (e) {
             console.error('Could not load status breakdown', e);
+        }
+    }
+
+    async function loadSansCompliance() {
+        try {
+            const sites = [
+                { id: 'site_upstream',   prefix: 'up' },
+                { id: 'site_downstream', prefix: 'dn' },
+                { id: 'site_reservoir',  prefix: 'rs' }
+            ];
+            const results = await Promise.all(
+                sites.map(s => fetch('/latest/' + s.id).then(r => r.json()))
+            );
+            results.forEach((d, i) => {
+                const p = sites[i].prefix;
+                const phPass   = d.ph >= 6.0 && d.ph <= 9.0;
+                const turbPass = d.turbidityNtu <= 5;
+                const condPass = d.conductivityUsCm <= 1500;
+
+                function set(metric, value, pass) {
+                    document.getElementById(`sans-${p}-${metric}`).textContent = value;
+                    const tick = document.getElementById(`sans-${p}-${metric}-tick`);
+                    tick.textContent = pass ? '✓' : '✗';
+                    tick.className   = 'comp-tick ' + (pass ? 'pass' : 'fail');
+                }
+
+                set('ph',   d.ph.toFixed(2),                          phPass);
+                set('turb', d.turbidityNtu.toFixed(1) + ' NTU',       turbPass);
+                set('cond', d.conductivityUsCm.toFixed(0) + ' µS/cm', condPass);
+
+                const passing = [phPass, turbPass, condPass].filter(Boolean).length;
+                const overall = document.getElementById(`sans-${p}-overall`);
+                if (passing === 3) {
+                    overall.textContent = 'Compliant';
+                    overall.className   = 'comp-overall compliant';
+                } else if (passing >= 1) {
+                    overall.textContent = passing + '/3 Compliant';
+                    overall.className   = 'comp-overall partial';
+                } else {
+                    overall.textContent = 'Non-Compliant';
+                    overall.className   = 'comp-overall non-compliant';
+                }
+            });
+        } catch (e) {
+            console.error('Could not load SANS compliance', e);
         }
     }
 
@@ -904,7 +954,6 @@
             const d         = await latestRes.json();
             const breakdown = await breakdownRes.json();
 
-            // live reading panels
             document.getElementById('val-ph').textContent    = d.ph.toFixed(2);
             document.getElementById('val-turb').textContent  = d.turbidityNtu.toFixed(1) + ' NTU';
             const cond = d.conductivityUsCm;
@@ -921,7 +970,6 @@
                 badge.textContent = statusLabel;
             });
 
-            // alert overview
             document.getElementById('ao-total').textContent      = breakdown.total.toLocaleString();
             document.getElementById('ao-count-ph').textContent   = breakdown.ph.toLocaleString();
             document.getElementById('ao-count-turb').textContent = breakdown.turbidity.toLocaleString();
@@ -932,15 +980,12 @@
             document.getElementById('ao-bar-turb').style.width = (breakdown.turbidity    / maxAlerts * 100) + '%';
             document.getElementById('ao-bar-cond').style.width = (breakdown.conductivity / maxAlerts * 100) + '%';
 
-            // weather
             document.getElementById('wx-temp').textContent = d.wxTempC.toFixed(1) + '°C';
             document.getElementById('wx-rh').textContent   = d.wxRhPct.toFixed(0) + '%';
             document.getElementById('wx-rain').textContent = d.wxRainMmHr.toFixed(2) + ' mm/hr';
 
-            // verdict strip
             const siteName  = currentSite.replace('site_', '');
             const siteLabel = siteName.charAt(0).toUpperCase() + siteName.slice(1);
-
             document.getElementById('verdict-site').textContent = siteLabel;
 
             const strip = document.getElementById('verdict-strip');
@@ -965,7 +1010,7 @@
                 sub.textContent   = 'One or more parameters have exceeded safe limits';
             }
 
-        lastRefreshTime = Date.now();
+            lastRefreshTime = Date.now();
             const now = new Date();
             document.getElementById('val-last-updated').textContent =
                 String(now.getHours()).padStart(2,'0') + ':' +
@@ -975,7 +1020,7 @@
             const panel = document.getElementById('panel-latest');
             panel.style.borderColor = 'transparent';
             panel.style.background  = 'rgba(255,255,255,0.5)';
-        
+
         } catch (e) {
             console.error('Error loading dashboard data', e);
         }
@@ -986,14 +1031,16 @@
     loadData();
     loadSiteComparison();
     loadStatusBreakdown();
+    loadSansCompliance();
     initDonutHover();
 
-    setInterval(loadData, 900000);
-    setInterval(loadSiteStatuses, 900000);
+    setInterval(loadData,            900000);
+    setInterval(loadSiteStatuses,    900000);
     setInterval(loadSiteComparison,  900000);
     setInterval(loadStatusBreakdown, 900000);
-    setInterval(updateClock,      1000);
-    setInterval(updateStaleness,  1000);
+    setInterval(loadSansCompliance,  900000);
+    setInterval(updateClock,     1000);
+    setInterval(updateStaleness, 1000);
 
     function initDonutHover() {
         const svg  = document.querySelector('.sb-donut-wrap svg');
@@ -1024,7 +1071,6 @@
 
             let angle = Math.atan2(dy, dx) * 180 / Math.PI + 90;
             if (angle < 0) angle += 360;
-
             angle = (angle - 210 + 360) % 360;
             if (angle > 300) { reset(); return; }
 
