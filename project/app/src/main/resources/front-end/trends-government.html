@@ -281,6 +281,34 @@
     }
     .heatmap-label { font-size: 0.5rem; color: var(--text-light); text-align: center; }
     .heatmap-sub { font-size: 0.62rem; color: var(--text-light); margin-top: 10px; }
+    .logout-btn {
+        padding: 7px 18px; border-radius: 50px;
+        font-size: 0.875rem; font-weight: 600; color: var(--blue);
+        background: rgba(255,255,255,0.65); border: 1px solid rgba(255,255,255,0.85);
+        cursor: pointer; text-decoration: none; display: inline-block;
+        white-space: nowrap; backdrop-filter: blur(8px);
+    }
+    .logout-btn:hover { background: rgba(255,255,255,0.9); }
+
+    .official-badge {
+        font-size: 0.68rem; font-weight: 700;
+        letter-spacing: 0.06em; text-transform: uppercase;
+        background: linear-gradient(90deg, #b8860b, #ffd700, #b8860b, #ffd700);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: shimmer 7.5s linear infinite;
+        background-color: rgba(212,160,23,0.22);
+        border: 1px solid rgba(196,140,10,0.6);
+        padding: 3px 10px; border-radius: 50px;
+        white-space: nowrap;
+    }
+
+    @keyframes shimmer {
+        0%   { background-position: 0% center; }
+        100% { background-position: 200% center; }
+    }
 
 </style>
 </head>
@@ -288,18 +316,19 @@
 <div class="app">
 
     <nav class="navbar">
-        <div class="logo">
+        <div style="display:flex; flex-direction:column; align-items:flex-start; gap:8px;">
             <img src="images/stroomloop.png" width="200">
+            <span class="official-badge" style="position: relative; top: -13px;">Official Access</span>
         </div>
         <div class="nav-pills">
-            <a class="nav-pill" href="/dashboard.html">Dashboard</a>
-            <a class="nav-pill" href="/alerts.html">Alerts</a>
-            <a class="nav-pill active" href="/trends.html">Trends</a>
-            <a class="nav-pill" href="/information.html">Information</a>
+            <a class="nav-pill" href="/dashboard-government.html">Dashboard</a>
+            <a class="nav-pill" href="/alerts-government.html">Alerts</a>
+            <a class="nav-pill active" href="/trends-government.html">Trends</a>
+            <a class="nav-pill" href="/information-government.html">Information</a>
         </div>
         <div class="nav-right">
             <div class="nav-clock" id="clock">--:--</div>
-            <a class="login-btn" href="/login.html">Log in</a>
+            <a class="logout-btn" href="/logout">Log out</a>
         </div>
     </nav>
 
@@ -322,7 +351,14 @@
                         <div class="dropdown-item" onclick="selectRange('3', '72 hours')">72 hours</div>
                         <div class="dropdown-item" onclick="selectRange('7', '7 days')">7 days</div>
                         <div class="dropdown-item" onclick="selectRange('15', '15 days')">15 days</div>
+                        <div class="dropdown-item" onclick="selectRange('20', '20 days')">20 days</div>
                         <div class="dropdown-item" onclick="selectRange('30', '30 days')">30 days</div>
+                        <div class="dropdown-item" onclick="selectRange('60', '2 months')">2 months</div>
+                        <div class="dropdown-item" onclick="selectRange('90', '3 months')">3 months</div>
+                        <div class="dropdown-item" onclick="selectRange('180', '6 months')">6 months</div>
+                        <div class="dropdown-item" onclick="selectRange('270', '9 months')">9 months</div>
+                        <div class="dropdown-item" onclick="selectRange('365', '12 months')">12 months</div>
+                        <div class="dropdown-item" onclick="selectRange('', 'All')">All</div>
                     </div>
                 </div>
             </div>
@@ -420,12 +456,12 @@
     let chart         = null;
 
     const metricConfig = {
-        ph:           { label: 'pH',           field: 'ph',                unit: 'pH',    safeMin: THRESHOLDS.ph.warnMin,        safeMax: THRESHOLDS.ph.warnMax,        decimals: 2, color: '#225382' },
-        turbidity:    { label: 'Turbidity',    field: 'turbidityNtu',      unit: 'NTU',   safeMin: null,                         safeMax: THRESHOLDS.turbidity.warn,    decimals: 1, color: '#e9820a' },
-        conductivity: { label: 'Conductivity', field: 'conductivityUsCm',  unit: 'µS/cm', safeMin: null,                         safeMax: THRESHOLDS.conductivity.warn, decimals: 0, color: '#9b8ec4' },
+        ph:           { label: 'pH',           field: 'ph',                unit: 'pH',    safeMin: THRESHOLDS.ph.warnMin,         safeMax: THRESHOLDS.ph.warnMax,        decimals: 2, color: '#225382' },
+        turbidity:    { label: 'Turbidity',    field: 'turbidityNtu',      unit: 'NTU',   safeMin: null,                          safeMax: THRESHOLDS.turbidity.warn,    decimals: 1, color: '#e9820a' },
+        conductivity: { label: 'Conductivity', field: 'conductivityUsCm',  unit: 'µS/cm', safeMin: null,                          safeMax: THRESHOLDS.conductivity.warn, decimals: 0, color: '#9b8ec4' },
         waterTemp:    { label: 'Water Temp',   field: 'waterTemperatureC', unit: '°C',    safeMin: THRESHOLDS.waterTemp.warnMin,  safeMax: THRESHOLDS.waterTemp.warnMax, decimals: 1, color: '#0ea5e9' },
         waterLevel:   { label: 'Water Level',  field: 'waterLevelCm',      unit: 'cm',    safeMin: THRESHOLDS.waterLevel.warnMin, safeMax: THRESHOLDS.waterLevel.warnMax,decimals: 1, color: '#0d9488' },
-        light:        { label: 'Light',        field: 'lightLux',          unit: 'lux',   safeMin: null,                         safeMax: null,                         decimals: 0, color: '#eab308' }
+        light:        { label: 'Light',        field: 'lightLux',          unit: 'lux',   safeMin: null,                          safeMax: null,                         decimals: 0, color: '#eab308' }
     };
 
     function getBadgeClass(status) {

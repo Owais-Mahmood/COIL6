@@ -6,7 +6,7 @@
     <title>Stroomloop · Information</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        root{
+        :root {
             --blue-dark: #1a3f63;
             --blue-faint: rgba(34, 83, 130, 0.1);
             --text-dark: #1c3a55;
@@ -354,23 +354,98 @@
             color: var(--text-mid); 
         }
 
+        .stat-box {
+            background: rgba(255,255,255,0.65);
+            border-radius: 12px;
+            padding: 10px 12px;
+            backdrop-filter: blur(8px);
+        }
+        
+        .stat-label {
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: #5a7a9a;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            margin-bottom: 2px;
+        }
+
+        .stat-val {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #1c3a55;
+            line-height: 1.2;
+        }
+
+        .stat-badge {
+            display: inline-block;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-top: 3px;
+        }
+
+        .badge-ok   { background: #dcfce7; color: #16a34a; }
+        .badge-warn { background: #fef3c7; color: #d97706; }
+        .badge-crit { background: #fee2e2; color: #dc2626; }
+
+        .site-stats {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .logout-btn {
+        padding: 7px 18px; border-radius: 50px;
+        font-size: 0.875rem; font-weight: 600; color: var(--blue);
+        background: rgba(255,255,255,0.65); border: 1px solid rgba(255,255,255,0.85);
+        cursor: pointer; text-decoration: none; display: inline-block;
+        white-space: nowrap; backdrop-filter: blur(8px);
+        }
+    
+    .logout-btn:hover { background: rgba(255,255,255,0.9); }
+
+    .official-badge {
+        font-size: 0.68rem; font-weight: 700;
+        letter-spacing: 0.06em; text-transform: uppercase;
+        background: linear-gradient(90deg, #b8860b, #ffd700, #b8860b, #ffd700);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: shimmer 7.5s linear infinite;
+        background-color: rgba(212,160,23,0.22);
+        border: 1px solid rgba(196,140,10,0.6);
+        padding: 3px 10px; border-radius: 50px;
+        white-space: nowrap;
+    }
+
+    @keyframes shimmer {
+        0%   { background-position: 0% center; }
+        100% { background-position: 200% center; }
+    }
+
+
     </style>
 </head>
 <body>
 <div class="app">
     <nav class="navbar">
-        <div class="logo">
+        <div style="display:flex; flex-direction:column; align-items:flex-start; gap:8px;">
             <img src="images/stroomloop.png" width="200">
+            <span class="official-badge" style="position: relative; top: -13px;">Official Access</span>
         </div>
         <div class="nav-pills">
-            <a class="nav-pill" href="/dashboard.html">Dashboard</a>
-            <a class="nav-pill" href="/alerts.html">Alerts</a>
-            <a class="nav-pill" href="/trends.html">Trends</a>
-            <a class="nav-pill active" href="/info.html">Information</a>
+            <a class="nav-pill" href="/dashboard-government.html">Dashboard</a>
+            <a class="nav-pill" href="/alerts-government.html">Alerts</a>
+            <a class="nav-pill" href="/trends-government.html">Trends</a>
+            <a class="nav-pill active" href="/information-government.html">Information</a>
         </div>
         <div class="nav-right">
             <div class="nav-clock" id="clock">--:--</div>
-            <a class="login-btn" href="/login.html">Log in</a>
+            <a class="logout-btn" href="/logout">Log out</a>
         </div>
     </nav>
     <div class="page-content">
@@ -434,8 +509,8 @@
                     </div>
                     <div class="labels" style="position: relative; height: 35px;">
                         <div style="position: absolute; left: 0%; text-align: center;">0</div>
-                        <div style="position: absolute; left: 7%; text-align: center;">4 NTU</div>
-                        <div style="position: absolute; left: 92%; text-align: center; transform: translateX(-50%)">55+<br><span>critical</span></div>
+                        <div style="position: absolute; left: 7%; text-align: center;">5 NTU</div>
+                        <div style="position: absolute; left: 92%; text-align: center; transform: translateX(-50%)">10+<br><span>critical</span></div>
                         <div style="position: absolute; right: 0%; text-align: center;">60</div>
                     </div>
                 </div>
@@ -462,7 +537,7 @@
                     </div>
                     <div class="labels" style="position: relative; height: 35px;">
                             <div style="position: absolute; left: 0%;">0</div>
-                            <div style="position: absolute; left: 28%; transform: translateX(-50%)">100–600µS/cm<br><span>healthy</span></div>
+                            <div style="position: absolute; left: 28%; transform: translateX(-50%)">0–500µS/cm<br><span>healthy</span></div>
                             <div style="position: absolute; right: 0%;">2500</div>
                     </div>
                 </div>
@@ -516,7 +591,7 @@
                     </div>
                     <div class="labels" style="position: relative; height: 35px;">
                         <div style="position: absolute; left: 0%;">0</div>
-                        <div style="position: absolute; left: 41%; transform: translateX(-50%)">50–600cm<br><span>healthy</span></div>
+                        <div style="position: absolute; left: 41%; transform: translateX(-50%)">30–100cm<br><span>healthy</span></div>
                         <div style="position: absolute; right: 0%;">800</div>
                     </div>
                 </div>
@@ -570,6 +645,24 @@
                     Captures baseline water quality above the settlement,
                     before agricultural and residential contamination sources.
                 </span>
+                <div class="site-stats">
+                    <div class="stat-box">
+                        <div class="stat-label">Total Readings</div>
+                        <div class="stat-val" id="upstream-total-readings">--</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Total Alerts</div>
+                        <div class="stat-val" id="upstream-total-alerts">--</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Alert Rate</div>
+                        <div class="stat-val" id="upstream-alert-rate">--</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Latest Status</div>
+                        <span class="stat-badge badge-ok" id="upstream-status-badge">--</span>
+                    </div>
+                </div>
             </div>
             <div class="monitoring-sites-box">
                 <span class="monitoring-sites-title">
@@ -579,6 +672,24 @@
                     Captures cumulative effects of all upstream activity
                     before water reaches the reservoir supply point.
                 </span>
+                <div class="site-stats">
+                    <div class="stat-box">
+                        <div class="stat-label">Total Readings</div>
+                        <div class="stat-val" id="downstream-total-readings">--</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Total Alerts</div>
+                        <div class="stat-val" id="downstream-total-alerts">--</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Alert Rate</div>
+                        <div class="stat-val" id="downstream-alert-rate">--</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Latest Status</div>
+                        <span class="stat-badge badge-ok" id="downstream-status-badge">--</span>
+                    </div>
+                </div>
             </div>
             <div class="monitoring-sites-box">
                 <span class="monitoring-sites-title">
@@ -587,6 +698,24 @@
                 <span class="monitoring-sites-contents">
                     The most critical site - monitors water quality at the main community supply reservoir for treatment decisions.
                 </span>
+                <div class="site-stats">
+                    <div class="stat-box">
+                        <div class="stat-label">Total Readings</div>
+                        <div class="stat-val" id="reservoir-total-readings">--</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Total Alerts</div>
+                        <div class="stat-val" id="reservoir-total-alerts">--</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Alert Rate</div>
+                        <div class="stat-val" id="reservoir-alert-rate">--</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Latest Status</div>
+                        <span class="stat-badge badge-ok" id="reservoir-status-badge">--</span>
+                    </div>
+                </div>
             </div>
         </div>
         </div> 
@@ -595,6 +724,8 @@
 
 </div>
 </body>
+
+<script src="/thresholds.js"></script>
 <script>
     function positionPinPoint(value, min, max, pointerID){
         const percentage = ((value - min)/(max - min)) * 100
@@ -625,46 +756,46 @@
             strip.className   = 'verdict-strip v-safe'
             icon.textContent  = '✓'
             title.textContent = metricName + ' is within safe range'
-            sub.textContent   = `Currently at ${value} ${unit} within acceptable limits`
+            sub.textContent   = `Currently at ${value} ${unit} — within acceptable limits`
         } else if (status === 'warning') {
             strip.className   = 'verdict-strip v-warn'
             icon.textContent  = '⚠'
             title.textContent = metricName + ' is approaching unsafe levels'
-            sub.textContent   = `Currently at ${value} ${unit} monitor closely`
+            sub.textContent   = `Currently at ${value} ${unit} — monitor closely`
         } else {
             strip.className   = 'verdict-strip v-crit'
             icon.textContent  = '✕'
             title.textContent = metricName + ' has exceeded safe limits'
-            sub.textContent   = `Currently at ${value} ${unit} action may be required`
+            sub.textContent   = `Currently at ${value} ${unit} — action may be required`
         }
 
     }
 
-    function getMetricStatus(metric, value){
-         if (metric === 'ph') {
-            if (value < 6.5 || value > 8.5) return 'critical'
-            else if (value < 6.8 || value > 8.2) return 'warning'
-            else return 'normal'
+    function getMetricStatus(metric, value) {
+        if (metric === 'ph') {
+            if (value < THRESHOLDS.ph.critMin || value > THRESHOLDS.ph.critMax) return 'critical';
+            if (value < THRESHOLDS.ph.warnMin || value > THRESHOLDS.ph.warnMax) return 'warning';
+            return 'normal';
         } else if (metric === 'turbidity') {
-            if (value > 55) return 'critical'
-            else if (value > 4) return 'warning'
-            else return 'normal'
+            if (value > THRESHOLDS.turbidity.crit) return 'critical';
+            if (value > THRESHOLDS.turbidity.warn) return 'warning';
+            return 'normal';
         } else if (metric === 'conductivity') {
-            if (value < 50 || value > 750) return 'critical'
-            else if (value < 100 || value > 600) return 'warning'
-            else return 'normal'
+            if (value > THRESHOLDS.conductivity.crit) return 'critical';
+            if (value > THRESHOLDS.conductivity.warn) return 'warning';
+            return 'normal';
         } else if (metric === 'waterTemp') {
-            if (value < 5 || value > 30) return 'critical'
-            else if (value < 10 || value > 25) return 'warning'
-            else return 'normal'
+            if (value < THRESHOLDS.waterTemp.critMin || value > THRESHOLDS.waterTemp.critMax) return 'critical';
+            if (value < THRESHOLDS.waterTemp.warnMin || value > THRESHOLDS.waterTemp.warnMax) return 'warning';
+            return 'normal';
         } else if (metric === 'waterLevel') {
-            if (value < 20 || value > 700) return 'critical'
-            else if (value < 50 || value > 600) return 'warning'
-            else return 'normal'
+            if (value < THRESHOLDS.waterLevel.critMin || value > THRESHOLDS.waterLevel.critMax) return 'critical';
+            if (value < THRESHOLDS.waterLevel.warnMin || value > THRESHOLDS.waterLevel.warnMax) return 'warning';
+            return 'normal';
         } else if (metric === 'light') {
-            if (value > 100000) return 'critical'
-            else if (value > 15000) return 'warning'
-            else return 'normal'
+            if (value > 100000) return 'critical';
+            if (value > 15000) return 'warning';
+            return 'normal';
         }
     }
 
@@ -689,16 +820,50 @@
     }
 
     function updateClock() {
-        const now = new Date();
-        const past = new Date(now);
-        past.setFullYear(past.getFullYear() - 3);
-        const hh = String(past.getHours()).padStart(2, '0');
-        const mm = String(past.getMinutes()).padStart(2, '0');
-        const dd = String(past.getDate()).padStart(2, '0');
-        const mo = String(past.getMonth() + 1).padStart(2, '0');
-        const yyyy = past.getFullYear();
+        const now  = new Date();
+
+        const hh   = String(now.getHours()).padStart(2, '0');
+        const mm   = String(now.getMinutes()).padStart(2, '0');
+        const dd   = String(now.getDate()).padStart(2, '0');
+        const mo   = String(now.getMonth() + 1).padStart(2, '0');
+        const yyyy = now.getFullYear();
+
         document.getElementById('clock').textContent = `${hh}:${mm} · ${dd}/${mo}/${yyyy}`;
     }
+
+    async function loadSiteAlerts() {
+        const sites = [
+            {id: "site_upstream", prefix: "upstream"},
+            {id: "site_downstream", prefix: "downstream"},
+            {id: "site_reservoir", prefix: "reservoir"}
+        ]
+
+        for (const site of sites){
+            const latest_res = await fetch(`/latest/${site.id}`)
+            const latest_d = await latest_res.json()
+
+            const readings_res = await fetch(`/site/${site.id}`)
+            const readings_d = await readings_res.json()
+
+            const alerts_res = await fetch(`/alerts/${site.id}/summary`)
+            const alerts_d = await alerts_res.json()
+
+            const status = latest_d.status
+            const badgeClass = status === 'normal' ? 'badge-ok' : status === 'warning' ? 'badge-warn' : 'badge-crit'
+            const label = status.charAt(0).toUpperCase() + status.slice(1)
+
+            document.getElementById(`${site.prefix}-status-badge`).className = `stat-badge ${badgeClass}`
+            document.getElementById(`${site.prefix}-status-badge`).textContent = label
+            document.getElementById(`${site.prefix}-total-readings`).textContent = readings_d.count
+            document.getElementById(`${site.prefix}-total-alerts`).textContent = alerts_d.total
+
+            const alertRate = ((alerts_d.total / readings_d.count) * 100).toFixed(1)
+            document.getElementById(`${site.prefix}-alert-rate`).textContent = alertRate + "%"
+
+        }
+    }
+
+loadSiteAlerts();
 
 updateClock();
 setInterval(updateClock, 1000);
