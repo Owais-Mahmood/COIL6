@@ -845,7 +845,7 @@
             const readings_res = await fetch(`/site/${site.id}`)
             const readings_d = await readings_res.json()
 
-            const alerts_res = await fetch(`/alerts/${site.id}`)
+            const alerts_res = await fetch(`/alerts/${site.id}/summary`)
             const alerts_d = await alerts_res.json()
 
             const status = latest_d.status
@@ -855,9 +855,9 @@
             document.getElementById(`${site.prefix}-status-badge`).className = `stat-badge ${badgeClass}`
             document.getElementById(`${site.prefix}-status-badge`).textContent = label
             document.getElementById(`${site.prefix}-total-readings`).textContent = readings_d.count
-            document.getElementById(`${site.prefix}-total-alerts`).textContent = alerts_d.count
+            document.getElementById(`${site.prefix}-total-alerts`).textContent = alerts_d.total
 
-            const alertRate = ((alerts_d.count / readings_d.count) * 100).toFixed(1)
+            const alertRate = ((alerts_d.total / readings_d.count) * 100).toFixed(1)
             document.getElementById(`${site.prefix}-alert-rate`).textContent = alertRate + "%"
 
         }

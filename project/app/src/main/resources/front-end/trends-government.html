@@ -345,11 +345,11 @@
                 <button class="site-btn" onclick="selectSite(this, 'site_reservoir')">Reservoir</button>
 
                 <div class="custom-dropdown" id="range-dropdown">
-                    <button class="dropdown-btn" onclick="toggleDropdown()">7 days</button>
+                    <button class="dropdown-btn" onclick="toggleDropdown()">24 hours</button>
                     <div class="dropdown-list" id="dropdown-list">
-                        <div class="dropdown-item" onclick="selectRange('1', '24 hours')">24 hours</div>
+                        <div class="dropdown-item active" onclick="selectRange('1', '24 hours')">24 hours</div>
                         <div class="dropdown-item" onclick="selectRange('3', '72 hours')">72 hours</div>
-                        <div class="dropdown-item active" onclick="selectRange('7', '7 days')">7 days</div>
+                        <div class="dropdown-item" onclick="selectRange('7', '7 days')">7 days</div>
                         <div class="dropdown-item" onclick="selectRange('15', '15 days')">15 days</div>
                         <div class="dropdown-item" onclick="selectRange('20', '20 days')">20 days</div>
                         <div class="dropdown-item" onclick="selectRange('30', '30 days')">30 days</div>
@@ -452,7 +452,7 @@
 
     let currentSite   = 'site_upstream';
     let currentMetric = 'ph';
-    let currentDays   = 7;
+    let currentDays   = 1;
     let chart         = null;
 
     const metricConfig = {
