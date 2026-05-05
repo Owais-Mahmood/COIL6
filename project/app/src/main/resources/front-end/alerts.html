@@ -787,32 +787,32 @@
     function getCircleColor(metric, value) {
 
         if (metric === 'ph') {
-            if (value < 6.5 || value > 8.5) return '#dc2626'; // critical
-            if (value < 6.8 || value > 8.2) return '#d97706'; // warning
+            if (value < 6 || value > 9) return '#dc2626'; // critical
+            if (value < 6.5 || value > 8.5) return '#d97706'; // warning
             return '#16a34a'; // normal
         }
 
         if (metric === 'turbidity') {
-            if (value > 25) return '#dc2626';
-            if (value > 10) return '#d97706';
+            if (value > 10) return '#dc2626';
+            if (value > 5) return '#d97706';
             return '#16a34a';
         }
 
         if (metric === 'conductivity') {
             if (value > 1500) return '#dc2626';
-            if (value > 800) return '#d97706';
+            if (value > 500) return '#d97706';
             return '#16a34a';
         }
 
         if (metric === 'temperature') {
             if (value > 30 || value < 5) return '#dc2626';
-            if (value > 25 || value < 8) return '#d97706';
+            if (value > 25 || value < 10) return '#d97706';
             return '#16a34a';
         }
 
         if (metric === 'level') {
-            if (value > 250) return '#dc2626';
-            if (value > 180) return '#d97706';
+            if (value > 150 || value < 15) return '#dc2626';
+            if (value > 100 || value < 10) return '#d97706';
             return '#16a34a';
         }
 
