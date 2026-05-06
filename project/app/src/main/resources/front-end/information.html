@@ -158,24 +158,25 @@
         }
 
 
-
-        
         .intro {
-            padding: 20px; 
+            padding: 4px 0 36px;
             font-size: 0.85rem; 
             color: #3a5a7a; 
         }
         .intro-title {
             display: block;
-            font-size: 1.2rem;
-            font-weight: 550;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1c3a55;
+            margin-bottom: 8px;
             
         }
         .intro-contents {
             display: block;
-            font-size: 0.8rem;
-            font-weight: 500;
-            line-height: 1;
+            font-size: 0.82rem;
+            font-weight: 400;
+            line-height: 1.8;
+            color: #3a5a7a;
         }
 
         .overall-metrics {
@@ -185,7 +186,8 @@
         }
 
         .metric-box{
-            display: block;
+            display: flex;
+            flex-direction: column;
             font-size: 0.85rem;
             padding: 16px;
             border-radius: 8px;
@@ -198,13 +200,16 @@
 
         .metric-title{
             display:block;
-            font-weight: 500;
-            font-size: 1rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #225382;
+            margin-bottom: 8px;
         }
         .metric-contents{
             display:block;
             font-weight: 400;
-            font-size: 0.8rem;
+            font-size: 0.82rem;
+            line-height: 1.6;
         }
         
         .overall-monitoring-sites {
@@ -243,6 +248,8 @@
             flex-direction: column;
             gap: 8px;
             margin-top: 12px;
+            margin-bottom: 0;
+            transform: translateY(18px);
         }
 
         .bar{
@@ -286,6 +293,7 @@
             font-weight: bold;
             pointer-events: none;
             text-shadow: 0 0 3px white, 0 0 3px white, 0 0 3px white;
+            transition: left 0.6s ease;
         }
 
         .site-btn {
@@ -304,17 +312,17 @@
             display: flex; 
             gap: 8px; 
             margin-top: 12px;
-            justify-content: flex-end;
+            margin-bottom: 16px;
         }
 
         .verdict-strip {
             display: flex; 
             align-items: center; 
             gap: 12px;
-            margin-top: 12px; 
+            margin-top: auto; 
             border-radius: 10px; 
             padding: 12px 16px;
-            transition: background 0.4s ease, border-color 0.4s ease;
+            transition: background 0.4s ease, border-color 0.4s ease, opacity 0.3s ease;
         }
 
         .verdict-strip.v-safe {
@@ -424,15 +432,15 @@
             </span>
 
             <span class="intro-contents">
-                Know your water. Protect your health. 
-                Here is a breakdown of what your readings actually mean - all metrics are monitored in real-time and are compared against the trusted national standard to keep you and your community safe.
+                Here is a breakdown of what your readings actually mean.<br>All metrics are monitored in real-time and compared against the trusted national standard to keep you and your community safe.
             </span>
-            <div class="site-toggle-row">
+        </div>
+        
+        <div class="site-toggle-row">
                 <button class="site-btn active" onclick="setSite('site_upstream')">Upstream</button>
                 <button class="site-btn" onclick="setSite('site_downstream')">Downstream</button>
                 <button class="site-btn" onclick="setSite('site_reservoir')">Reservoir</button>
             </div>
-        </div>
         
         <div class="overall-metrics">
             <div class="metric-box">
@@ -445,14 +453,26 @@
                 </span>
                 <div class="scale">
                     <div class="bar-container">
-                        <div class="bar" style="background: linear-gradient(90deg, #ff0000 40%, #ffdd00 45%, #1eff00 57%, #ffdd00 60%,#ff0000 100%)"></div>
+                        <div class="bar" style="background: linear-gradient(90deg, #ff0000 42.9%, #ffdd00 46.4%, #1eff00 60.7%, #ffdd00 64.3%, #ff0000 100%)"></div>
                         <div class="pointer" id="ph-pointer">●</div>
                     </div>
                     <div class="labels" style="position: relative; height: 35px;">
-                        <div style="position: absolute; left: 0%; transform: translateX(0%)">0</div>
-                        <div style="position: absolute; left: 46%; transform: translateX(-50%)">6.5</div>
-                        <div style="position: absolute; left: 61%; transform: translateX(-50%)">8.5</div>
-                        <div style="position: absolute; left: 100%; transform: translateX(-100%)">14</div>
+                        <div style="position: absolute; left: 0%; transform: translateX(0%); display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 1px; height: 6px; background: #3a5a7a; margin-bottom: 3px;"></div>
+                            <span>0</span>
+                        </div>
+                        <div style="position: absolute; left: 46.4%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 1px; height: 6px; background: #d97706; margin-bottom: 3px;"></div>
+                            <span style="color: #d97706; font-weight: 600;">6.5</span>
+                        </div>
+                        <div style="position: absolute; left: 60.7%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 1px; height: 6px; background: #d97706; margin-bottom: 3px;"></div>
+                            <span style="color: #d97706; font-weight: 600;">8.5</span>
+                        </div>
+                        <div style="position: absolute; left: 100%; transform: translateX(-100%); display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 1px; height: 6px; background: #3a5a7a; margin-bottom: 3px;"></div>
+                            <span>14</span>
+                        </div>
                     </div>
                 </div>
                 <div class="verdict-strip v-safe" id="ph-verdict">
@@ -472,16 +492,28 @@
                     Measures how concentrated the water is with other particles (cloudiness), often high after storms but can hide dangerous bacteria like cholera and E.coli. 
                     It's also an indicator to soil erosion and contamination.
                 </span>
-                <div class="scale">
+                <div class="scale" style="transform: translateY(-3px);">
                     <div class="bar-container">
-                        <div class="bar" style="background: linear-gradient(90deg, #1eff00, #ffdd00 25%, #ff0000 75%)"></div>
+                        <div class="bar" style="background: linear-gradient(90deg, #1eff00 25%, #ffdd00 50%, #ff0000 100%)"></div>
                         <div class="pointer" id="turbidity-pointer">●</div>
                     </div>
                     <div class="labels" style="position: relative; height: 35px;">
-                        <div style="position: absolute; left: 0%; text-align: center;">0</div>
-                        <div style="position: absolute; left: 7%; text-align: center;">4</div>
-                        <div style="position: absolute; left: 92%; text-align: center; transform: translateX(-50%)">55</div>
-                        <div style="position: absolute; right: 0%; text-align: center;">60+</div>
+                        <div style="position: absolute; left: 0%; transform: translateX(0%); display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 1px; height: 6px; background: #3a5a7a; margin-bottom: 3px;"></div>
+                            <span>0</span>
+                        </div>
+                        <div style="position: absolute; left: 25%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 1px; height: 6px; background: #d97706; margin-bottom: 3px;"></div>
+                            <span style="color: #d97706; font-weight: 600;">5</span>
+                        </div>
+                        <div style="position: absolute; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 1px; height: 6px; background: #dc2626; margin-bottom: 3px;"></div>
+                            <span style="color: #dc2626; font-weight: 600;">10</span>
+                        </div>
+                        <div style="position: absolute; left: 100%; transform: translateX(-100%); display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 1px; height: 6px; background: #3a5a7a; margin-bottom: 3px;"></div>
+                            <span>20+</span>
+                        </div>
                     </div>
                 </div>
                 <div class="verdict-strip v-safe" id="turbidity-verdict">
@@ -726,23 +758,26 @@
         const title = document.getElementById(titleID)
         const sub   = document.getElementById(subID)
 
-        if (status === 'normal') {
-            strip.className   = 'verdict-strip v-safe'
-            icon.textContent  = '✓'
-            title.textContent = metricName + ' is within safe range'
-            sub.textContent   = `Currently at ${value} ${unit} — within acceptable limits`
-        } else if (status === 'warning') {
-            strip.className   = 'verdict-strip v-warn'
-            icon.textContent  = '⚠'
-            title.textContent = metricName + ' is approaching unsafe levels'
-            sub.textContent   = `Currently at ${value} ${unit} — monitor closely`
-        } else {
-            strip.className   = 'verdict-strip v-crit'
-            icon.textContent  = '✕'
-            title.textContent = metricName + ' has exceeded safe limits'
-            sub.textContent   = `Currently at ${value} ${unit} — action may be required`
-        }
-
+        strip.style.opacity = 0;
+        setTimeout(() => {
+            if (status === 'normal') {
+                strip.className   = 'verdict-strip v-safe'
+                icon.textContent  = '✓'
+                title.textContent = metricName + ' is within safe range'
+                sub.textContent   = `Currently at ${value} ${unit} — within acceptable limits`
+            } else if (status === 'warning') {
+                strip.className   = 'verdict-strip v-warn'
+                icon.textContent  = '⚠'
+                title.textContent = metricName + ' is approaching unsafe levels'
+                sub.textContent   = `Currently at ${value} ${unit} — monitor closely`
+            } else {
+                strip.className   = 'verdict-strip v-crit'
+                icon.textContent  = '✕'
+                title.textContent = metricName + ' has exceeded safe limits'
+                sub.textContent   = `Currently at ${value} ${unit} — action may be required`
+            }
+            strip.style.opacity = 1;
+        }, 300);
     }
 
     function getMetricStatus(metric, value) {
@@ -767,8 +802,8 @@
             if (value < THRESHOLDS.waterLevel.warnMin || value > THRESHOLDS.waterLevel.warnMax) return 'warning';
             return 'normal';
         } else if (metric === 'light') {
-            if (value > 100000) return 'critical';
-            if (value > 15000) return 'warning';
+            if (value > THRESHOLDS.light.crit) return 'critical';
+            if (value > THRESHOLDS.light.warn) return 'warning';
             return 'normal';
         }
     }
@@ -779,7 +814,7 @@
 
         //position each pointer
         positionPinPoint(d.ph, 0, 14, "ph-pointer")
-        positionPinPoint(d.turbidityNtu, 0, 60, "turbidity-pointer")
+        positionPinPoint(d.turbidityNtu, 0, 20, "turbidity-pointer")
         positionPinPoint(d.conductivityUsCm, 0, 2500, "conductivity-pointer")
         positionPinPoint(d.waterTemperatureC, 0, 40, "waterTemp-pointer")
         positionPinPoint(d.waterLevelCm, 0, 800, "waterLevel-pointer")

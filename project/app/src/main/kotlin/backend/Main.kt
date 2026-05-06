@@ -97,7 +97,6 @@ data class TrendPoint(
     val lightLux: Double
 )
 
-
 @Serializable
 data class RecentAlert(
     val metric: String,
@@ -113,6 +112,13 @@ data class AlertTimeSummaryResponse(
     val daily: Int,
     val weekly: Int,
     val monthly: Int
+)
+
+@Serializable
+data class DailyAlertCount(
+    val day: String,
+    val date: String,
+    val count: Int
 )
 
 fun main() {
@@ -364,6 +370,29 @@ fun main() {
                         monthly = monthly
                     )
                 )
+            }
+
+            get("/alerts/{siteId}/daily") {
+                val siteId = call.parameters["siteId"]
+                if (siteId.isNullOrBlank()) {
+                    call.respond(ErrorResponse("No site ID provided."))
+                    return@get
+                }
+                val alerts = getAlertReadingsForSite(waterReadings, siteId)
+                val now = LocalDateTime.now()
+                val dayFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                val result = (6 downTo 0).map { daysAgo ->
+                    val date = now.minusDays(daysAgo.toLong()).toLocalDate()
+                    val count = alerts.count { reading ->
+                        LocalDateTime.parse(reading.timestamp, formatter).plus(offset).toLocalDate() == date
+                    }
+                    DailyAlertCount(
+                        day = date.dayOfWeek.name.take(3).lowercase().replaceFirstChar { it.uppercase() },
+                        date = date.format(dayFormatter),
+                        count = count
+                    )
+                }
+                call.respond(result)
             }
 
             get("/alerts/{siteId}/water-top") {

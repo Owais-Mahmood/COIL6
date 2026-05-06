@@ -393,7 +393,7 @@
         <div class="hero">
 
             <div class="hero-left">
-                <div style="position: relative; top: 10px;">
+                <div style="position: relative; top: 0px;">
                 <div class="hero-heading">Know your water. Protect your health.</div>
                 <p class="hero-sub">
                     Stroomloop is an online platform designed to support<br>
@@ -845,6 +845,28 @@
         }
     }
 
+    function animateVal(el, to, decimals, suffix) {
+        const from = parseFloat(el.textContent) || 0;
+        const start = performance.now();
+        (function step(now) {
+            const t = Math.min((now - start) / 1200, 1);
+            const e = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+            el.textContent = (from + (to - from) * e).toFixed(decimals) + suffix;
+            if (t < 1) requestAnimationFrame(step);
+        })(start);
+    }
+
+    function animateCount(el, to) {
+        const from = parseInt(el.textContent.replace(/,/g, '')) || 0;
+        const start = performance.now();
+        (function step(now) {
+            const t = Math.min((now - start) / 1200, 1);
+            const e = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+            el.textContent = Math.round(from + (to - from) * e).toLocaleString();
+            if (t < 1) requestAnimationFrame(step);
+        })(start);
+    }
+
     async function loadData() {
         try {
             const [latestRes, breakdownRes] = await Promise.all([
@@ -856,13 +878,12 @@
             const breakdown = await breakdownRes.json();
 
             // live reading panels
-            document.getElementById('val-ph').textContent    = d.ph.toFixed(2);
-            document.getElementById('val-turb').textContent  = d.turbidityNtu.toFixed(1) + ' NTU';
-            const cond = d.conductivityUsCm;
-            document.getElementById('val-cond').textContent  = cond >= 1000 ? (cond / 1000).toFixed(1) + 'k µS/cm' : cond.toFixed(0) + ' µS/cm';
-            document.getElementById('val-temp').textContent  = d.waterTemperatureC.toFixed(1) + '°C';
-            document.getElementById('val-level').textContent = d.waterLevelCm.toFixed(1) + ' cm';
-            document.getElementById('val-light').textContent = formatLight(d.lightLux);
+            animateVal(document.getElementById('val-ph'),    d.ph,                2, '');
+            animateVal(document.getElementById('val-turb'),  d.turbidityNtu,      1, ' NTU');
+            animateVal(document.getElementById('val-cond'),  d.conductivityUsCm,  0, ' µS/cm');
+            animateVal(document.getElementById('val-temp'),  d.waterTemperatureC, 1, '°C');
+            animateVal(document.getElementById('val-level'), d.waterLevelCm,      1, ' cm');
+            animateVal(document.getElementById('val-light'), d.lightLux,          0, ' lux');
 
             const badgeClass  = getBadgeClass(d.status);
             const statusLabel = getStatusLabel(d.status);
@@ -873,10 +894,10 @@
             });
 
             // alert overview
-            document.getElementById('ao-total').textContent      = breakdown.total.toLocaleString();
-            document.getElementById('ao-count-ph').textContent   = breakdown.ph.toLocaleString();
-            document.getElementById('ao-count-turb').textContent = breakdown.turbidity.toLocaleString();
-            document.getElementById('ao-count-cond').textContent = breakdown.conductivity.toLocaleString();
+            document.getElementById('ao-total').textContent = breakdown.total.toLocaleString();
+            animateCount(document.getElementById('ao-count-ph'),   breakdown.ph);
+            animateCount(document.getElementById('ao-count-turb'), breakdown.turbidity);
+            animateCount(document.getElementById('ao-count-cond'), breakdown.conductivity);
 
             const maxAlerts = Math.max(breakdown.ph, breakdown.turbidity, breakdown.conductivity, 1);
             document.getElementById('ao-bar-ph').style.width   = (breakdown.ph           / maxAlerts * 100) + '%';
@@ -884,9 +905,9 @@
             document.getElementById('ao-bar-cond').style.width = (breakdown.conductivity / maxAlerts * 100) + '%';
 
             // weather
-            document.getElementById('wx-temp').textContent = d.wxTempC.toFixed(1) + '°C';
-            document.getElementById('wx-rh').textContent   = d.wxRhPct.toFixed(0) + '%';
-            document.getElementById('wx-rain').textContent = d.wxRainMmHr.toFixed(2) + ' mm/hr';
+            animateVal(document.getElementById('wx-temp'), d.wxTempC,    1, '°C');
+            animateVal(document.getElementById('wx-rh'),   d.wxRhPct,    0, '%');
+            animateVal(document.getElementById('wx-rain'), d.wxRainMmHr, 2, ' mm/hr');
 
             // verdict strip
             const siteName  = currentSite.replace('site_', '');
@@ -899,22 +920,21 @@
             const sub   = document.getElementById('verdict-sub');
             const icon  = document.getElementById('verdict-icon');
 
-            if (d.status === 'normal') {
-                strip.className   = 'verdict-strip v-safe';
-                icon.textContent  = '✓';
-                title.textContent = 'Water at this site is currently safe to use';
-                sub.textContent   = 'All monitored parameters are within acceptable limits';
-            } else if (d.status === 'warning') {
-                strip.className   = 'verdict-strip v-warn';
-                icon.textContent  = '⚠';
-                title.textContent = 'Water at this site has moderate concerns, please use with caution';
-                sub.textContent   = 'One or more parameters are approaching unsafe levels';
-            } else {
-                strip.className   = 'verdict-strip v-crit';
-                icon.textContent  = '✕';
-                title.textContent = 'Water at this site is currently unsafe, do not use';
-                sub.textContent   = 'One or more parameters have exceeded safe limits';
-            }
+            const verdictMap = {
+                normal:   { cls: 'verdict-strip v-safe', icon: '✓', title: 'Water at this site is currently safe to use',                      sub: 'All monitored parameters are within acceptable limits' },
+                warning:  { cls: 'verdict-strip v-warn', icon: '⚠', title: 'Water at this site has moderate concerns, please use with caution', sub: 'One or more parameters are approaching unsafe levels' },
+                critical: { cls: 'verdict-strip v-crit', icon: '✕', title: 'Water at this site is currently unsafe, do not use',                sub: 'One or more parameters have exceeded safe limits' }
+            };
+            const v = verdictMap[d.status] || verdictMap.normal;
+            strip.style.transition = 'opacity 0.3s ease, background 0.4s ease, border-color 0.4s ease';
+            strip.style.opacity = '0';
+            setTimeout(() => {
+                strip.className   = v.cls;
+                icon.textContent  = v.icon;
+                title.textContent = v.title;
+                sub.textContent   = v.sub;
+                strip.style.opacity = '1';
+            }, 350);
 
         lastRefreshTime = Date.now();
             const now = new Date();

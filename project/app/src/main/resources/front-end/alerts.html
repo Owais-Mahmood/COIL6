@@ -67,7 +67,7 @@
     .site-btn.active { background: var(--blue); color: white; }
 
     .hero { padding: 30px 0 16px; display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px; align-items: start; }
-    .hero-left { display: flex; flex-direction: column; gap: 16px; margin-top: -10px; }
+    .hero-left { display: flex; flex-direction: column; gap: 16px; margin-top: -25px; }
     .hero-heading { font-size: 1.15rem; font-weight: 700; color: var(--text-dark); line-height: 1.3; margin-bottom: 10px; }
     .hero-sub { font-size: 0.82rem; color: var(--text-mid); line-height: 1.8; }
 
@@ -89,6 +89,7 @@
         flex-direction: column;
         gap: 8px;
         position: relative;
+        left: -2px;
         align-self: start;
     }
 
@@ -137,21 +138,27 @@
     .notify-sentence { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
     .notify-email-row { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
     .notify-text { font-size: 0.78rem; color: var(--text-mid); white-space: nowrap; }
-    .notify-select { padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(34,83,130,0.25); background: rgba(255,255,255,0.8); font-size: 0.75rem; font-family: 'Inter', sans-serif; color: var(--blue); font-weight: 500; cursor: pointer; }
-    .notify-select:focus { outline: none; border-color: var(--blue); }
+    .custom-dropdown { position: relative; display: inline-block; }
+    .dropdown-btn { padding: 5px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 500; border: 1px solid rgba(34,83,130,0.2); background: rgba(255,255,255,0.55); color: var(--blue); cursor: pointer; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 5px; }
+    .dropdown-btn:hover { background: rgba(255,255,255,0.75); }
+    .dropdown-btn::after { content: '▾'; font-size: 0.65rem; }
+    .dropdown-list { display: none; position: absolute; top: calc(100% + 6px); left: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.9); border-radius: 14px; box-shadow: 0 8px 24px rgba(34,83,130,0.12); padding: 6px; z-index: 100; min-width: 150px; }
+    .dropdown-list.open { display: block; }
+    .dropdown-item { padding: 7px 14px; border-radius: 50px; font-size: 0.75rem; font-weight: 500; color: var(--blue); cursor: pointer; white-space: nowrap; font-family: 'Inter', sans-serif; }
+    .dropdown-item:hover { background: rgba(34,83,130,0.07); }
+    .dropdown-item.active { background: var(--blue); color: white; }
     .notify-input { width: 100%; padding: 7px 12px; border-radius: 8px; border: 1px solid rgba(34,83,130,0.2); background: rgba(255,255,255,0.8); font-size: 0.78rem; font-family: 'Inter', sans-serif; color: var(--text-dark); margin-top: 8px; }
     .notify-input:focus { outline: none; border-color: var(--blue); }
     .notify-submit { margin-top: 8px; width: 100%; padding: 7px; border-radius: 8px; background: var(--blue); color: white; font-size: 0.78rem; font-weight: 600; border: none; cursor: pointer; font-family: 'Inter', sans-serif; }
     .notify-submit:hover { background: var(--blue-dark); }
-    .notify-confirm { font-size: 0.75rem; color: #16a34a; font-weight: 600; margin-top: 8px; display: none; text-align: center; }
+    .notify-confirm { font-size: 0.75rem; color: #16a34a; font-weight: 600; margin-top: 8px; visibility: hidden; text-align: center; }
 
     .site-toggle-row { display: flex; gap: 8px; margin-bottom: 12px; }
     .cards-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-    .card { background: rgba(255,255,255,0.65); border-radius: 14px; padding: 14px 16px; backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.8); box-shadow: 0 4px 18px rgba(34,83,130,0.07); }
-    .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .card { background: rgba(255,255,255,0.65); border-radius: 14px; padding: 14px 16px; backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.8); box-shadow: 0 4px 18px rgba(34,83,130,0.07); display: flex; flex-direction: column; }    .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
     .card-title { font-size: 0.78rem; font-weight: 700; color: var(--blue); text-transform: uppercase; letter-spacing: 0.04em; }
 
-    .wtd-rows { display: flex; flex-direction: column; gap: 10px; }
+    .wtd-rows { display: flex; flex-direction: column; gap: 10px; flex: 1; justify-content: center; }
     .wtd-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: 10px; }
     .wtd-row.safe { background: rgba(34,197,94,0.08);  border: 1px solid rgba(34,197,94,0.2); }
     .wtd-row.warn { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); }
@@ -163,10 +170,7 @@
     .trend-big   { font-size: 2rem; font-weight: 700; color: var(--text-dark); line-height: 1; margin-bottom: 4px; }
     .trend-label { font-size: 0.72rem; color: var(--text-light); margin-bottom: 14px; }
     .trend-compare { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; background: rgba(255,255,255,0.7); }
-    .trend-arrow      { font-size: 1.2rem; font-weight: 700; }
-    .trend-arrow.up   { color: #dc2626; }
-    .trend-arrow.down { color: #16a34a; }
-    .trend-arrow.flat { color: #d97706; }
+    .trend-arrow { font-size: 2rem; font-weight: 800; line-height: 1; display: inline-block; }
     .trend-desc { font-size: 0.72rem; color: var(--text-mid); }
     .trend-desc strong { color: var(--text-dark); }
     .trend-avg  { font-size: 0.7rem; color: var(--text-light); margin-top: 10px; }
@@ -176,9 +180,24 @@
     .contact-icon  { font-size: 1rem; flex-shrink: 0; margin-top: 2px; width: 22px; text-align: center; }
     .contact-label { font-size: 0.68rem; color: var(--text-light); margin-bottom: 1px; }
     .contact-val   { font-size: 0.78rem; font-weight: 600; color: var(--text-dark); }
-    .report-btn { margin-top: 14px; width: 100%; padding: 8px; border-radius: 8px; background: rgba(239,68,68,0.1); color: #dc2626; font-size: 0.78rem; font-weight: 600; border: 1px solid rgba(239,68,68,0.25); cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.2s; }
-    .report-btn:hover { background: rgba(239,68,68,0.18); }
+    .report-btn { margin-top: 20px; width: 100%; padding: 8px; border-radius: 8px; background: rgba(239,68,68,0.1); color: #dc2626; font-size: 0.78rem; font-weight: 600; border: 1px solid rgba(239,68,68,0.25); cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.2s; }    .report-btn:hover { background: rgba(239,68,68,0.18); }
     .report-confirm { font-size: 0.72rem; color: #16a34a; font-weight: 600; text-align: center; margin-top: 8px; display: none; }
+
+@keyframes spin-once {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+.spinning { animation: spin-once 0.7s linear; }
+
+.daily-bars { display: flex; align-items: flex-end; gap: 5px; height: 72px; margin-top: 14px; }
+.daily-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; height: 100%; justify-content: flex-end; }
+.daily-bar { width: 100%; border-radius: 4px 4px 2px 2px; min-height: 3px; transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+.daily-bar:hover { transform: scaleY(1.08); transform-origin: bottom; }
+.daily-bar-wrap.today .daily-bar { background: var(--blue); }
+.daily-bar-wrap:not(.today) .daily-bar { background: rgba(34,83,130,0.3); }
+.daily-bar-count { font-size: 0.58rem; color: var(--text-light); }
+.daily-bar-day { font-size: 0.62rem; color: var(--text-mid); font-weight: 500; }
+.daily-bar-wrap.today .daily-bar-day { color: var(--blue); font-weight: 700; }
 
 </style>
 </head>
@@ -222,7 +241,13 @@
             <div class="hero-panels">
 
                 <div class="alert-history-panel" id="alert-history-panel-outer">
-                    <div class="panel-title">Alert History Log</div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                        <div class="panel-title" style="margin-bottom:0;">Alert History Log</div>
+                        <button onclick="refreshHistory()" title="Refresh now" style="background:none;border:none;cursor:pointer;color:var(--blue);padding:2px 4px;border-radius:6px;line-height:1;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:5px;">
+                            <span id="refresh-label" style="font-size:0.68rem;font-weight:600;visibility:hidden;">Refreshed</span>
+                            <span id="refresh-arrow" style="font-size:1rem;display:inline-block;">↻</span>
+                        </button>
+                    </div>
                     <div class="alert-history-inner" id="alert-history-panel">
                         <div id="alert-history-list" style="display:flex;flex-direction:column;gap:7px;"></div>
                     </div>
@@ -238,23 +263,26 @@
                     <div class="panel-title">Get Notified</div>
                     <div class="notify-sentence">
                         <span class="notify-text">Notify me about</span>
-                        <select class="notify-select" id="notify-type-select">
-                            <option value="both">Warning &amp; Critical</option>
-                            <option value="critical">Critical only</option>
-                        </select>
+                        <div class="custom-dropdown" id="notify-type-dropdown">
+                            <button class="dropdown-btn" onclick="toggleNotifyDropdown('type')">Warning &amp; Critical</button>
+                            <div class="dropdown-list" id="notify-type-list">
+                                <div class="dropdown-item active" onclick="selectNotifyType('both', 'Warning &amp; Critical')">Warning &amp; Critical</div>
+                                <div class="dropdown-item" onclick="selectNotifyType('critical', 'Critical Only')">Critical Only</div>
+                            </div>
+                        </div>
                         <span class="notify-text">alerts at</span>
-                        <select class="notify-select" id="notify-site-select">
-                            <option value="site_upstream">Upstream</option>
-                            <option value="site_downstream">Downstream</option>
-                            <option value="site_reservoir">Reservoir</option>
-                            <option value="all">All Sites</option>
-                        </select>
-                    </div>
-                    <div class="notify-email-row">
-                        <span class="notify-text">Send to</span>
-                        <input class="notify-input" type="email" id="notify-email" placeholder="your email address" style="flex:1;">
-                    </div>
-                    <button class="notify-submit" onclick="handleNotifySubmit()">Subscribe to alerts</button>
+                        <div class="custom-dropdown" id="notify-site-dropdown">
+                            <button class="dropdown-btn" onclick="toggleNotifyDropdown('site')">Upstream</button>
+                            <div class="dropdown-list" id="notify-site-list">
+                                <div class="dropdown-item active" onclick="selectNotifySite('site_upstream', 'Upstream')">Upstream</div>
+                                <div class="dropdown-item" onclick="selectNotifySite('site_downstream', 'Downstream')">Downstream</div>
+                                <div class="dropdown-item" onclick="selectNotifySite('site_reservoir', 'Reservoir')">Reservoir</div>
+                                <div class="dropdown-item" onclick="selectNotifySite('all', 'All Sites')">All Sites</div>
+                            </div>
+                        </div>
+                    </div> 
+                    <input class="notify-input" type="email" id="notify-email" placeholder="Your Email Address">
+                    <button class="notify-submit" onclick="handleNotifySubmit()">Subscribe to Alerts</button>
                     <div class="notify-confirm" id="notify-confirm">✓ You'll be notified when alerts trigger</div>
                 </div>
 
@@ -283,6 +311,7 @@
                     <span class="trend-desc" id="trend-desc">Loading...</span>
                 </div>
                 <div class="trend-avg" id="trend-avg"></div>
+                <div class="daily-bars" id="daily-bars"></div>
             </div>
 
             <div class="card">
@@ -299,26 +328,26 @@
                         <span class="contact-icon">📞</span>
                         <div>
                             <div class="contact-label">Emergency line</div>
-                            <div class="contact-val">0800 212 364</div>
+                            <div class="contact-val">+27 43 707 3700</div>
                         </div>
                     </div>
                     <div class="contact-row">
                         <span class="contact-icon">✉️</span>
                         <div>
                             <div class="contact-label">Email</div>
-                            <div class="contact-val">info@amatolawater.co.za</div>
+                            <div class="contact-val">aw@amatolawater.co.za</div>
                         </div>
                     </div>
                     <div class="contact-row">
                         <span class="contact-icon">🕒</span>
                         <div>
                             <div class="contact-label">Operating hours</div>
-                            <div class="contact-val">Mon–Fri, 07:30–16:30</div>
+                            <div class="contact-val">24 Hour Queries</div>
                         </div>
                     </div>
                 </div>
-                <button class="report-btn" onclick="handleReport()">⚠ Report a water quality concern</button>
-                <div class="report-confirm" id="report-confirm">✓ Your concern has been logged</div>
+                <button class="report-btn" onclick="handleReport()">⚠ Report a Water Quality Concern</button>
+                <div class="report-confirm" id="report-confirm">✓ Your Concern Has Been Logged</div>
             </div>
 
         </div>
@@ -379,16 +408,45 @@
         });
     });
 
+    function toggleNotifyDropdown(which) {
+        const listId  = which === 'type' ? 'notify-type-list' : 'notify-site-list';
+        const otherId = which === 'type' ? 'notify-site-list' : 'notify-type-list';
+        document.getElementById(otherId).classList.remove('open');
+        document.getElementById(listId).classList.toggle('open');
+    }
+
+    function selectNotifyType(val, label) {
+        document.querySelector('#notify-type-dropdown .dropdown-btn').textContent = label;
+        document.querySelectorAll('#notify-type-list .dropdown-item').forEach(i => i.classList.remove('active'));
+        event.target.classList.add('active');
+        document.getElementById('notify-type-list').classList.remove('open');
+    }
+
+    function selectNotifySite(val, label) {
+        document.querySelector('#notify-site-dropdown .dropdown-btn').textContent = label;
+        document.querySelectorAll('#notify-site-list .dropdown-item').forEach(i => i.classList.remove('active'));
+        event.target.classList.add('active');
+        document.getElementById('notify-site-list').classList.remove('open');
+    }
+
+    document.addEventListener('click', e => {
+        if (!document.getElementById('notify-type-dropdown').contains(e.target))
+            document.getElementById('notify-type-list').classList.remove('open');
+        if (!document.getElementById('notify-site-dropdown').contains(e.target))
+            document.getElementById('notify-site-list').classList.remove('open');
+    });
+
     function handleNotifySubmit() {
         const email = document.getElementById('notify-email').value.trim();
-        if (!email || !email.includes('@')) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+        if (!email || !emailRegex.test(email)) {
             document.getElementById('notify-email').style.borderColor = '#dc2626';
             return;
         }
         document.getElementById('notify-email').style.borderColor = '';
         const c = document.getElementById('notify-confirm');
-        c.style.display = 'block';
-        setTimeout(() => { c.style.display = 'none'; }, 4000);
+        c.style.visibility = 'visible';
+        setTimeout(() => { c.style.visibility = 'hidden'; }, 4000);
     }
 
     function handleReport() {
@@ -427,31 +485,38 @@
         try {
             const d = await fetch('/latest/' + currentSite).then(r => r.json());
             const container = document.getElementById('active-alerts-rows');
-            container.innerHTML = '';
             const checks = [
-                { icon:'⬡', label:'pH',           val:d.ph,               fmt: v=>v.toFixed(2),         warn: v=>v<THRESHOLDS.ph.warnMin||v>THRESHOLDS.ph.warnMax,           crit: v=>v<THRESHOLDS.ph.critMin||v>THRESHOLDS.ph.critMax },
-                { icon:'〜', label:'Turbidity',    val:d.turbidityNtu,     fmt: v=>v.toFixed(1)+' NTU',  warn: v=>v>THRESHOLDS.turbidity.warn,    crit: v=>v>THRESHOLDS.turbidity.crit },
-                { icon:'⚡', label:'Conductivity', val:d.conductivityUsCm, fmt: v=>v.toFixed(0)+' µS/cm',warn: v=>v>THRESHOLDS.conductivity.warn, crit: v=>v>THRESHOLDS.conductivity.crit },
-                { icon:'💧', label:'Water Temp',   val:d.waterTemperatureC,fmt: v=>v.toFixed(1)+'°C',    warn: v=>v<THRESHOLDS.waterTemp.warnMin||v>THRESHOLDS.waterTemp.warnMax, crit: v=>v<THRESHOLDS.waterTemp.critMin||v>THRESHOLDS.waterTemp.critMax },
-                { icon:'📏', label:'Water Level',  val:d.waterLevelCm,     fmt: v=>v.toFixed(1)+' cm',   warn: v=>v<THRESHOLDS.waterLevel.warnMin||v>THRESHOLDS.waterLevel.warnMax, crit: v=>v<THRESHOLDS.waterLevel.critMin||v>THRESHOLDS.waterLevel.critMax },
+                { icon:'⬡', label:'pH',           val:d.ph,               decimals:2, suffix:'',       warn: v=>v<THRESHOLDS.ph.warnMin||v>THRESHOLDS.ph.warnMax,           crit: v=>v<THRESHOLDS.ph.critMin||v>THRESHOLDS.ph.critMax },
+                { icon:'〜', label:'Turbidity',    val:d.turbidityNtu,     decimals:1, suffix:' NTU',   warn: v=>v>THRESHOLDS.turbidity.warn,    crit: v=>v>THRESHOLDS.turbidity.crit },
+                { icon:'⚡', label:'Conductivity', val:d.conductivityUsCm, decimals:0, suffix:' µS/cm', warn: v=>v>THRESHOLDS.conductivity.warn, crit: v=>v>THRESHOLDS.conductivity.crit },
+                { icon:'💧', label:'Water Temp',   val:d.waterTemperatureC,decimals:1, suffix:'°C',     warn: v=>v<THRESHOLDS.waterTemp.warnMin||v>THRESHOLDS.waterTemp.warnMax, crit: v=>v<THRESHOLDS.waterTemp.critMin||v>THRESHOLDS.waterTemp.critMax },
+                { icon:'📏', label:'Water Level',  val:d.waterLevelCm,     decimals:1, suffix:' cm',    warn: v=>v<THRESHOLDS.waterLevel.warnMin||v>THRESHOLDS.waterLevel.warnMax, crit: v=>v<THRESHOLDS.waterLevel.critMin||v>THRESHOLDS.waterLevel.critMax },
             ];
             const active = checks.filter(c => c.warn(c.val));
-            if (active.length === 0) {
-                container.innerHTML = '<div class="active-clean">✓ No active alerts at this site</div>';
-                return;
-            }
-            active.forEach(c => {
-                const isCrit = c.crit(c.val);
-                const row = document.createElement('div');
-                row.className = 'active-row';
-                row.innerHTML = `
-                    <span class="active-icon">${c.icon}</span>
-                    <span class="active-label">${c.label}</span>
-                    <span class="active-val">${c.fmt(c.val)}</span>
-                    <span class="ip-badge ${isCrit ? 'badge-crit' : 'badge-warn'}">${isCrit ? 'Critical' : 'Warning'}</span>
-                `;
-                container.appendChild(row);
-            });
+
+            setTimeout(() => {
+                container.innerHTML = '';
+                if (active.length === 0) {
+                    container.innerHTML = '<div class="active-clean">✓ No active alerts at this site</div>';
+                } else {
+                    active.forEach(c => {
+                        const isCrit = c.crit(c.val);
+                        const row = document.createElement('div');
+                        row.className = 'active-row';
+                        row.innerHTML = `
+                            <span class="active-icon">${c.icon}</span>
+                            <span class="active-label">${c.label}</span>
+                            <span class="active-val">0${c.suffix}</span>
+                            <span class="ip-badge ${isCrit ? 'badge-crit' : 'badge-warn'}">${isCrit ? 'Critical' : 'Warning'}</span>
+                        `;
+                        container.appendChild(row);
+                    });
+                }
+                active.forEach((c, i) => {
+                    const valEl = container.querySelectorAll('.active-val')[i];
+                    if (valEl) animateVal(valEl, c.val, c.decimals, c.suffix, 1200);
+                });
+            }, 300);
         } catch(e) { console.error(e); }
     }
 
@@ -459,62 +524,159 @@
         try {
             const d = await fetch('/latest/' + currentSite).then(r => r.json());
             const container = document.getElementById('wtd-rows');
-            container.innerHTML = '';
-            const guidance = [];
-            const ph = d.ph, turb = d.turbidityNtu, cond = d.conductivityUsCm;
 
-            if (ph < THRESHOLDS.ph.critMin || ph > THRESHOLDS.ph.critMax) {
-                guidance.push({ cls:'crit', icon:'🚱', title:'Do not use water', body:'pH is at a critical level. Do not drink, cook with, or bathe in this water. Contact your municipality immediately.' });
-            } else if (ph < THRESHOLDS.ph.warnMin || ph > THRESHOLDS.ph.warnMax) {
-                guidance.push({ cls:'warn', icon:'⚠️', title:'Use with caution', body:'pH is outside the safe range. Avoid drinking untreated water. Boil before use if possible.' });
-            }
-            if (turb > THRESHOLDS.turbidity.crit) {
-                guidance.push({ cls:'crit', icon:'🚱', title:'Boil all water', body:'Turbidity is critically high. Boil all water before drinking or cooking. Do not use for infant formula.' });
-            } else if (turb > THRESHOLDS.turbidity.warn) {
-                guidance.push({ cls:'warn', icon:'💧', title:'Boil before drinking', body:'Turbidity is elevated. Boil water before drinking or using for food preparation.' });
-            }
-            if (cond > THRESHOLDS.conductivity.crit) {
-                guidance.push({ cls:'crit', icon:'⚡', title:'Avoid all use', body:'Conductivity is critically high, indicating possible contamination. Do not use this water for any purpose.' });
-            } else if (cond > THRESHOLDS.conductivity.warn) {
-                guidance.push({ cls:'warn', icon:'⚡', title:'Avoid drinking', body:'Conductivity is elevated. Avoid drinking this water. It may be used for washing with caution.' });
-            }
-            if (guidance.length === 0) {
-                guidance.push({ cls:'safe', icon:'✅', title:'Water is currently safe', body:'All monitored parameters are within acceptable limits. No action is needed at this time.' });
-            }
-            guidance.forEach(g => {
-                const row = document.createElement('div');
-                row.className = 'wtd-row ' + g.cls;
-                row.innerHTML = `<span class="wtd-icon">${g.icon}</span><div class="wtd-text"><strong>${g.title}</strong>${g.body}</div>`;
-                container.appendChild(row);
-            });
+            container.style.transition = 'opacity 0.3s ease';
+            container.style.opacity = '0';
+
+            setTimeout(() => {
+                container.innerHTML = '';
+
+                const metrics = [
+                    {
+                        label: 'pH', value: d.ph, fmt: v => v.toFixed(2),
+                        isCrit: v => v < THRESHOLDS.ph.critMin || v > THRESHOLDS.ph.critMax,
+                        isWarn: v => v < THRESHOLDS.ph.warnMin || v > THRESHOLDS.ph.warnMax,
+                        warnBody: 'pH is outside the safe range. Avoid drinking untreated water. Boil before use if possible.',
+                        critBody: 'pH is at a critical level. Do not drink, cook with, or bathe in this water. Contact your municipality immediately.'
+                    },
+                    {
+                        label: 'Turbidity', value: d.turbidityNtu, fmt: v => v.toFixed(1) + ' NTU',
+                        isCrit: v => v > THRESHOLDS.turbidity.crit,
+                        isWarn: v => v > THRESHOLDS.turbidity.warn,
+                        warnBody: 'Turbidity is elevated. Boil water before drinking or using for food preparation.',
+                        critBody: 'Turbidity is critically high. Boil all water before drinking or cooking. Do not use for infant formula.'
+                    },
+                    {
+                        label: 'Conductivity', value: d.conductivityUsCm, fmt: v => v.toFixed(0) + ' µS/cm',
+                        isCrit: v => v > THRESHOLDS.conductivity.crit,
+                        isWarn: v => v > THRESHOLDS.conductivity.warn,
+                        warnBody: 'Conductivity is elevated. Avoid drinking this water. It may be used for washing with caution.',
+                        critBody: 'Conductivity is critically high, indicating possible contamination. Do not use this water for any purpose.'
+                    }
+                ];
+
+                metrics.forEach(m => {
+                    const crit  = m.isCrit(m.value);
+                    const warn  = !crit && m.isWarn(m.value);
+                    const cls   = crit ? 'crit' : warn ? 'warn' : 'safe';
+                    const icon  = crit ? '✕' : warn ? '⚠' : '✓';
+                    const title = m.label + ' · ' + m.fmt(m.value);
+                    const body  = crit ? m.critBody : warn ? m.warnBody : 'Currently within safe limits.';
+
+                    const row = document.createElement('div');
+                    row.className = 'wtd-row ' + cls;
+                    row.innerHTML = `<span class="wtd-icon">${icon}</span><div class="wtd-text"><strong>${title}</strong>${body}</div>`;
+                    container.appendChild(row);
+                });
+
+                container.style.opacity = '1';
+            }, 300);
+
         } catch(e) { console.error(e); }
+    }
+
+    function animateCount(el, from, to, duration) {
+        const start = performance.now();
+        function step(now) {
+            const t = Math.min((now - start) / duration, 1);
+            const eased = t < 0.5 ? 2*t*t : -1 + (4 - 2*t)*t;
+            el.textContent = Math.round(from + (to - from) * eased);
+            if (t < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+    }
+
+    function animateVal(el, to, decimals, suffix, duration) {
+        const from = parseFloat(el.textContent) || 0;
+        const start = performance.now();
+        (function step(now) {
+            const t = Math.min((now - start) / duration, 1);
+            const e = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+            el.textContent = (from + (to - from) * e).toFixed(decimals) + suffix;
+            if (t < 1) requestAnimationFrame(step);
+        })(start);
     }
 
     async function loadAlertTrend() {
         try {
-            const summary  = await fetch('/alerts/' + currentSite + '/summary').then(r => r.json());
+            const [summary, daily] = await Promise.all([
+                fetch('/alerts/' + currentSite + '/summary').then(r => r.json()),
+                fetch('/alerts/' + currentSite + '/daily').then(r => r.json())
+            ]);
+
             const weekly   = summary.weekly || 0;
-            const daily    = summary.daily  || 0;
+            const dayCount = summary.daily  || 0;
             const dailyAvg = weekly / 7;
 
             document.getElementById('trend-week').textContent = weekly.toLocaleString();
             document.getElementById('trend-avg').textContent  = 'Daily average this week: ' + dailyAvg.toFixed(1) + ' alerts/day';
-            document.getElementById('pill-today').textContent = daily + ' Alerts Today';
+            document.getElementById('pill-today').textContent = dayCount + ' Alerts Today';
 
             const arrowEl = document.getElementById('trend-arrow');
             const descEl  = document.getElementById('trend-desc');
 
-            if (daily > dailyAvg * 1.2) {
-                arrowEl.textContent = '↑'; arrowEl.className = 'trend-arrow up';
-                descEl.innerHTML = '<strong>Above average today</strong> — ' + daily + ' alerts vs ' + dailyAvg.toFixed(1) + ' daily avg';
-            } else if (daily < dailyAvg * 0.8) {
-                arrowEl.textContent = '↓'; arrowEl.className = 'trend-arrow down';
-                descEl.innerHTML = '<strong>Below average today</strong> — ' + daily + ' alerts vs ' + dailyAvg.toFixed(1) + ' daily avg';
-            } else {
-                arrowEl.textContent = '→'; arrowEl.className = 'trend-arrow flat';
-                descEl.innerHTML = '<strong>On track today</strong> — ' + daily + ' alerts vs ' + dailyAvg.toFixed(1) + ' daily avg';
+            arrowEl.textContent = '→';
+            arrowEl.className   = 'trend-arrow';
+
+            if (dayCount > dailyAvg * 1.2) {
+                arrowEl.style.transform = 'rotate(-90deg)';
+                arrowEl.style.color = '#dc2626';
+                descEl.innerHTML = '<strong>Above avg</strong> · ' + dayCount + ' alerts vs ' + dailyAvg.toFixed(1) + '/day';
+            } else if (dayCount < dailyAvg * 0.8) {
+                arrowEl.style.transform = 'rotate(90deg)';
+                arrowEl.style.color = '#16a34a';
+                descEl.innerHTML = '<strong>Below avg</strong> · ' + dayCount + ' alerts vs ' + dailyAvg.toFixed(1) + '/day';            } else {
+                arrowEl.style.transform = 'rotate(0deg) translateY(-4px)';
+                arrowEl.style.color = '#d97706';
+                descEl.innerHTML = '<strong>On track</strong> · ' + dayCount + ' alerts vs ' + dailyAvg.toFixed(1) + '/day';
             }
+
+            const barsEl    = document.getElementById('daily-bars');
+            const maxCount  = Math.max(...daily.map(d => d.count), 1);
+            const todayDate = new Date().toISOString().split('T')[0];
+            const existing  = barsEl.querySelectorAll('.daily-bar-wrap');
+
+            if (existing.length === daily.length) {
+                daily.forEach((d, i) => {
+                    const heightPct = Math.max(4, (d.count / maxCount) * 100);
+                    existing[i].querySelector('.daily-bar').style.height = heightPct + '%';
+                    const countEl = existing[i].querySelector('.daily-bar-count');
+                    animateCount(countEl, parseInt(countEl.textContent) || 0, d.count, 500);
+                });
+            } else {
+                barsEl.innerHTML = '';
+                daily.forEach(d => {
+                    const isToday = d.date === todayDate;
+                    barsEl.innerHTML += `
+                        <div class="daily-bar-wrap${isToday ? ' today' : ''}">
+                            <span class="daily-bar-count">0</span>
+                            <div class="daily-bar" style="height:4%"></div>
+                            <span class="daily-bar-day">${d.day}</span>
+                        </div>`;
+                });
+                requestAnimationFrame(() => requestAnimationFrame(() => {
+                    daily.forEach((d, i) => {
+                        const heightPct = Math.max(4, (d.count / maxCount) * 100);
+                        const wrap = barsEl.querySelectorAll('.daily-bar-wrap')[i];
+                        wrap.querySelector('.daily-bar').style.height = heightPct + '%';
+                        animateCount(wrap.querySelector('.daily-bar-count'), 0, d.count, 500);
+                    });
+                }));
+            }
+
         } catch(e) { console.error(e); }
+    }
+
+
+    function refreshHistory(btn) {
+        loadAlertHistory();
+        const label = document.getElementById('refresh-label');
+        const arrow = document.getElementById('refresh-arrow');
+        label.style.visibility = 'visible';
+        arrow.classList.remove('spinning');
+        void arrow.offsetWidth;
+        arrow.classList.add('spinning');
+        setTimeout(() => { label.style.visibility = 'hidden'; }, 2000);
     }
 
     function updateScrollThumb() {
@@ -537,7 +699,7 @@
     loadWhatToDo();
     loadAlertTrend();
 
-    setInterval(loadAlertHistory, 15000);
+    setInterval(loadAlertHistory, 900000);
     setInterval(loadActiveAlerts, 15000);
     setInterval(loadWhatToDo,     15000);
     setInterval(loadAlertTrend,   60000);

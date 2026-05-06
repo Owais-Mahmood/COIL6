@@ -95,7 +95,7 @@
 
     .page { padding: 0 24px 32px; }
 
-    .trends-desc { padding: 20px 0 0; max-width: 760px; }
+    .trends-desc { padding: 20px 0 20px; max-width: 760px; }
     .trends-desc p { font-size: 0.84rem; color: var(--text-mid); line-height: 1.65; }
 
     .site-btn {
@@ -270,7 +270,7 @@
     .heatmap-cell {
         border-radius: 3px 3px 2px 2px;
         cursor: default;
-        transition: transform 0.15s;
+        transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.15s;
         min-height: 4px;
     }
     .heatmap-cell:hover { transform: scaleY(1.08); }
@@ -305,7 +305,7 @@
 
     <div class="page">
 
-        <div class="trends-desc">
+        <div class="trends-desc" style="margin-top: -20px;">
             <p>Track how water quality parameters change over time across your Eastern Cape monitoring sites. Select a site and metric to explore recent readings and identify emerging patterns before they become problems.</p>
         </div>
 
@@ -582,15 +582,26 @@
         chart.render();
     }
 
+    function animateVal(el, to, decimals, duration) {
+        const from = parseFloat(el.textContent) || 0;
+        const start = performance.now();
+        (function step(now) {
+            const t = Math.min((now - start) / duration, 1);
+            const e = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+            el.textContent = (from + (to - from) * e).toFixed(decimals);
+            if (t < 1) requestAnimationFrame(step);
+        })(start);
+    }
+
     function updateStats(values, cfg, latestStatus) {
         const { sd, mean } = calcStdDev(values);
         const d = cfg.decimals;
 
-        document.getElementById('stat-latest').textContent      = values[values.length - 1].toFixed(d);
-        document.getElementById('stat-avg').textContent         = mean.toFixed(d);
-        document.getElementById('stat-min').textContent         = Math.min(...values).toFixed(d);
-        document.getElementById('stat-max').textContent         = Math.max(...values).toFixed(d);
-        document.getElementById('stat-stddev').textContent      = sd.toFixed(d);
+        animateVal(document.getElementById('stat-latest'), values[values.length - 1], d, 1200);
+        animateVal(document.getElementById('stat-avg'),    mean,                       d, 1200);
+        animateVal(document.getElementById('stat-min'),    Math.min(...values),        d, 1200);
+        animateVal(document.getElementById('stat-max'),    Math.max(...values),        d, 1200);
+        animateVal(document.getElementById('stat-stddev'), sd,                         d, 1200);
         document.getElementById('stat-variability').textContent = variabilityLabel(sd, mean);
 
         [0, 1, 2, 3, 4].forEach(i => {
@@ -614,7 +625,8 @@
             const d = results[i];
             const val = d ? d[cfg.field] : null;
 
-            document.getElementById('comp-val-' + s).textContent = val != null ? parseFloat(val).toFixed(cfg.decimals) : '—';
+            if (val != null) animateVal(document.getElementById('comp-val-' + s), parseFloat(val), cfg.decimals, 1200);
+            else document.getElementById('comp-val-' + s).textContent = '—';
             document.getElementById('comp-unit-' + s).textContent = cfg.unit;
 
             const badge = document.getElementById('comp-badge-' + s);
@@ -664,7 +676,6 @@
         const recent = trendData.filter(d => new Date(d.timestamp.replace(' ', 'T')).getTime() >= cutoff);
 
         const hourBuckets = Array.from({ length: 24 }, () => []);
-
         recent.forEach(d => {
             const hour = parseInt(d.timestamp.split(' ')[1].split(':')[0], 10);
             const val = parseFloat(d[cfg.field]);
@@ -686,7 +697,7 @@
             const cell = document.createElement('div');
             cell.className = 'heatmap-cell';
             const intensity = avg !== null ? (avg - min) / range : 0;
-            cell.style.height = `${4 + Math.round(intensity * 56)}px`;
+            cell.style.height = '4px';
             cell.style.background = hexToRgba(cfg.color, 0.12 + intensity * 0.78);
             if (avg !== null) {
                 cell.title = `${String(hour).padStart(2, '0')}:00 — avg: ${avg.toFixed(cfg.decimals)} ${cfg.unit}`;
@@ -697,11 +708,18 @@
             lbl.className = 'heatmap-label';
             lbl.textContent = hour % 6 === 0 ? `${String(hour).padStart(2, '0')}h` : '';
             labels.appendChild(lbl);
-         });
+        });
+
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            avgs.forEach((avg, i) => {
+                const intensity = avg !== null ? (avg - min) / range : 0;
+                grid.querySelectorAll('.heatmap-cell')[i].style.height = `${4 + Math.round(intensity * 56)}px`;
+            });
+        }));
 
         document.getElementById('heatmap-sub').textContent =
             `Avg ${cfg.label} by hour · last 24 hours · ${recent.length} readings`;
-        }
+    }
 
     async function loadData() {
         const cfg   = metricConfig[currentMetric];
