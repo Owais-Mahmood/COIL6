@@ -597,12 +597,11 @@
         const { sd, mean } = calcStdDev(values);
         const d = cfg.decimals;
 
-        animateVal(document.getElementById('stat-latest'), values[values.length - 1], d, 1200);
-        animateVal(document.getElementById('stat-avg'),    mean,                       d, 1200);
-        animateVal(document.getElementById('stat-min'),    Math.min(...values),        d, 1200);
-        animateVal(document.getElementById('stat-max'),    Math.max(...values),        d, 1200);
-        animateVal(document.getElementById('stat-stddev'), sd,                         d, 1200);
-        document.getElementById('stat-variability').textContent = variabilityLabel(sd, mean);
+        document.getElementById('stat-latest').textContent = values[values.length - 1].toFixed(d);
+        document.getElementById('stat-avg').textContent    = mean.toFixed(d);
+        document.getElementById('stat-min').textContent    = Math.min(...values).toFixed(d);
+        document.getElementById('stat-max').textContent    = Math.max(...values).toFixed(d);
+        document.getElementById('stat-stddev').textContent = sd.toFixed(d);
 
         [0, 1, 2, 3, 4].forEach(i => {
             document.getElementById('stat-unit-' + i).textContent = cfg.unit;

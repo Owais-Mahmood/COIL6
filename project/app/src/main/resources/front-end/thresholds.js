@@ -3,6 +3,6 @@ const THRESHOLDS = {
     turbidity:    { warn: 5,   crit: 10   },
     conductivity: { warn: 500, crit: 1500 },
     waterTemp:    { warnMin: 10, warnMax: 25, critMin: 5,  critMax: 30  },
-    waterLevel:   { warnMin: 30, warnMax: 100, critMin: 15, critMax: 150 },
+    waterLevel: { warnMin: 50, warnMax: 600, critMin: 20, critMax: 700 },
     light:        { warn: 15000, crit: 100000 }
 };

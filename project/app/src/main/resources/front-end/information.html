@@ -231,13 +231,15 @@
         }
         .monitoring-sites-title {
             display: block;
-            font-weight: 500;
-            font-size: 1rem;
-            color: #3a5a7a; 
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #225382;
+            margin-bottom: 8px; 
         }
         .monitoring-sites-contents {
             font-weight: 400;
-            font-size: 0.8rem;
+            font-size: 0.82rem;
+            line-height: 1.6;
             color: #3a5a7a; 
         }
         ul { margin: 0; padding-left: 18px; }
@@ -534,14 +536,26 @@
                 </span>
                 <div class="scale">
                     <div class="bar-container">
-                        <div class="bar" style="background: linear-gradient(90deg,#ff0000 0%,#ffdd00 2%, #1eff00 18%, #ffdd00 30%,#ff0000 100%)"></div>
+                        <div class="bar" style="background: linear-gradient(90deg, #1eff00 20%, #ffdd00 60%, #ff0000 100%)"></div>
                         <div class="pointer" id="conductivity-pointer">●</div>
                     </div>
                     <div class="labels" style="position: relative; height: 35px;">
-                            <div style="position: absolute; left: 0%;">0</div>
-                            <div style="position: absolute; left: 5%; transform: translateX(-50%)">100</div>
-                            <div style="position: absolute; left: 24%; transform: translateX(-50%)">600</div>
-                            <div style="position: absolute; right: 0%;">2500+</div>
+                        <div style="position: absolute; left: 0%; transform: translateX(0%); display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 1px; height: 6px; background: #3a5a7a; margin-bottom: 3px;"></div>
+                            <span>0</span>
+                        </div>
+                        <div style="position: absolute; left: 20%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 1px; height: 6px; background: #d97706; margin-bottom: 3px;"></div>
+                            <span style="color: #d97706; font-weight: 600;">500</span>
+                        </div>
+                        <div style="position: absolute; left: 60%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 1px; height: 6px; background: #dc2626; margin-bottom: 3px;"></div>
+                            <span style="color: #dc2626; font-weight: 600;">1500</span>
+                        </div>
+                        <div style="position: absolute; left: 100%; transform: translateX(-100%); display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 1px; height: 6px; background: #3a5a7a; margin-bottom: 3px;"></div>
+                            <span>2500+</span>
+                        </div>
                     </div>
                 </div>
                 <div class="verdict-strip v-safe" id="conductivity-verdict">
@@ -560,27 +574,39 @@
                     Low temperatures mean the water is more oxygenated and healthier for consumption, 
                     while high temperatures can lead to algae and bacterial bloom and can signal drought or environmental stresses.
                 </span>
-                <div class="scale">
+                <div class="scale" style="transform: translateY(-3px);">
                     <div class="bar-container">
-                        <div class="bar" style="background: linear-gradient(90deg, #ff0000 12.5%, #ffdd00 20%, #1eff00 43%, #ffdd00 75%, #ff0000 100%)"></div>
+                        <div class="bar" style="background: linear-gradient(90deg, #ff0000 12.5%, #ffdd00 25%, #1eff00 62.5%, #ffdd00 75%, #ff0000 100%)"></div>
                         <div class="pointer" id="waterTemp-pointer">●</div>
                     </div>
                     <div class="labels" style="position: relative; height: 35px;">
-                        <div style="position: absolute; left: 0%;">0</div>
-                        <div style="position: absolute; left: 25%; transform: translateX(-50%)">10</div>
-                        <div style="position: absolute; left: 63%; transform: translateX(-50%)">25</div>
-                        <div style="position: absolute; right: 0%;">40+</div>
+                        <div style="position: absolute; left: 0%; transform: translateX(0%); display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 1px; height: 6px; background: #3a5a7a; margin-bottom: 3px;"></div>
+                            <span>0</span>
+                        </div>
+                        <div style="position: absolute; left: 25%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 1px; height: 6px; background: #d97706; margin-bottom: 3px;"></div>
+                            <span style="color: #d97706; font-weight: 600;">10</span>
+                        </div>
+                        <div style="position: absolute; left: 62.5%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 1px; height: 6px; background: #d97706; margin-bottom: 3px;"></div>
+                            <span style="color: #d97706; font-weight: 600;">25</span>
+                        </div>
+                        <div style="position: absolute; left: 100%; transform: translateX(-100%); display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 1px; height: 6px; background: #3a5a7a; margin-bottom: 3px;"></div>
+                            <span>40+</span>
+                        </div>
                     </div>
                 </div>
                 <div class="verdict-strip v-safe" id="water-temp-verdict">
                     <span class="verdict-icon" id="water-temp-verdict-icon">✓</span>
                     <div class="verdict-body">
-                        <div class="verdict-title" id="water-temp-verdict-title">pH is within safe range</div>
+                        <div class="verdict-title" id="water-temp-verdict-title">Water Temperature is within safe range</div>
                         <div class="verdict-sub" id="water-temp-verdict-sub">Current reading is acceptable</div>
                     </div>
                 </div>
             </div>
-            <div class="metric-box">
+                <div class="metric-box">
                 <span class="metric-title">
                     📏 Water Level
                 </span>
@@ -588,16 +614,28 @@
                     Low levels can signal over-use of water-systems, drought or leaks often affecting water quality, 
                     while high levels can indicate flooding after heavy rain and act as an early warning for communities.
                 </span>
-                <div class="scale">
+                <div class="scale" style="transform: translateY(-1px);">
                     <div class="bar-container">
-                        <div class="bar" style="background: linear-gradient(90deg, #ff0000 2.5%, #ffdd00 5%, #1eff00 30%, #ffdd00 88%, #ff0000 100%)"></div>
+                        <div class="bar" style="background: linear-gradient(90deg, #ff0000 2.5%, #ffdd00 6.25%, #1eff00 75%, #ffdd00 87.5%, #ff0000 100%)"></div>
                         <div class="pointer" id="waterLevel-pointer">●</div>
                     </div>
                     <div class="labels" style="position: relative; height: 35px;">
-                        <div style="position: absolute; left: 0%;">0</div>
-                        <div style="position: absolute; left: 6.25%; transform: translateX(-50%)">50</div>
-                        <div style="position: absolute; left: 75%; transform: translateX(-50%)">600</div>
-                        <div style="position: absolute; right: 0%;">800+</div>
+                        <div style="position: absolute; left: 0%; transform: translateX(0%); display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 1px; height: 6px; background: #3a5a7a; margin-bottom: 3px;"></div>
+                            <span>0</span>
+                        </div>
+                        <div style="position: absolute; left: 6.25%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 1px; height: 6px; background: #d97706; margin-bottom: 3px;"></div>
+                            <span style="color: #d97706; font-weight: 600;">50</span>
+                        </div>
+                        <div style="position: absolute; left: 75%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 1px; height: 6px; background: #d97706; margin-bottom: 3px;"></div>
+                            <span style="color: #d97706; font-weight: 600;">600</span>
+                        </div>
+                        <div style="position: absolute; left: 100%; transform: translateX(-100%); display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 1px; height: 6px; background: #3a5a7a; margin-bottom: 3px;"></div>
+                            <span>800+</span>
+                        </div>
                     </div>
                 </div>
                 <div class="verdict-strip v-safe" id="water-level-verdict">
@@ -610,7 +648,7 @@
             </div>
             <div class="metric-box">
                 <span class="metric-title">
-                    ☀ Light Intensity
+                    🌤️ Light Intensity
                 </span>
                 <span class="metric-contents">
                     Low light usually just indicates less sun exposure (not a major concern) 
@@ -618,14 +656,22 @@
                 </span>
                  <div class="scale">
                     <div class="bar-container">
-                        <div class="bar" style="background: linear-gradient(90deg, #1eff00, #ffdd00 60%, #ff0000 85%)"></div>
+                        <div class="bar" style="background: linear-gradient(90deg, #1eff00 60%, #ffdd00 85%, #ff0000 100%)"></div>
                         <div class="pointer" id="light-pointer">●</div>
                     </div>
                     <div class="labels" style="position: relative; height: 35px;">
-                        <div style="position: absolute; left: 0%;">0</div>
-                        <div style="position: absolute; left: 7%; transform: translateX(-50%)">1000</div>
-                        <div style="position: absolute; left: 60%; transform: translateX(-50%)">15,000</div>
-                        <div style="position: absolute; right: 0%;">25,000+</div>
+                        <div style="position: absolute; left: 0%; transform: translateX(0%); display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 1px; height: 6px; background: #3a5a7a; margin-bottom: 3px;"></div>
+                            <span>0</span>
+                        </div>
+                        <div style="position: absolute; left: 60%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 1px; height: 6px; background: #d97706; margin-bottom: 3px;"></div>
+                            <span style="color: #d97706; font-weight: 600;">15k</span>
+                        </div>
+                        <div style="position: absolute; left: 100%; transform: translateX(-100%); display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 1px; height: 6px; background: #3a5a7a; margin-bottom: 3px;"></div>
+                            <span>25k+</span>
+                        </div>
                     </div>
                 </div>
                 <div class="verdict-strip v-safe" id="light-verdict">
