@@ -322,7 +322,7 @@
 
         .insights-panel,
         .raw-data-panel,
-        .contacts-panel {
+        .overview-panel {
             background: rgba(255,255,255,0.65);
             border-radius: 16px;
             padding: 18px;
@@ -343,14 +343,14 @@
             grid-row: 1;
         }
 
-        .contacts-panel {
+        .overview-panel {
             grid-column: 1 / span 2; 
             grid-row: 2;
         }
 
         .insights-header,
         .raw-data-header,
-        .contacts-header {
+        .overview-header {
             font-size: 1.1rem;            
             font-weight: 700;
             letter-spacing: 0.06em;
@@ -428,9 +428,6 @@
             margin-left: auto;
             margin-right: auto;
         }
-
-
-
         .raw-actions {
             display: flex;
             justify-content: center;
@@ -447,7 +444,10 @@
             object-fit: contain;
             display: block;
         }
-
+        select.pill-btn option {
+            font-weight: 1000;
+            color: #2165a1;
+        }
     </style>
 </head>
 <body>
@@ -506,8 +506,8 @@
                 </button>
             </div>
         </div>
-        <div class="contacts-panel">
-            <span class="contacts-header">Contacts</span>
+        <div class="overview-panel">
+            <span class="overview-header">Overview</span>
         </div>
     </div>
 </div>
