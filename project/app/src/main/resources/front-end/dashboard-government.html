@@ -194,11 +194,21 @@
 
     /* map */
     .hero-map {
-        display: flex; align-items: center; justify-content: center;
-        margin-left: -185px; margin-top: 15px;
+        display: fixed; align-items: center; justify-content: center;
+        margin-left: -260px; margin-top: -10px;
     }
 
-    .map-container svg { width: 100%; height: auto; }
+    .map-container {
+        position: relative;
+    display: inline-block;
+    }
+    
+    .map-overlay {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        pointer-events: none;
+    }
 
     /* info panels */
     .hero-panels { display: flex; flex-direction: column; gap: 10px; align-self: center; }
@@ -350,6 +360,17 @@
         background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.35);
         padding: 3px 10px; border-radius: 50px;
     }
+    
+    .dq-val { font-size: 0.82rem; font-weight: 600; color: var(--text-dark); text-align: right; flex-shrink: 0; }
+
+    .exc-rows  { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+    .exc-row   { display: flex; align-items: center; gap: 10px; }
+    .exc-label { font-size: 0.72rem; color: var(--text-light); width: 76px; flex-shrink: 0; }
+    .exc-track { flex: 1; height: 6px; background: var(--blue-faint); border-radius: 3px; overflow: hidden; }
+    .exc-fill  { height: 100%; border-radius: 3px; transition: width 0.4s ease; background: linear-gradient(90deg, #225382, #3b82f6); }
+    .exc-fill.mid  { background: linear-gradient(90deg, #d97706, #fbbf24); }
+    .exc-fill.high { background: linear-gradient(90deg, #dc2626, #f87171); }
+    .exc-val   { font-size: 0.72rem; font-weight: 600; color: var(--text-dark); width: 36px; text-align: right; flex-shrink: 0; }
 
 </style>
 </head>
@@ -382,17 +403,17 @@
                 <div style="position: relative; top: -20px;">
                     <div class="hero-heading">Know your water. Protect your health.</div>
                     <p class="hero-sub">
-                        Stroomloop is an online platform designed to support<br>
-                        water monitoring in South African communities. By<br>
-                        combining smart sensors with intuitive dashboards, it<br>
-                        transforms live readings into clear, actionable insights for<br>
-                        healthier everyday decisions.
+                        Real-time water quality data from three active<br>
+                        monitoring sites across the Eastern Cape. All readings<br>
+                        are continuously assessed against SANS 241:2015<br>
+                        drinking water standards to support regulatory<br>
+                        compliance, early intervention, and evidence-based<br>
+                        decision-making.
                         <br><br>
-                        By making water quality data easy to understand<br>
-                        and access, the platform helps communitites stay informed<br>
-                        and respond quickly to potential risks. This supports<br>
-                        safer water use, improves awareness and contributes<br>
-                        to better long-term health outcomes
+                        Use this dashboard to monitor site conditions,<br>
+                        review alert histories, identify trends, and generate<br>
+                        compliance reports for internal review or public<br>
+                        disclosure.
                     </p>
                 </div>
                 <div class="toggle-spacer"></div>
@@ -402,13 +423,8 @@
                         <span class="spill amber" id="pill-moderate">— Moderate</span>
                         <span class="spill" id="pill-critical" style="background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.35);color:#dc2626">— Critical</span>
                     </div>
-                    <div class="spill-line">
-                        <span class="spill">70k Readings</span>
-                        <span class="spill">6 Metrics</span>
-                    </div>
                 </div>
-                <div class="toggle-spacer"></div>
-                <div class="site-toggle-row">
+                <div class="site-toggle-row" style="margin-top:10px;">
                     <button class="site-btn active" onclick="selectSite(this, 'site_upstream')">Upstream</button>
                     <button class="site-btn" onclick="selectSite(this, 'site_downstream')">Downstream</button>
                     <button class="site-btn" onclick="selectSite(this, 'site_reservoir')">Reservoir</button>
@@ -417,42 +433,17 @@
 
             <div class="hero-map">
                 <div class="map-container">
-                    <svg viewBox="0 0 380 320" xmlns="http://www.w3.org/2000/svg" overflow="visible">
-                        <defs><style>
-                            .land    { fill: none; stroke: rgba(34,83,130,0.35); stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
-                            .river   { fill: none; stroke: rgba(34,83,130,0.65); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-                            .terrain { fill: none; stroke: rgba(34,83,130,0.2);  stroke-width: 1;   stroke-linecap: round; }
-                            .mlabel  { font-family: 'Inter', sans-serif; font-size: 9px; fill: rgba(34,83,130,0.55); font-weight: 600; }
-                        </style></defs>
-                        <path class="land" d="M 30,132 L 22,162 L 24,205 L 32,238 L 46,264 L 60,278 L 72,285 L 88,291 L 108,292 L 145,285 L 185,275 L 222,266 L 260,253 L 282,242 L 312,222 L 332,198 L 350,168 L 368,128 L 370,72 L 368,32 L 295,10 L 218,6 L 148,10 L 88,18 L 42,78 L 30,132"/>
-                        <path class="land" d="M 338,168 L 346,158 L 354,164 L 350,175 L 340,178 Z" stroke-dasharray="3,2"/>
-                        <path class="terrain" d="M 80,120 Q 130,112 180,118 Q 230,124 270,115"/>
-                        <path class="terrain" d="M 100,145 Q 145,138 190,143 Q 235,148 265,140"/>
-                        <path class="terrain" d="M 336,145 L 342,130 L 348,142 L 354,126 L 360,138 L 366,122 L 370,132" stroke="rgba(34,83,130,0.3)" stroke-width="1.2"/>
-                        <line x1="198" y1="232" x2="198" y2="218" class="terrain" stroke="rgba(34,83,130,0.35)" stroke-width="1.2"/>
-                        <path d="M 192,218 Q 198,210 204,218" class="terrain" stroke="rgba(34,83,130,0.35)" stroke-width="1.2"/>
-                        <path d="M 190,222 Q 198,212 206,222" class="terrain" stroke="rgba(34,83,130,0.35)" stroke-width="1.2"/>
-                        <line x1="214" y1="238" x2="214" y2="226" class="terrain" stroke="rgba(34,83,130,0.35)" stroke-width="1.2"/>
-                        <path d="M 208,226 Q 214,218 220,226" class="terrain" stroke="rgba(34,83,130,0.35)" stroke-width="1.2"/>
-                        <path d="M 206,230 Q 214,220 222,230" class="terrain" stroke="rgba(34,83,130,0.35)" stroke-width="1.2"/>
-                        <line x1="248" y1="242" x2="248" y2="230" class="terrain" stroke="rgba(34,83,130,0.35)" stroke-width="1.2"/>
-                        <path d="M 242,230 Q 248,222 254,230" class="terrain" stroke="rgba(34,83,130,0.35)" stroke-width="1.2"/>
-                        <path d="M 240,234 Q 248,224 256,234" class="terrain" stroke="rgba(34,83,130,0.35)" stroke-width="1.2"/>
-                        <path class="river" d="M 338,136 C 300,134 260,132 220,134 C 175,136 120,134 80,133 C 55,132 38,132 30,132" stroke-width="1.6" stroke="rgba(34,83,130,0.5)"/>
-                        <path class="river" d="M 222,216 C 228,224 232,232 238,240 C 244,248 250,256 256,263 C 258,266 260,268 260,270"/>
-                        <path d="M 222,216 C 218,208 215,200 212,192" class="river" stroke-width="1" stroke="rgba(34,83,130,0.4)"/>
-                        <path d="M 238,240 C 233,238 228,236 224,232" class="river" stroke-width="0.8" stroke="rgba(34,83,130,0.3)"/>
-                        <circle cx="222" cy="216" r="10" fill="rgba(76,175,80,0.15)"/>
-                        <circle cx="222" cy="216" r="5"  fill="#4CAF50" stroke="white" stroke-width="1.5"/>
-                        <text x="230" y="213" class="mlabel" fill="rgba(34,83,130,0.8)">Upstream</text>
-                        <circle cx="238" cy="240" r="10" fill="rgba(76,175,80,0.15)"/>
-                        <circle cx="238" cy="240" r="5"  fill="#4CAF50" stroke="white" stroke-width="1.5"/>
-                        <text x="246" y="237" class="mlabel" fill="rgba(34,83,130,0.8)">Reservoir</text>
-                        <circle cx="260" cy="270" r="10" fill="rgba(255,193,7,0.2)"/>
-                        <circle cx="260" cy="270" r="5"  fill="#FFC107" stroke="white" stroke-width="1.5"/>
-                        <text x="268" y="267" class="mlabel" fill="rgba(34,83,130,0.8)">Downstream</text>
-                        <text x="50"  y="255" class="mlabel" font-size="8">N ↑</text>
-                        <text x="155" y="235" class="mlabel" font-size="8" opacity="0.6">Eastern Cape</text>
+                    <img src="images/southafrica-infographic.png" width="500">
+                    <svg class="map-overlay" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+                        <circle cx="190" cy="370" r="10" id="dot-glow-upstream" fill="rgba(76,175,80,0.15)"/>
+                        <circle cx="190" cy="370" r="5"  id="dot-upstream" fill="#4CAF50" stroke="white" stroke-width="1.5"/>
+                        <text x="135" y="343" class="mlabel" style="font-size:15px;" fill="rgba(34,83,130,0.8); font-weight:800">Upstream</text>
+                        <circle cx="310" cy="284" r="10" id="dot-glow-reservoir" fill="rgba(76,175,80,0.15)"/>
+                        <circle cx="310" cy="284" r="5"  id="dot-reservoir" fill="#4CAF50" stroke="white" stroke-width="1.5"/>
+                        <text x="265" y="265" class="mlabel" style="font-size:15px;" fill="rgba(34,83,130,0.8); font-weight:800">Reservoir</text>
+                        <circle cx="370" cy="360" r="10" id="dot-glow-downstream" fill="rgba(255,193,7,0.2)"/>
+                        <circle cx="370" cy="360" r="5"  id="dot-downstream" fill="#FFC107" stroke="white" stroke-width="1.5"/>
+                        <text x="264" y="367" class="mlabel" style="font-size:15px;" fill="rgba(34,83,130,0.8); font-weight:800">Downstream</text>    
                     </svg>
                 </div>
             </div>
@@ -581,51 +572,55 @@
                 </div>
             </div>
 
-            <!-- Card 3: Status Breakdown -->
+            <!-- Card 3: Exceedance Summary -->
             <div class="card">
                 <div class="card-header">
-                    <span class="card-title">Status Breakdown</span>
+                    <span class="card-title">Exceedance Summary</span>
                     <span class="card-arrow">↗</span>
                 </div>
-                <div class="card-sub">Across all monitoring sites based on the full dataset</div>
-                <div class="sb-donut-wrap">
-                    <svg width="130" height="130" viewBox="0 0 90 90">
-                        <circle cx="45" cy="45" r="36" fill="none" stroke="#22c55e" stroke-width="12"
-                                id="sb-arc-normal" stroke-dasharray="0 226.2" transform="rotate(120 45 45)"/>
-                        <circle cx="45" cy="45" r="36" fill="none" stroke="#f59e0b" stroke-width="12"
-                                id="sb-arc-warning" stroke-dasharray="0 226.2" transform="rotate(120 45 45)"/>
-                        <circle cx="45" cy="45" r="36" fill="none" stroke="#ef4444" stroke-width="12"
-                                id="sb-arc-critical" stroke-dasharray="0 226.2" transform="rotate(120 45 45)"/>
-                        <text x="45" y="41" text-anchor="middle" font-size="7" font-weight="600"
-                                fill="#5a7a9a" font-family="Inter,sans-serif" id="sb-center-label">—</text>
-                        <text x="45" y="53" text-anchor="middle" font-size="13" font-weight="700"
-                                fill="#1c3a55" font-family="Inter,sans-serif" id="sb-center-pct">—</text>
-                    </svg>
+                <p class="sc-sub">Rate at which each parameter has exceeded safe limits across all three monitoring sites.</p>
+                <div class="exc-rows">
+                    <div class="exc-row">
+                        <span class="exc-label">pH</span>
+                        <div class="exc-track"><div class="exc-fill" id="exc-fill-ph" style="width:0%"></div></div>
+                        <span class="exc-val" id="exc-val-ph">—</span>
+                    </div>
+                    <div class="exc-row">
+                        <span class="exc-label">Turbidity</span>
+                        <div class="exc-track"><div class="exc-fill" id="exc-fill-turb" style="width:0%"></div></div>
+                        <span class="exc-val" id="exc-val-turb">—</span>
+                    </div>
+                    <div class="exc-row">
+                        <span class="exc-label">Conductivity</span>
+                        <div class="exc-track"><div class="exc-fill" id="exc-fill-cond" style="width:0%"></div></div>
+                        <span class="exc-val" id="exc-val-cond">—</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Card 4: Weather -->
+            <!-- Card 4: Last 24h Alerts -->
             <div class="card">
                 <div class="card-header">
-                    <span class="card-title">Weather</span>
+                    <span class="card-title">Last 24h Alerts</span>
                     <span class="card-arrow">↗</span>
                 </div>
-                <p class="sc-sub">Ambient weather recorded at the selected monitoring site alongside the latest water quality reading.</p>
-                <div class="wx-rows">
-                    <div class="wx-row">
-                        <span class="wx-icon">🌡️</span>
-                        <span class="wx-label">Air Temperature</span>
-                        <span class="wx-val" id="wx-temp">—</span>
+                <div class="ao-big" id="d24-total">—</div>
+                <div class="ao-sub">Total alerts triggered across all monitoring sites in the last 24 hours</div>
+                <div class="ao-bars">
+                    <div class="ao-bar-row">
+                        <span class="ao-bar-label">Upstream</span>
+                        <div class="ao-bar-track"><div class="ao-bar-fill c-crit" id="d24-bar-upstream" style="width:0%"></div></div>
+                        <span class="ao-bar-count" id="d24-count-upstream">—</span>
                     </div>
-                    <div class="wx-row">
-                        <span class="wx-icon">💨</span>
-                        <span class="wx-label">Humidity</span>
-                        <span class="wx-val" id="wx-rh">—</span>
+                    <div class="ao-bar-row">
+                        <span class="ao-bar-label">Downstream</span>
+                        <div class="ao-bar-track"><div class="ao-bar-fill c-crit" id="d24-bar-downstream" style="width:0%"></div></div>
+                        <span class="ao-bar-count" id="d24-count-downstream">—</span>
                     </div>
-                    <div class="wx-row">
-                        <span class="wx-icon">☔</span>
-                        <span class="wx-label">Rainfall Rate</span>
-                        <span class="wx-val" id="wx-rain">—</span>
+                    <div class="ao-bar-row">
+                        <span class="ao-bar-label">Reservoir</span>
+                        <div class="ao-bar-track"><div class="ao-bar-fill c-crit" id="d24-bar-reservoir" style="width:0%"></div></div>
+                        <span class="ao-bar-count" id="d24-count-reservoir">—</span>
                     </div>
                 </div>
             </div>
@@ -636,7 +631,7 @@
         <div class="compliance-section">
             <div class="compliance-header">
                 <span class="compliance-title">SANS 241:2015 Compliance</span>
-                <span class="compliance-sub">South African National Standard — drinking water quality</span>
+                <span class="compliance-sub">South African National Standard — Drinking Water Quality</span>
             </div>
             <div class="compliance-grid">
                 <div class="comp-site-card">
@@ -644,17 +639,14 @@
                     <div class="comp-metrics">
                         <div class="comp-metric-row">
                             <span class="comp-metric-label">pH</span>
-                            <span class="comp-metric-val" id="sans-up-ph">—</span>
                             <span class="comp-tick" id="sans-up-ph-tick">—</span>
                         </div>
                         <div class="comp-metric-row">
                             <span class="comp-metric-label">Turbidity</span>
-                            <span class="comp-metric-val" id="sans-up-turb">—</span>
                             <span class="comp-tick" id="sans-up-turb-tick">—</span>
                         </div>
                         <div class="comp-metric-row">
                             <span class="comp-metric-label">Conductivity</span>
-                            <span class="comp-metric-val" id="sans-up-cond">—</span>
                             <span class="comp-tick" id="sans-up-cond-tick">—</span>
                         </div>
                     </div>
@@ -665,17 +657,14 @@
                     <div class="comp-metrics">
                         <div class="comp-metric-row">
                             <span class="comp-metric-label">pH</span>
-                            <span class="comp-metric-val" id="sans-dn-ph">—</span>
                             <span class="comp-tick" id="sans-dn-ph-tick">—</span>
                         </div>
                         <div class="comp-metric-row">
                             <span class="comp-metric-label">Turbidity</span>
-                            <span class="comp-metric-val" id="sans-dn-turb">—</span>
                             <span class="comp-tick" id="sans-dn-turb-tick">—</span>
                         </div>
                         <div class="comp-metric-row">
                             <span class="comp-metric-label">Conductivity</span>
-                            <span class="comp-metric-val" id="sans-dn-cond">—</span>
                             <span class="comp-tick" id="sans-dn-cond-tick">—</span>
                         </div>
                     </div>
@@ -686,17 +675,14 @@
                     <div class="comp-metrics">
                         <div class="comp-metric-row">
                             <span class="comp-metric-label">pH</span>
-                            <span class="comp-metric-val" id="sans-rs-ph">—</span>
                             <span class="comp-tick" id="sans-rs-ph-tick">—</span>
                         </div>
                         <div class="comp-metric-row">
                             <span class="comp-metric-label">Turbidity</span>
-                            <span class="comp-metric-val" id="sans-rs-turb">—</span>
                             <span class="comp-tick" id="sans-rs-turb-tick">—</span>
                         </div>
                         <div class="comp-metric-row">
                             <span class="comp-metric-label">Conductivity</span>
-                            <span class="comp-metric-val" id="sans-rs-cond">—</span>
                             <span class="comp-tick" id="sans-rs-cond-tick">—</span>
                         </div>
                     </div>
@@ -714,6 +700,7 @@
             </div>
             <div class="verdict-site" id="verdict-site">Upstream</div>
         </div>
+        <p style="font-size:0.72rem; color:var(--text-light); text-align:center; margin-top:20px;">Stroomloop has collected over 70,000 readings across 6 water quality metrics from 3 active monitoring sites.</p>
 
     </div>
 </div>
@@ -809,6 +796,18 @@
             pillHealthy.style.display  = counts.normal   > 0 ? '' : 'none';
             pillModerate.style.display = counts.warning  > 0 ? '' : 'none';
             pillCritical.style.display = counts.critical > 0 ? '' : 'none';
+
+            const dotColors = {
+                normal:   { fill: '#4CAF50', glow: 'rgba(76,175,80,0.15)' },
+                warning:  { fill: '#FFC107', glow: 'rgba(255,193,7,0.2)'  },
+                critical: { fill: '#ef4444', glow: 'rgba(239,68,68,0.2)'  }
+            };
+            ['upstream', 'downstream', 'reservoir'].forEach((key, i) => {
+                const c = dotColors[results[i].status] || dotColors.normal;
+                document.getElementById('dot-'      + key).setAttribute('fill', c.fill);
+                document.getElementById('dot-glow-' + key).setAttribute('fill', c.glow);
+            });
+            
         } catch (e) {
             console.error('Could not load site statuses', e);
         }
@@ -915,16 +914,15 @@
                 const turbPass = d.turbidityNtu <= 5;
                 const condPass = d.conductivityUsCm <= 1500;
 
-                function set(metric, value, pass) {
-                    document.getElementById(`sans-${p}-${metric}`).textContent = value;
+                function set(metric, pass) {
                     const tick = document.getElementById(`sans-${p}-${metric}-tick`);
                     tick.textContent = pass ? '✓' : '✗';
                     tick.className   = 'comp-tick ' + (pass ? 'pass' : 'fail');
                 }
 
-                set('ph',   d.ph.toFixed(2),                          phPass);
-                set('turb', d.turbidityNtu.toFixed(1) + ' NTU',       turbPass);
-                set('cond', d.conductivityUsCm.toFixed(0) + ' µS/cm', condPass);
+                set('ph',   phPass);
+                set('turb', turbPass);
+                set('cond', condPass);
 
                 const passing = [phPass, turbPass, condPass].filter(Boolean).length;
                 const overall = document.getElementById(`sans-${p}-overall`);
@@ -980,10 +978,6 @@
             document.getElementById('ao-bar-turb').style.width = (breakdown.turbidity    / maxAlerts * 100) + '%';
             document.getElementById('ao-bar-cond').style.width = (breakdown.conductivity / maxAlerts * 100) + '%';
 
-            document.getElementById('wx-temp').textContent = d.wxTempC.toFixed(1) + '°C';
-            document.getElementById('wx-rh').textContent   = d.wxRhPct.toFixed(0) + '%';
-            document.getElementById('wx-rain').textContent = d.wxRainMmHr.toFixed(2) + ' mm/hr';
-
             const siteName  = currentSite.replace('site_', '');
             const siteLabel = siteName.charAt(0).toUpperCase() + siteName.slice(1);
             document.getElementById('verdict-site').textContent = siteLabel;
@@ -1026,19 +1020,83 @@
         }
     }
 
+    async function loadExceedanceSummary() {
+        try {
+            const sites = ['site_upstream', 'site_downstream', 'site_reservoir'];
+            const results = await Promise.all(
+                sites.map(s => Promise.all([
+                    fetch('/alerts/' + s + '/breakdown').then(r => r.json()),
+                    fetch('/site/'   + s).then(r => r.json())
+                ]))
+            );
+
+            let totalReadings = 0, phAlerts = 0, turbAlerts = 0, condAlerts = 0;
+            results.forEach(([breakdown, siteData]) => {
+                totalReadings += siteData.count        || 0;
+                phAlerts      += breakdown.ph          || 0;
+                turbAlerts    += breakdown.turbidity   || 0;
+                condAlerts    += breakdown.conductivity || 0;
+            });
+
+            const total = totalReadings || 1;
+
+            function setExc(key, count) {
+                const pct  = count / total * 100;
+                const fill = document.getElementById('exc-fill-' + key);
+                const val  = document.getElementById('exc-val-'  + key);
+                fill.style.width = Math.min(100, pct).toFixed(1) + '%';
+                val.textContent  = pct.toFixed(1) + '%';
+                fill.className   = 'exc-fill' + (pct >= 20 ? ' high' : pct >= 10 ? ' mid' : '');
+            }
+
+            setExc('ph',   phAlerts);
+            setExc('turb', turbAlerts);
+            setExc('cond', condAlerts);
+
+        } catch (e) {
+            console.error('Could not load exceedance summary', e);
+        }
+    }
+
+    async function loadLast24hAlerts() {
+        try {
+            const sites = ['site_upstream', 'site_downstream', 'site_reservoir'];
+            const keys  = ['upstream', 'downstream', 'reservoir'];
+
+            const results = await Promise.all(
+                sites.map(s => fetch('/alerts/' + s + '/summary').then(r => r.json()))
+            );
+
+            const counts = results.map(d => d.daily || 0);
+            const total  = counts.reduce((a, b) => a + b, 0);
+            const max    = Math.max(...counts, 1);
+
+            document.getElementById('d24-total').textContent = total;
+
+            counts.forEach((count, i) => {
+                document.getElementById('d24-bar-'   + keys[i]).style.width = (count / max * 100).toFixed(1) + '%';
+                document.getElementById('d24-count-' + keys[i]).textContent  = count;
+            });
+
+        } catch (e) {
+            console.error('Could not load 24h alerts', e);
+        }
+    }
+
     updateClock();
     loadSiteStatuses();
     loadData();
     loadSiteComparison();
-    loadStatusBreakdown();
+    loadExceedanceSummary();
     loadSansCompliance();
-    initDonutHover();
+    loadLast24hAlerts();
 
-    setInterval(loadData,            900000);
-    setInterval(loadSiteStatuses,    900000);
-    setInterval(loadSiteComparison,  900000);
-    setInterval(loadStatusBreakdown, 900000);
-    setInterval(loadSansCompliance,  900000);
+    setInterval(loadData,              900000);
+    setInterval(loadSiteStatuses,      900000);
+    setInterval(loadSiteComparison,    900000);
+    setInterval(loadExceedanceSummary, 900000);
+    setInterval(loadSansCompliance,    900000);
+    setInterval(loadLast24hAlerts, 900000);
     setInterval(updateClock,     1000);
     setInterval(updateStaleness, 1000);
 
