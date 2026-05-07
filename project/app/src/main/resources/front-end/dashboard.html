@@ -651,6 +651,21 @@
     let lastRefreshTime = null;
 
     function updateStaleness() {
+        /**
+         *  Updates the staleness indicator showing how long ago the data was last refreshed
+         * and changes the panel border colour based on how old the data is
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * null
+         * 
+         * Returns:
+         * -----------------
+         * nothing - updates the staleness text and panel border/background colour
+         * green if under 10 mins, yellow if 10-20 mins and red if over 20 mins
+         * 
+         */
         if (!lastRefreshTime) return;
         const secs = Math.floor((Date.now() - lastRefreshTime) / 1000);
         const mins = Math.floor(secs / 60);
@@ -673,6 +688,19 @@
     }
 
     function manualRefresh() {
+        /**
+         *  Triggers a full reload of all dashboard data when the user clicks the refresh button
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * null
+         * 
+         * Returns:
+         * -----------------
+         * nothing - calls loadData, loadSiteStatuses, loadSiteComparison and loadStatusBreakdown
+         * 
+         */
         loadData();
         loadSiteStatuses();
         loadSiteComparison();
@@ -680,6 +708,25 @@
     }
 
     function getBadgeClass(status) {
+        /**
+         * Returns the CSS badge class associated with a status value.
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * status - A string representing the status level.
+         *     Expected values:
+         *     - 'normal'
+         *     - 'warning'
+         *     - any other value is treated as critical
+         * 
+         * Returns:
+         * -----------------
+         * A string containing the corresponding CSS class:
+         * - 'badge-ok'   for 'normal'
+         * - 'badge-warn' for 'warning'
+         * - 'badge-crit' for all other values
+         */
         if (status === 'normal')   return 'badge-ok';
         if (status === 'warning')  return 'badge-warn';
         if (status === 'critical') return 'badge-crit';
@@ -687,6 +734,26 @@
     }
 
     function getStatusLabel(status) {
+        /**
+         * Returns the status label associated with each status value
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * status - A string representing the status level.
+         *     Expected values:
+         *     - 'normal'
+         *     - 'warning'
+         *     - any other value is treated as critical
+         * 
+         * Returns:
+         * -----------------
+         * A string representing the status to be used as a label
+         * - 'Healthy'   for 'normal'
+         * - 'Moderate' for 'warning'
+         * - 'Critical' for all other values
+         *
+         */
         if (status === 'normal')   return 'Healthy';
         if (status === 'warning')  return 'Moderate';
         if (status === 'critical') return 'Critical';
@@ -694,10 +761,40 @@
     }
 
     function formatLight(lux) {
+        /**
+         * Converts a light intensity integer into a readable string
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * lux - the numerical value for light intensity
+         * 
+         * Returns:
+         * -----------------
+         * a string representing the lux value
+         *   - lux/1000 + 'k lux' if lux >= 1000
+         *   - lux + 'lux' otherwise
+         * 
+         * 
+         */
         return lux >= 1000 ? (lux / 1000).toFixed(1) + 'k lux' : lux.toFixed(0) + ' lux';
     }
 
     function updateClock() {
+        /**
+         * Updates the time to be displayed on the dashboard clock
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * Null
+         * 
+         * Returns:
+         * -----------------
+         * Null
+         * But updates the Clock element to match the current system time
+         * 
+         */
         const now  = new Date();
 
         const hh   = String(now.getHours()).padStart(2, '0');
@@ -710,6 +807,20 @@
     }
 
     function selectSite(btn, siteId) {
+        /**
+         * Selects a different site depending on which button the user presses
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * siteID - the unique identifier for each site
+         * btn - the element the user clicks to choose which site
+         * 
+         * Returns:
+         * -----------------
+         * Null
+         * 
+         */
         document.querySelectorAll('.site-toggle-row .site-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         currentSite = siteId;
@@ -717,6 +828,21 @@
     }
 
     async function loadSiteStatuses() {
+        /**
+         * Fetches the latest reading for all three sites and updates the site status pills
+         * and map dot colours based on each site's current status 
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * null
+         * 
+         * Returns:
+         * -----------------
+         * nothing - updates the healthy, moderate and critical pill counts
+         * and sets the fill colour of each SVG map dot to match the site status
+         * 
+         */
         try {
             const sites = ['site_upstream', 'site_downstream', 'site_reservoir'];
             const results = await Promise.all(
@@ -755,6 +881,21 @@
     }
 
     async function loadSiteComparison() {
+        /**
+         * Fetches alert and total reading counts for all three sites and renders
+         * the site health comparison bars showing the percentage of non-alert readings
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * null
+         * 
+         * Returns:
+         * -----------------
+         * nothing - updates the fill bar width, percentage value and best/worst badge
+         * for each site based on what proportion of readings did not trigger alerts
+         * 
+         */
         try {
             const sites = ['site_upstream', 'site_downstream', 'site_reservoir'];
             const keys  = ['upstream', 'downstream', 'reservoir'];
@@ -804,6 +945,21 @@
     }
 
     async function loadStatusBreakdown() {
+        /**
+         *  Fetches the overall status counts and renders the donut chart showing
+         * the proportion of normal, warning and critical readings across all sites
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * null
+         * 
+         * Returns:
+         * -----------------
+         * nothing - updates the stroke-dasharray and stroke-dashoffset of each SVG arc
+         * to draw the correct proportion of the donut, and updates the centre label and percentage
+         * 
+         */
         try {
             const data = await fetch('/summary/status-counts').then(r => r.json());
 
@@ -846,6 +1002,24 @@
     }
 
     function animateVal(el, to, decimals, suffix) {
+        /**
+         * Smoothly animates an decimal value  in an element from a start value to a target value
+         * appends a unit suffix to the displayed value
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * el - HTML element whose text content will be animated
+         * to - target numeric value to animate towards
+         * decimals - number of decimal places to display
+         * suffix - unit string to append to the value e.g. "NTU", "cm" etc.
+         * 
+         * Returns:
+         * -----------------
+         * nothing - directly updates the text content of the element over time
+         * uses the same easing function as animateCount
+         * 
+         */
         const from = parseFloat(el.textContent) || 0;
         const start = performance.now();
         (function step(now) {
@@ -857,6 +1031,21 @@
     }
 
     function animateCount(el, to) {
+        /**
+         * Smoothly animates an integer count in an element from a start value to a target value
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * el - the HTML element whose text content will be animated
+         * to - target integer value to animate towards
+         * 
+         * Returns:
+         * -----------------
+         * nothing - directly updates the text content of the element over time
+         * uses an easing function so the animation decelerates smoothly at the end
+         * 
+         */
         const from = parseInt(el.textContent.replace(/,/g, '')) || 0;
         const start = performance.now();
         (function step(now) {
@@ -868,6 +1057,21 @@
     }
 
     async function loadData() {
+        /**
+         * Fetches the latest reading and alert breakdown for the current site
+         * and updates all live reading panels, alert overview, weather and verdict strip
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * null
+         * 
+         * Returns:
+         * -----------------
+         * nothing - animates all metric values, updates status badges, alert bars,
+         * weather readings, verdict strip colour and message, and records the refresh time
+         * 
+         */
         try {
             const [latestRes, breakdownRes] = await Promise.all([
                 fetch('/latest/' + currentSite),
@@ -967,6 +1171,23 @@
     setInterval(updateStaleness,  1000);
 
     function initDonutHover() {
+        /**
+         * Adds mouse interaction to the status breakdown donut chart
+         * so hovering over each arc segment highlights it and shows its label and percentage
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * null
+         * 
+         * Returns:
+         * -----------------
+         * nothing - attaches mousemove and mouseleave event listeners to the donut SVG
+         * on hover, calculates which arc segment the mouse is over using angle maths
+         * and updates the centre label and thickens the hovered arc stroke
+         * when mouse leaves, it resets all arcs back to their default state
+         * 
+         */
         const svg  = document.querySelector('.sb-donut-wrap svg');
         const arcs = {
             normal:   document.getElementById('sb-arc-normal'),
