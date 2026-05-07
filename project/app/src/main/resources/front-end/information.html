@@ -780,6 +780,22 @@
 <script src="/thresholds.js"></script>
 <script>
     function positionPinPoint(value, min, max, pointerID){
+        /**
+         * Positions a pinpoint marker on a scale bar based on a reading
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * value - the actual reading to position on the bar 
+         * min - the minimum value of the scale range
+         * max - the maximum value of the scale range
+         * pointerID - the HTML element id of the pointer to move
+         * 
+         * Returns:
+         * -----------------
+         * nothing - it directly updates the left position of the pointer
+         * 
+         */
         const percentage = ((value - min)/(max - min)) * 100
 
         //clamps so pointer doesnt go outside of bar
@@ -790,6 +806,19 @@
     let currentSite = "site_upstream"
 
     function setSite(site) {
+        /**
+         * Updates the currently selected site and refreshes the pinpoint markers on the scales
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * site - the site id string for example "site_upstream"
+         * 
+         * Returns:
+         * -----------------
+         * nothing - updates currentSite variable, highlights the active toggle selected and reloads the pinpoints
+         * 
+         */
         currentSite = site
 
         document.querySelectorAll('.site-btn').forEach(btn => {
@@ -799,11 +828,32 @@
     }
 
     function updateVerdict(status, value, unit, stripID, iconID, titleID, subID, metricName){
+        /**
+         * Updates the verdict strip for a metric showing its current status, value and message
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * status - status string e.g. "critical"
+         * value - the reading to display
+         * unit - the unit label to display alongside the value e.g. "pH", "NTU"
+         * stripID - HTML element id of the verdict strip container
+         * iconID - HTML element id of the icon inside the strip
+         * titleID - HTML element id of the title text inside the strip
+         * subID - HTML element id of the subtitle text inside the strip
+         * metricName - the display name of the metric e.g. "pH", "Turbidity"
+         * 
+         * Returns:
+         * -----------------
+         * nothing - directly updates the verdict strip colour, icon and text content
+         * 
+         */
         const strip = document.getElementById(stripID)
         const icon  = document.getElementById(iconID)
         const title = document.getElementById(titleID)
         const sub   = document.getElementById(subID)
 
+        //fade our then update content the fade back in - cleaner look for webpage
         strip.style.opacity = 0;
         setTimeout(() => {
             if (status === 'normal') {
@@ -827,6 +877,21 @@
     }
 
     function getMetricStatus(metric, value) {
+        /**
+         * Determines the status of the metric based on its value and predefined thresholds
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * metric - metric name string e.g. "ph", "turbidity", "conductivity" etc.
+         * value - the reading to evaluate
+         * 
+         * Returns:
+         * -----------------
+         * a status string e.g. "normal", "warning" or "critical"
+         * based on where the value sits relative to the predefined thresholds
+         * 
+         */  
         if (metric === 'ph') {
             if (value < THRESHOLDS.ph.critMin || value > THRESHOLDS.ph.critMax) return 'critical';
             if (value < THRESHOLDS.ph.warnMin || value > THRESHOLDS.ph.warnMax) return 'warning';
@@ -855,6 +920,19 @@
     }
 
     async function loadPinPoint(){
+        /**
+         * Fetches the latest reading for the current site and updates all pinpoint markers and verdict strips
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * null
+         * 
+         * Returns:
+         * -----------------
+         * nothing - updates all pointer positions and verdict strips on the page
+         * 
+         */
         const res = await fetch(`/latest/${currentSite}`)
         const d = await res.json()
 
@@ -887,6 +965,20 @@
     }
 
     async function loadSiteAlerts() {
+        /**
+         * Fetches total readings, total alerts and latest status for each site
+         * also updates the 'monitoring siters' section of the page
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * null
+         * 
+         * Returns:
+         * -----------------
+         * nothing - updates total readings, total alerts, alert rate and status badge for each site box
+         * 
+         */
         const sites = [
             {id: "site_upstream", prefix: "upstream"},
             {id: "site_downstream", prefix: "downstream"},

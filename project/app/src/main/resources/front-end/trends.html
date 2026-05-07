@@ -429,6 +429,19 @@
     };
 
     function getBadgeClass(status) {
+        /**
+         * Returns the CSS badge class name for a given status string
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * status - status string e.g. "critical"
+         * 
+         * Returns:
+         * -----------------
+         *  CSS class string - 'badge-ok', 'badge-warn', or 'badge-crit'
+         * 
+         */
         if (status === 'normal')   return 'badge-ok';
         if (status === 'warning')  return 'badge-warn';
         if (status === 'critical') return 'badge-crit';
@@ -436,6 +449,19 @@
     }
 
     function getStatusLabel(status) {
+        /**
+         * Returns a readable label for a given status string
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * status - status string e.g. "critical"
+         * 
+         * Returns:
+         * -----------------
+         *  a display label string - 'Healthy', 'Moderate' or 'Critical'
+         * 
+         */
         if (status === 'normal')   return 'Healthy';
         if (status === 'warning')  return 'Moderate';
         if (status === 'critical') return 'Critical';
@@ -443,17 +469,57 @@
     }
 
     function siteLabel(siteId) {
+        /**
+         * Converts a site ID string into a capitalised display name
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * siteId - site id string e.g. 'site_upstream'
+         * 
+         * Returns:
+         * -----------------
+         *  a capitalised name string e.g. 'Upstream'
+         * 
+         */
         const name = siteId.replace('site_', '');
         return name.charAt(0).toUpperCase() + name.slice(1);
     }
 
     function calcStdDev(values) {
+        /**
+         * Calculates the standard deviation and mean of an array of numbers
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * values - an array of numeric readings
+         * 
+         * Returns:
+         * -----------------
+         *  an object with two properties - sd (standard deviation) and mean (average)
+         * 
+         */
         const mean     = values.reduce((a, b) => a + b, 0) / values.length;
         const variance = values.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / values.length;
         return { sd: Math.sqrt(variance), mean };
     }
 
     function variabilityLabel(sd, mean) {
+        /**
+         * Returns readable variability label based on the coefficient of variation
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * sd - standard deviation of the dataset
+         * mean - the average of the dataset
+         * 
+         * Returns:
+         * -----------------
+         *  a string - 'Low variability', 'Moderate variability', 'High variability'
+         * 
+         */
         const cv = sd / Math.abs(mean);
         if (cv < 0.05) return 'Low variability';
         if (cv < 0.15) return 'Moderate variability';
@@ -461,6 +527,19 @@
     }
 
     function buildAnnotations(cfg) {
+        /**
+         * Builds the safe range annotation lines to overlay on the chart
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * cfg - metric config object containing safeMin and safeMax threshold values
+         * 
+         * Returns:
+         * -----------------
+         *  an array of annotation line objects for ApexCharts to render on the y axis
+         * 
+         */
         const lines = [];
         if (cfg.safeMin !== null) lines.push({
             y: cfg.safeMin,
@@ -478,6 +557,23 @@
     }
 
     function computeDiscrete(seriesData, min, max, cfg) {
+        /**
+         * Calculates which data points to show as discrete markers on the chart
+         * based on the currently visible x axis range to avoid overcrowding
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * seriesData - full array of chart data points with x and y values
+         * min - the minimum visible x axis timestamp
+         * max - the maximum visible x axis timestamp
+         * cfg - the metric config object containing the colour for the markers
+         * 
+         * Returns:
+         * -----------------
+         * an array of discrete marker objects for the ApexCgarts to render on the chart  
+         * 
+         */
         const visibleIdx = [];
         seriesData.forEach((p, i) => {
             if (p.x >= min && p.x <= max) visibleIdx.push(i);
@@ -500,6 +596,20 @@
     }
 
     function hexToRgba(hex, alpha) {
+        /**
+         * Converts a hex colour string to a rgba string with a given opacity
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * hex - hex colour string e.g. '#225382'
+         * alpha - the opacity value between 0 and 1
+         * 
+         * Returns:
+         * -----------------
+         *  an rgba colour string 
+         * 
+         */
         const r = parseInt(hex.slice(1, 3), 16);
         const g = parseInt(hex.slice(3, 5), 16);
         const b = parseInt(hex.slice(5, 7), 16);
@@ -507,6 +617,21 @@
     }
 
     function renderChart(seriesData, cfg) {
+        /**
+         * Creates and renders the ApexCharts area chart with thegiven data and metric config
+         * also handles zooming and scrolling events to update visible markers
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * seriesData - array of data points with x (timestamp) and y (value) properties
+         * cfg - the metric config object containing label, unit, colour and threshold information
+         * 
+         * Returns:
+         * -----------------
+         *  nothing - renders the chart into the #chart-area element on the page
+         * 
+         */
         let dotsTimer = null;
         const options = {
             chart: {
@@ -583,6 +708,22 @@
     }
 
     function animateVal(el, to, decimals, duration) {
+        /**
+         * Smoothly animates a numberic value in an element from its current value to a target value
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * el - HTML element whose text content will be animated
+         * to - target numeric value to animate towards
+         * decimals - number of decimal places to display
+         * duration - the animation duration in milliseconds
+         * 
+         * Returns:
+         * -----------------
+         *  nothing - directly updates the text content of the element over time
+         * 
+         */
         const from = parseFloat(el.textContent) || 0;
         const start = performance.now();
         (function step(now) {
@@ -594,6 +735,21 @@
     }
 
     function updateStats(values, cfg, latestStatus) {
+        /**
+         * Updates the statistics panel with the latest, average, min, max, and standard deviation values
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * values - array of numeric readings for the selected time range
+         * cfg - the metric config object containing unit and decimal settings
+         * latestStatus - the current status string for the site e.g. 'normal', 'warning' or 'critical'
+         * 
+         * Returns:
+         * -----------------
+         *  nothing - directly updates the stats panel elements and status badge on the page
+         * 
+         */
         const { sd, mean } = calcStdDev(values);
         const d = cfg.decimals;
 
@@ -613,9 +769,23 @@
     }
 
     async function loadComparison() {
+        /**
+         * Fetches the latest reading for all three sites and updates the site comparison cards
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * null
+         * 
+         * Returns:
+         * -----------------
+         * nothing - updates the value, unit and status badge for each site comparison card
+         * 
+         */
         const cfg = metricConfig[currentMetric];
         const sites = ['upstream', 'downstream', 'reservoir'];
 
+        //fetch all three sites simultaneously rather than one at a time
         const results = await Promise.all(
             sites.map(s => fetch('/latest/site_' + s).then(r => r.json()).catch(() => null))
         );
@@ -624,6 +794,7 @@
             const d = results[i];
             const val = d ? d[cfg.field] : null;
 
+            //animating the value change rather than instantly updating it
             if (val != null) animateVal(document.getElementById('comp-val-' + s), parseFloat(val), cfg.decimals, 1200);
             else document.getElementById('comp-val-' + s).textContent = '—';
             document.getElementById('comp-unit-' + s).textContent = cfg.unit;
@@ -632,11 +803,27 @@
             badge.className = 'stat-badge ' + (d ? getBadgeClass(d.status) : 'badge-ok');
             badge.textContent = d ? getStatusLabel(d.status) : '—';
 
+            //highlight the card for the currently selected site
             document.getElementById('comp-card-' + s).classList.toggle('selected', currentSite === 'site_' + s);
         });
     }
 
     function updateTrendDirection(values, cfg) {
+        /**
+         * Calculates whether the metric is rising, falling or stable compared to the recent average
+         * and updates the trends direction arrow and label on the page
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * values - array of numeric readings in chronological order
+         * cfg - the metric config object containing label, unit, and decimal settings
+         * 
+         * Returns:
+         * -----------------
+         *  nothing - directly updates the trend arrow, label and diff text on the page
+         * 
+         */
         if (values.length < 2) return;
 
         const latest = values[values.length - 1];
@@ -670,10 +857,27 @@
     }
 
     function updateHeatmap(trendData, cfg) {
+        /**
+         * Builds a heatmap showing the average metric value for each hour of the last 24 hours
+         * bar height and opacity both reflect the relative intensity of the average value
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * trendData - full array of trend data objects from the API
+         * cfg - the metric config object containing field, colour, unit and decimal settings
+         * 
+         * Returns:
+         * -----------------
+         *  nothing - renders heatmap cells and hour labels into the heatmap grid on the page
+         * 
+         */
         const latestTs = Math.max(...trendData.map(d => new Date(d.timestamp.replace(' ', 'T')).getTime()));
         const cutoff = latestTs - 24 * 60 * 60 * 1000;
+        //only using readings from the last 24 hours
         const recent = trendData.filter(d => new Date(d.timestamp.replace(' ', 'T')).getTime() >= cutoff);
 
+        //group readings into 24 hourly buckets
         const hourBuckets = Array.from({ length: 24 }, () => []);
         recent.forEach(d => {
             const hour = parseInt(d.timestamp.split(' ')[1].split(':')[0], 10);
@@ -681,6 +885,7 @@
             if (!isNaN(val)) hourBuckets[hour].push(val);
         });
 
+        //calculate the average value for each hour bucket
         const avgs = hourBuckets.map(b => b.length > 0 ? b.reduce((a, v) => a + v, 0) / b.length : null);
         const valid = avgs.filter(v => v !== null);
         const min = Math.min(...valid);
@@ -697,6 +902,7 @@
             cell.className = 'heatmap-cell';
             const intensity = avg !== null ? (avg - min) / range : 0;
             cell.style.height = '4px';
+            //opacity scales with intensity so higher values appear darker
             cell.style.background = hexToRgba(cfg.color, 0.12 + intensity * 0.78);
             if (avg !== null) {
                 cell.title = `${String(hour).padStart(2, '0')}:00 — avg: ${avg.toFixed(cfg.decimals)} ${cfg.unit}`;
@@ -705,10 +911,12 @@
 
             const lbl = document.createElement('div');
             lbl.className = 'heatmap-label';
+            //only show labels at every 6 hours to avoid crowding
             lbl.textContent = hour % 6 === 0 ? `${String(hour).padStart(2, '0')}h` : '';
             labels.appendChild(lbl);
         });
 
+        //animate bar heights after initial render using double requestAnimationFrame
         requestAnimationFrame(() => requestAnimationFrame(() => {
             avgs.forEach((avg, i) => {
                 const intensity = avg !== null ? (avg - min) / range : 0;
@@ -721,12 +929,27 @@
     }
 
     async function loadData() {
+        /**
+         * Fetches trend and latest data for the current site and metric then
+         * renders the chart and updates all panels on the page
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * null
+         * 
+         * Returns:
+         * -----------------
+         *  nothing - triggers renderChart, updateStats, loadComparison, updateTrendDirection and updateHeatmap
+         * 
+         */
         const cfg   = metricConfig[currentMetric];
         const label = siteLabel(currentSite);
 
         document.getElementById('chart-title').textContent = cfg.label + ' Over Time — ' + label;
 
         try {
+            //fetch trend data and latest reading simultaneously
             const [trendRes, latestRes] = await Promise.all([
                 fetch('/trends/' + currentSite + (currentDays ? '?days=' + currentDays : '')),
                 fetch('/latest/' + currentSite)
@@ -739,6 +962,7 @@
 
             document.getElementById('chart-sub').textContent = 'Last ' + trendData.length + ' readings';
 
+            //convert timestamps to milliseconds for ApexCharts datetime axis
             const seriesData = trendData.map(d => ({
                 x: new Date(d.timestamp.replace(' ', 'T')).getTime(),
                 y: d[cfg.field]
@@ -758,6 +982,20 @@
     }
 
     function selectSite(btn, siteId) {
+        /**
+         * Sets the active site button and updates the current site then reloads the chart data
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * btn - the button HTML element that was clicked
+         * siteId - the site id string e.g. 'site_upstream'
+         * 
+         * Returns:
+         * -----------------
+         *  nothing - updates currentSite and triggers loadData
+         * 
+         */
         document.querySelectorAll('.site-group .site-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         currentSite = siteId;
@@ -765,10 +1003,37 @@
     }
 
     function toggleDropdown() {
+        /**
+         * Toggles the time range dropdown menu open or closed
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * null
+         * 
+         * Returns:
+         * -----------------
+         *  nothing - toggles the 'open' class on the dropdown list element
+         * 
+         */
         document.getElementById('dropdown-list').classList.toggle('open');
     }
 
     function selectRange(val, label) {
+        /**
+         * Updates the selected tiem range and reloads the chart data
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * val - the number of days to show e.g. 1, 7, 30
+         * label - display label for the selected range e.g. '24 hours', '7 days'
+         * 
+         * Returns:
+         * -----------------
+         *  nothing - updates currentDays, the dropdown button label and triggers loadData
+         * 
+         */
         currentDays = val;
         document.querySelector('.dropdown-btn').textContent = label;
         document.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
@@ -784,6 +1049,20 @@
     });
 
     function selectMetric(btn, metric) {
+        /**
+         * Setes the active metric pill and updates the current metric then reloads the chart data
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * btn - the pill HTML element that was clicked
+         * metric - the metric key string e.g. 'ph', 'turbidity' etc.
+         * 
+         * Returns:
+         * -----------------
+         *  nothing - updates currentMetric and triggers loadData
+         * 
+         */
         document.querySelectorAll('.metric-group .metric-pill').forEach(p => p.classList.remove('active'));
         btn.classList.add('active');
         currentMetric = metric;
