@@ -1070,6 +1070,20 @@
     }
 
     function updateClock() {
+        /**
+         * Updates the time to be displayed on the dashboard clock
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * Null
+         * 
+         * Returns:
+         * -----------------
+         * Null
+         * But updates the Clock element to match the current system time
+         * 
+         */
         const now  = new Date();
 
         const hh   = String(now.getHours()).padStart(2, '0');

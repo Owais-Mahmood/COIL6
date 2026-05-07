@@ -551,19 +551,18 @@
 
     function selectNotifyType(val, label) {
         /**
-         * What the function does
+         * Updates the notification type dropdown to show the selected alert type
          * -----------------
          * 
          * Parameters:
          * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
+         * val - the value of the selected notification type e.g. 'critical' etc.
+         * label - display label to show in the dropdown button e.g. 'Critical' etc. 
          * 
          * Returns:
          * -----------------
-         * what the function returns
-         * 
-         * 
+         * nothing - updates the dropdown button text, marks the selected item as active
+         * and closes the dropdown list
          * 
          */
         document.querySelector('#notify-type-dropdown .dropdown-btn').textContent = label;
@@ -574,19 +573,18 @@
 
     function selectNotifySite(val, label) {
         /**
-         * What the function does
+         * Updates the notification site dropdown to show the selected site
          * -----------------
          * 
          * Parameters:
          * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
+         * val - value of the selected site e.g. 'site_upstream'
+         * label - display label to show in the dropdown button e.g. 'Upstream'
          * 
          * Returns:
          * -----------------
-         * what the function returns
-         * 
-         * 
+         * nothing - updates the dropdown button text, marks the selected item as active
+         * and closes the dropdown list
          * 
          */
         document.querySelector('#notify-site-dropdown .dropdown-btn').textContent = label;
@@ -597,19 +595,17 @@
 
     document.addEventListener('click', e => {
         /**
-         * What the function does
+         * Global click listener that closes both notification dropdowns
+         * when the user clicks anywhere outside of them
          * -----------------
          * 
          * Parameters:
          * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
+         * e - click event object containing the target element that was clicked
          * 
          * Returns:
          * -----------------
-         * what the function returns
-         * 
-         * 
+         * nothing - removes the 'open' class from both dropdown lists when a click was outside their respecitve containers 
          * 
          */
         if (!document.getElementById('notify-type-dropdown').contains(e.target))
@@ -620,19 +616,17 @@
 
     function handleNotifySubmit() {
         /**
-         * What the function does
+         * Validates the notification email input and shows a confirmation message
          * -----------------
          * 
          * Parameters:
          * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
+         * null
          * 
          * Returns:
          * -----------------
-         * what the function returns
-         * 
-         * 
+         * nothing - if the email is invalid, highlights the input field red and returns early
+         * if valid, shows the confirmation message for 4 seconds then hides it again
          * 
          */
         const email = document.getElementById('notify-email').value.trim();
@@ -649,19 +643,16 @@
 
     function handleReport() {
         /**
-         * What the function does
+         * Shows a confirmation message when the user submits a water quality report
          * -----------------
          * 
          * Parameters:
          * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
+         * null
          * 
          * Returns:
          * -----------------
-         * what the function returns
-         * 
-         * 
+         * nothing - makes the #report-confirm element visible for 4 seconds then hides it 
          * 
          */
         const c = document.getElementById('report-confirm');
@@ -671,19 +662,19 @@
 
     async function loadAlertHistory() {
         /**
-         * What the function does
+         * Fetches the most recent alerts for the current site 
+         * and renders them as rows in the alert history panel
          * -----------------
          * 
          * Parameters:
          * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
+         * null
          * 
          * Returns:
          * -----------------
-         * what the function returns
-         * 
-         * 
+         * nothing - renders up to 15 alert rows into #alert-history-list
+         * each row shows the metric icon, name, value, status badge and time ago
+         * also updates the last alert pill with how long ago the most recent alert was
          * 
          */
         try {
@@ -713,19 +704,18 @@
 
     async function loadActiveAlerts() {
         /**
-         * What the function does
+         * Fetches the latest readings for the current site and displays any metrics that are currently outside safe thresholds
+         * these are displayed as active alert rows
          * -----------------
          * 
          * Parameters:
          * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
+         * null
          * 
          * Returns:
          * -----------------
-         * what the function returns
-         * 
-         * 
+         * nothing - renders active alert rows into the #active-alert-rows container
+         * with animated values or a clean message if no alerts are active
          * 
          */
         try {
@@ -768,19 +758,19 @@
 
     async function loadWhatToDo() {
         /**
-         * What the function does
+         * Fetches the latests reading for the current site 
+         * generates action guidance rows for each metric based on its current status
          * -----------------
          * 
          * Parameters:
          * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
+         * null
          * 
          * Returns:
          * -----------------
-         * what the function returns
-         * 
-         * 
+         * nothing - renders guidance rows into the #wtd-rows container
+         * with appropriate safe, warning or critical messages per metric
+         * fades out then fades back in when updating
          * 
          */
         try {
@@ -839,19 +829,20 @@
 
     function animateCount(el, from, to, duration) {
         /**
-         * What the function does
+         * Smoothly animates an integer count in an element from a start value to a target value
          * -----------------
          * 
          * Parameters:
          * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
+         * el - the HTML element whose text content will be animated
+         * from - starting integer value to animate from
+         * to - target integer value to animate towards
+         * duration - the animation duration in milliseconds
          * 
          * Returns:
          * -----------------
-         * what the function returns
-         * 
-         * 
+         * nothing - directly updates the text content of the element over time
+         * uses an easing function so the animation decelerates smoothly at the end
          * 
          */
         const start = performance.now();
@@ -866,19 +857,22 @@
 
     function animateVal(el, to, decimals, suffix, duration) {
         /**
-         * What the function does
+         * Smoothly animates an decimal value  in an element from a start value to a target value
+         * appends a unit suffix to the displayed value
          * -----------------
          * 
          * Parameters:
          * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
+         * el - HTML element whose text content will be animated
+         * to - target numeric value to animate towards
+         * decimals - number of decimal places to display
+         * suffix - unit string to append to the value e.g. "NTU", "cm" etc.
+         * duration - the animation duration in milliseconds
          * 
          * Returns:
          * -----------------
-         * what the function returns
-         * 
-         * 
+         * nothing - directly updates the text content of the element over time
+         * uses the same easing function as animateCount
          * 
          */
         const from = parseFloat(el.textContent) || 0;
@@ -893,19 +887,18 @@
 
     async function loadAlertTrend() {
         /**
-         * What the function does
+         * Fetches the alert summary and daily alert breakdwon for the current site
+         * and updates the trend arrow, weekly count, daily average and bar chart
          * -----------------
          * 
          * Parameters:
          * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
+         * null
          * 
          * Returns:
          * -----------------
-         * what the function returns
-         * 
-         * 
+         * nothing - updates the trend arrow direction and colour based on whether the alert is above, below or on track with the weekly daily average
+         * also renders/updates the daily bar chart with animated bar heights and counts.
          * 
          */
         try {
@@ -980,19 +973,17 @@
 
     function refreshHistory(btn) {
         /**
-         * What the function does
+         * Triggers a reload of the alert history and shows a spinning refresh animation 
          * -----------------
          * 
          * Parameters:
          * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
+         * btn - refresh button HTML element that was clicked
          * 
          * Returns:
          * -----------------
-         * what the function returns
-         * 
-         * 
+         * nothing - calls loadAlertHistory, spins the refresh arrow icon,
+         * shows a confirmation label for 2 seconds then hides it again 
          * 
          */
         loadAlertHistory();
@@ -1006,6 +997,21 @@
     }
 
     function updateScrollThumb() {
+        /**
+         * Calculates and updates the position and size of the custom scroll thumb
+         * in the alert history panel based on the current scroll position
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * null
+         * 
+         * Returns:
+         * -----------------
+         * nothing - updates the height and top position of the scroll thumb element
+         * so it accurately reflects how far through the panel the user has scrolled
+         * 
+         */
         const panel = document.getElementById('alert-history-panel');
         const thumb = document.getElementById('scroll-thumb');
         const track = document.querySelector('.scroll-track');
