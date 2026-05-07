@@ -474,8 +474,8 @@
         <div class="insights-panel">
             <span class="insights-header">Insights</span>
             <p class="insights-info">
-                To download a copy of Stroomloop's insights from the last 3 months,
-                click the save button below to create the document, then click the download button
+                To download a filtered copy of Stroomloop's insights,
+                select your preferences for site and timeframe. 
             </p>
             <div style="display:flex; gap:8px; justify-content:center; margin-top:12px;">
                 <select id="insight-site" class="pill-btn">
@@ -549,15 +549,10 @@
     }
 
     function downloadInsightsCSV() {
-        /**
-         * Downloads a filtered CSV of insights data based on
-         * selected site and time range.
-         */
-
         const site = document.getElementById('insight-site').value;
         const days = document.getElementById('insight-range').value;
 
-        const url = `/insights.csv?site=${site}&days=${days}`;
+        const url = `/export/insights?siteId=${site}&days=${days}`;
 
         const link = document.createElement('a');
         link.href = url;
