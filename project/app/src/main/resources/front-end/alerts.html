@@ -405,18 +405,18 @@
     }
     function formatLight(lux) {
         /**
-         * What the function does
+         * Converts a light intensity integer into a readable string
          * -----------------
          * 
          * Parameters:
          * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
+         * lux - the numerical value for light intensity
          * 
          * Returns:
          * -----------------
-         * what the function returns
-         * 
+         * a string representing the lux value
+         *   - lux/1000 + 'k lux' if lux >= 1000
+         *   - lux + 'lux' otherwise
          * 
          * 
          */
@@ -429,14 +429,12 @@
          * 
          * Parameters:
          * -----------------
-         * null
-         * 
+         * Null
          * 
          * Returns:
          * -----------------
-         * 
-         * 
-         * 
+         * Null
+         * But updates the Clock element to match the current system time
          * 
          */
         const n = new Date();
@@ -446,20 +444,22 @@
     }
     function minutesAgo(ts) {
         /**
-         * What the function does
+         * Converts a time string into a relative time 
          * -----------------
          * 
          * Parameters:
          * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
+         * ts - a time string representing a date time
          * 
          * Returns:
          * -----------------
-         * what the function returns
-         * 
-         * 
-         * 
+         * what the function returns examples
+         * - 'Just now' 
+         * - '1 min ago'
+         * - '2 mins ago'
+         * - '59 mins ago'
+         * - '1 hrs ago'
+         * - '2 hrs ago'
          */
         const diff = Math.floor((Date.now() - new Date(ts.replace(' ','T'))) / 60000);
         if (diff < 1)   return 'Just now';
@@ -470,20 +470,23 @@
     }
     function formatValue(a) {
         /**
-         * What the function does
+         * Formats a measurement value based on its metric type
          * -----------------
          * 
          * Parameters:
          * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
+         * a - an object containing the properties of a metric
+         *      contains a metrics name and value
          * 
          * Returns:
          * -----------------
-         * what the function returns
-         * 
-         * 
-         * 
+         * - 'ph'           - value with 2 decimal places
+         * - 'turbidity'    - value with 1 decimal place + " NTU"
+         * - 'conductivity' - integer value + " µS/cm"
+         * - 'temperature'  - value with 1 decimal place + "°C"
+         * - 'level'        - value with 1 decimal place + " cm"
+         * - 'light'        - formatted via formatLight()
+         * - default        - raw value
          */
         if (a.metric === 'ph')           return a.value.toFixed(2);
         if (a.metric === 'turbidity')    return a.value.toFixed(1)+' NTU';
@@ -496,19 +499,17 @@
 
     function selectSite(btn, siteId) {
         /**
-         * What the function does
+         * Selects a different site depending on which button the user presses
          * -----------------
          * 
          * Parameters:
          * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
+         * siteID - the unique identifier for each site
+         * btn - the element the user clicks to choose which site
          * 
          * Returns:
          * -----------------
-         * what the function returns
-         * 
-         * 
+         * Null
          * 
          */
         document.querySelectorAll('.site-toggle-row .site-btn').forEach(b => b.classList.remove('active'));
@@ -529,20 +530,18 @@
 
     function toggleNotifyDropdown(which) {
         /**
-         * What the function does
+         * Toggles the visibility of a notification dropdown menu
+         * while ensuring the other dropdown is closed.
          * -----------------
          * 
          * Parameters:
          * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
+         * which - A string that determines which dropdown to toggle.
+         *         Expected values:
          * 
          * Returns:
          * -----------------
-         * what the function returns
-         * 
-         * 
-         * 
+         * Null
          */
         const listId  = which === 'type' ? 'notify-type-list' : 'notify-site-list';
         const otherId = which === 'type' ? 'notify-site-list' : 'notify-type-list';
