@@ -22,6 +22,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import io.ktor.server.response.respondText
 
 @Serializable
 data class UserSession(val isOfficial: Boolean)
@@ -464,6 +465,44 @@ fun main() {
 
                     call.respond(trendData)
                 }
+            }
+            get("/export/insights") {
+                val siteId = call.request.queryParameters["siteId"]
+                val days = call.request.queryParameters["days"]?.toIntOrNull() ?: 90
+
+                if (siteId.isNullOrBlank()) {
+                    call.respond(ErrorResponse("No site ID provided."))
+                    return@get
+                }
+
+                val cutoff = latestTimestamp.minusDays(days.toLong())
+
+                val filtered = getReadingsForSite(waterReadings, siteId)
+                    .filter {
+                        LocalDateTime.parse(it.timestamp, formatter)
+                            .isAfter(cutoff)
+                    }
+
+                if (filtered.isEmpty()) {
+                    call.respond(ErrorResponse("No data for selected filters"))
+                    return@get
+                }
+
+                val csvHeader = "timestamp,siteId,ph,turbidityNtu,conductivityUsCm,waterTemperatureC,waterLevelCm,lightLux,status"
+
+                val csvRows = filtered.joinToString("\n") { r ->
+                    "${r.timestamp},${r.siteId},${r.ph},${r.turbidityNtu},${r.conductivityUsCm},${r.waterTemperatureC},${r.waterLevelCm},${r.lightLux},${r.status}"
+                }
+
+                call.response.headers.append(
+                    "Content-Disposition",
+                    "attachment; filename=insights_${siteId}_${days}days.csv"
+                )
+
+                call.respondText(
+                    text = "$csvHeader\n$csvRows",
+                    contentType = io.ktor.http.ContentType.Text.CSV
+                )
             }
         }
     }.start(wait = true)

@@ -477,11 +477,20 @@
                 To download a copy of Stroomloop's insights from the last 3 months,
                 click the save button below to create the document, then click the download button
             </p>
-            <div class="insights-actions">
-                <button class="pill-btn">
-                    <img src="images/save-icon.png" alt="save">
-                </button>
-                <button class="pill-btn">
+            <div style="display:flex; gap:8px; justify-content:center; margin-top:12px;">
+                <select id="insight-site" class="pill-btn">
+                    <option value="site_upstream">Upstream</option>
+                    <option value="site_downstream">Downstream</option>
+                    <option value="site_reservoir">Reservoir</option>
+                </select>
+
+                <select id="insight-range" class="pill-btn">
+                    <option value="7">Last 7 days</option>
+                    <option value="30">Last 30 days</option>
+                    <option value="90" selected>Last 3 months</option>
+                </select>
+
+                <button class="pill-btn" onclick="downloadInsightsCSV()">
                     <img src="images/download-icon.png" alt="download">
                 </button>
             </div>
@@ -539,6 +548,25 @@
         document.body.removeChild(link);
     }
 
+    function downloadInsightsCSV() {
+        /**
+         * Downloads a filtered CSV of insights data based on
+         * selected site and time range.
+         */
+
+        const site = document.getElementById('insight-site').value;
+        const days = document.getElementById('insight-range').value;
+
+        const url = `/insights.csv?site=${site}&days=${days}`;
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `stroomloop_insights_${site}_${days}days.csv`;
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
 
 updateClock();
 setInterval(updateClock, 1000);
