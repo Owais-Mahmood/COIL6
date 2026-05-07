@@ -382,20 +382,24 @@
     }
     function getStatusLabel(s) {
         /**
-         * What the function does
+         * Returns the status label associated with each status value
          * -----------------
          * 
          * Parameters:
          * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
+         * s - A string representing the status level.
+         *     Expected values:
+         *     - 'normal'
+         *     - 'warning'
+         *     - any other value is treated as critical
          * 
          * Returns:
          * -----------------
-         * what the function returns
-         * 
-         * 
-         * 
+         * A string representing the status to be used as a label
+         * - 'Healthy'   for 'normal'
+         * - 'Moderate' for 'warning'
+         * - 'Critical' for all other values
+         *
          */
         return s === 'normal' ? 'Healthy' : s === 'warning' ? 'Moderate' : 'Critical';
     }
