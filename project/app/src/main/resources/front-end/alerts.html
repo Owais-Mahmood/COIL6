@@ -368,6 +368,22 @@
         return lux >= 1000 ? (lux/1000).toFixed(1)+'k lux' : lux.toFixed(0)+' lux';
     }
     function updateClock() {
+        /**
+         * Updates the time to be displayed on the dashboard clock
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * null
+         * 
+         * 
+         * Returns:
+         * -----------------
+         * 
+         * 
+         * 
+         * 
+         */
         const n = new Date();
         document.getElementById('clock').textContent =
             String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+
@@ -382,6 +398,22 @@
         return h === 1 ? '1 hr ago' : h + ' hrs ago';
     }
     function formatValue(a) {
+        /**
+         * What the function does
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * a - what the parameter is 
+         * b - what this parameter is
+         * 
+         * Returns:
+         * -----------------
+         * what the function returns
+         * 
+         * 
+         * 
+         */
         if (a.metric === 'ph')           return a.value.toFixed(2);
         if (a.metric === 'turbidity')    return a.value.toFixed(1)+' NTU';
         if (a.metric === 'conductivity') return a.value.toFixed(0)+' µS/cm';
