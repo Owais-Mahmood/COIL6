@@ -384,13 +384,14 @@ fun main() {
                 val dayFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
                 val result = (6 downTo 0).map { daysAgo ->
                     val date = now.minusDays(daysAgo.toLong()).toLocalDate()
-                    val count = alerts.count { reading ->
-                        LocalDateTime.parse(reading.timestamp, formatter).plus(offset).toLocalDate() == date
-                    }
+                    val count = 
+                        alerts.count { reading ->
+                            LocalDateTime.parse(reading.timestamp, formatter).plus(offset).toLocalDate() == date
+                        }
                     DailyAlertCount(
                         day = date.dayOfWeek.name.take(3).lowercase().replaceFirstChar { it.uppercase() },
                         date = date.format(dayFormatter),
-                        count = count
+                        count = count,
                     )
                 }
                 call.respond(result)
@@ -406,15 +407,16 @@ fun main() {
 
                 val alerts = getAlertReadingsForSite(waterReadings, siteId)
 
-                val breakdown = alerts.flatMap { reading ->
-                    listOfNotNull(
-                        if (reading.ph < 6.5 || reading.ph > 8.5) "ph" else null,
-                        if (reading.turbidityNtu > 1) "turbidity" else null,
-                        if (reading.conductivityUsCm > 1700) "conductivity" else null
-                    )
-                }
-                    .groupingBy { it }
-                    .eachCount()
+                val breakdown = 
+                    alerts.flatMap { reading ->
+                        listOfNotNull(
+                            if (reading.ph < 6.5 || reading.ph > 8.5) "ph" else null,
+                            if (reading.turbidityNtu > 1) "turbidity" else null,
+                            if (reading.conductivityUsCm > 1700) "conductivity" else null,
+                        )
+                    }
+                        .groupingBy { it }
+                        .eachCount()
 
                 val top = breakdown.maxByOrNull { it.value }
 
@@ -422,8 +424,8 @@ fun main() {
                     mapOf(
                         "metric" to (top?.key ?: "none"),
                         "count" to (top?.value ?: 0),
-                        "breakdown" to breakdown
-                    )
+                        "breakdown" to breakdown,
+                    ),
                 )
             }
 
@@ -438,30 +440,33 @@ fun main() {
 
                 val days = call.request.queryParameters["days"]?.toIntOrNull()
 
-                val allSiteReadings = getReadingsForSite(waterReadings, siteId)
-                    .sortedBy { it.timestamp }
-                
-                val siteReadings = if (days != null) {
-                    val cutoff = latestTimestamp.minusDays(days.toLong())
-                    allSiteReadings.filter { LocalDateTime.parse(it.timestamp, formatter).isAfter(cutoff) }
-                } else {
-                    allSiteReadings
-}
+                val allSiteReadings = 
+                    getReadingsForSite(waterReadings, siteId)
+                        .sortedBy { it.timestamp }
+
+                val siteReadings = 
+                    if (days != null) {
+                        val cutoff = latestTimestamp.minusDays(days.toLong())
+                        allSiteReadings.filter { LocalDateTime.parse(it.timestamp, formatter).isAfter(cutoff) }
+                    } else {
+                        allSiteReadings
+                    }
 
                 if (siteReadings.isEmpty()) {
                     call.respond(ErrorResponse("No readings found for site: $siteId"))
                 } else {
-                    val trendData = siteReadings.map { reading ->
-                        TrendPoint(
-                            timestamp = LocalDateTime.parse(reading.timestamp, formatter).plus(offset).format(formatter),
-                            ph = reading.ph,
-                            turbidityNtu = reading.turbidityNtu,
-                            conductivityUsCm = reading.conductivityUsCm,
-                            waterTemperatureC = reading.waterTemperatureC,
-                            waterLevelCm = reading.waterLevelCm,
-                            lightLux = reading.lightLux
-                        )
-                    }
+                    val trendData = 
+                        siteReadings.map { reading ->
+                            TrendPoint(
+                                timestamp = LocalDateTime.parse(reading.timestamp, formatter).plus(offset).format(formatter),
+                                ph = reading.ph,
+                                turbidityNtu = reading.turbidityNtu,
+                                conductivityUsCm = reading.conductivityUsCm,
+                                waterTemperatureC = reading.waterTemperatureC,
+                                waterLevelCm = reading.waterLevelCm,
+                                lightLux = reading.lightLux,
+                            )
+                        }
 
                     call.respond(trendData)
                 }
@@ -477,11 +482,12 @@ fun main() {
 
                 val cutoff = latestTimestamp.minusDays(days.toLong())
 
-                val filtered = getReadingsForSite(waterReadings, siteId)
-                    .filter {
-                        LocalDateTime.parse(it.timestamp, formatter)
-                            .isAfter(cutoff)
-                    }
+                val filtered = 
+                    getReadingsForSite(waterReadings, siteId)
+                        .filter {
+                            LocalDateTime.parse(it.timestamp, formatter)
+                                .isAfter(cutoff)
+                        }
 
                 if (filtered.isEmpty()) {
                     call.respond(ErrorResponse("No data for selected filters"))
@@ -490,18 +496,29 @@ fun main() {
 
                 val csvHeader = "timestamp,siteId,ph,turbidityNtu,conductivityUsCm,waterTemperatureC,waterLevelCm,lightLux,status"
 
-                val csvRows = filtered.joinToString("\n") { r ->
-                    "${r.timestamp},${r.siteId},${r.ph},${r.turbidityNtu},${r.conductivityUsCm},${r.waterTemperatureC},${r.waterLevelCm},${r.lightLux},${r.status}"
-                }
+                val csvRows =
+                    filtered.joinToString("\n") { r ->
+                        listOf(
+                            r.timestamp,
+                            r.siteId,
+                            r.ph,
+                            r.turbidityNtu,
+                            r.conductivityUsCm,
+                            r.waterTemperatureC,
+                            r.waterLevelCm,
+                            r.lightLux,
+                            r.status,
+                        ).joinToString(",")
+                    }
 
                 call.response.headers.append(
                     "Content-Disposition",
-                    "attachment; filename=insights_${siteId}_${days}days.csv"
+                    "attachment; filename=insights_${siteId}_${days}days.csv",
                 )
 
                 call.respondText(
                     text = "$csvHeader\n$csvRows",
-                    contentType = io.ktor.http.ContentType.Text.CSV
+                    contentType = io.ktor.http.ContentType.Text.CSV,
                 )
             }
         }

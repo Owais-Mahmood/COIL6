@@ -82,9 +82,8 @@ fun loadWaterQualityData(filePath: String): List<WaterQualityReading> {
 // Returns only the readings that match the given site ID
 fun getReadingsForSite(
     readings: List<WaterQualityReading>,
-    siteId: String
+    siteId: String,
 ): List<WaterQualityReading> {
-
     // Normalise both sides to avoid case/whitespace mismatches
     val target = siteId.trim().lowercase()
 
@@ -99,9 +98,8 @@ fun getAlertReadings(readings: List<WaterQualityReading>): List<WaterQualityRead
 // Returns only the readings that match the given status
 fun getReadingsByStatus(
     readings: List<WaterQualityReading>,
-    status: String
+    status: String,
 ): List<WaterQualityReading> {
-
     // Normalise both sides to avoid case/whitespace mismatches
     val target = status.trim().lowercase()
 
@@ -111,9 +109,8 @@ fun getReadingsByStatus(
 // Returns only the alert readings for a given site
 fun getAlertReadingsForSite(
     readings: List<WaterQualityReading>,
-    siteId: String
+    siteId: String,
 ): List<WaterQualityReading> {
-
     // Normalise site ID before comparing
     val target = siteId.trim().lowercase()
 
@@ -125,9 +122,8 @@ fun getAlertReadingsForSite(
 // Returns the count of each alert type for a given site
 fun getAlertTypeBreakdownForSite(
     readings: List<WaterQualityReading>,
-    siteId: String
+    siteId: String,
 ): Map<String, Int> {
-
     // Normalise site ID before comparing
     val target = siteId.trim().lowercase()
     val siteReadings = readings.filter { it.siteId.trim().lowercase() == target }
@@ -135,16 +131,15 @@ fun getAlertTypeBreakdownForSite(
     return mapOf(
         "ph" to siteReadings.count { it.alertPh == 1 },
         "turbidity" to siteReadings.count { it.alertTurbidity == 1 },
-        "conductivity" to siteReadings.count { it.alertConductivity == 1 }
+        "conductivity" to siteReadings.count { it.alertConductivity == 1 },
     )
 }
 
 // Returns the latest reading for a given site
 fun getLatestReadingForSite(
     readings: List<WaterQualityReading>,
-    siteId: String
+    siteId: String,
 ): WaterQualityReading? {
-
     // Normalise site ID before comparing
     val target = siteId.trim().lowercase()
 
