@@ -18,6 +18,7 @@ dependencies {
     implementation("io.ktor:ktor-server-html-builder-jvm:3.4.1")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
+    testImplementation(kotlin("test"))
     testImplementation(libs.junit.jupiter.engine)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
