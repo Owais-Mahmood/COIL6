@@ -471,6 +471,19 @@
     * For a clarification of each functions use, parameters and return variables, check their non-official alternatives
     */
 
+    function getMetricStatus(metric, value) {
+        const t = THRESHOLDS[metric];
+        if (!t) return 'normal';
+        if ('critMin' in t) {
+            if (value < t.critMin || value > t.critMax) return 'critical';
+            if (value < t.warnMin || value > t.warnMax) return 'warning';
+        } else {
+            if (value > t.crit) return 'critical';
+            if (value > t.warn) return 'warning';
+        }
+        return 'normal';
+    }
+
 
     function getBadgeClass(status) {
         if (status === 'normal')   return 'badge-ok';
@@ -662,8 +675,9 @@
             document.getElementById('comp-unit-' + s).textContent = cfg.unit;
 
             const badge = document.getElementById('comp-badge-' + s);
-            badge.className = 'stat-badge ' + (d ? getBadgeClass(d.status) : 'badge-ok');
-            badge.textContent = d ? getStatusLabel(d.status) : '—';
+            const compStatus = d ? getMetricStatus(currentMetric, parseFloat(d[cfg.field])) : null;
+            badge.className = 'stat-badge ' + (compStatus ? getBadgeClass(compStatus) : 'badge-ok');
+            badge.textContent = compStatus ? getStatusLabel(compStatus) : '—';
 
             document.getElementById('comp-card-' + s).classList.toggle('selected', currentSite === 'site_' + s);
         });
@@ -774,7 +788,8 @@
             const values = trendData.map(d => d[cfg.field]);
 
             renderChart(seriesData, cfg);
-            updateStats(values, cfg, latestData.status);
+            const latestStatus = getMetricStatus(currentMetric, latestData[cfg.field]);
+            updateStats(values, cfg, latestStatus);
             loadComparison();
             updateTrendDirection(values, cfg);
             updateHeatmap(trendData, cfg);

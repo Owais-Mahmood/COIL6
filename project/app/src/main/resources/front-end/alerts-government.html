@@ -406,6 +406,19 @@
         return a.value;
     }
 
+    function getMetricStatus(metric, value) {
+        const t = THRESHOLDS[metric];
+        if (!t) return 'normal';
+        if ('critMin' in t) {
+            if (value < t.critMin || value > t.critMax) return 'critical';
+            if (value < t.warnMin || value > t.warnMax) return 'warning';
+        } else {
+            if (value > t.crit) return 'critical';
+            if (value > t.warn) return 'warning';
+        }
+        return 'normal';
+    }
+
     function selectSite(btn, siteId) {
         document.querySelectorAll('.site-toggle-row .site-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
@@ -465,20 +478,35 @@
 
     async function loadAlertHistory() {
         try {
-            const alerts = await fetch('/alerts/' + currentSite + '/recent').then(r => r.json());
+            const readings = await fetch('/trends/' + currentSite).then(r => r.json());
             const container = document.getElementById('alert-history-list');
             container.innerHTML = '';
             const metricMap = { ph:'pH', turbidity:'Turbidity', conductivity:'Conductivity', temperature:'Temp', level:'Level', light:'Light' };
-
+            const metricFields = [
+                { key:'ph',          field:'ph',               thKey:'ph' },
+                { key:'turbidity',   field:'turbidityNtu',      thKey:'turbidity' },
+                { key:'conductivity',field:'conductivityUsCm',  thKey:'conductivity' },
+                { key:'temperature', field:'waterTemperatureC', thKey:'waterTemp' },
+                { key:'level',       field:'waterLevelCm',      thKey:'waterLevel' },
+                { key:'light',       field:'lightLux',          thKey:'light' },
+            ];
+            const alerts = [];
+            readings.forEach(r => {
+                metricFields.forEach(m => {
+                    const val = r[m.field];
+                    const status = getMetricStatus(m.thKey, val);
+                    if (status !== 'normal') alerts.push({ timestamp: r.timestamp, metric: m.key, value: val, status });
+                });
+            });
+            alerts.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
             if (alerts.length > 0) {
                 document.getElementById('pill-last').textContent = 'Last Alert: ' + minutesAgo(alerts[0].timestamp);
             }
-
             alerts.slice(0, 15).forEach(a => {
                 const row = document.createElement('div');
-                row.className = 'alert-row' + (a.status === 'critical' ? ' crit' : a.status === 'normal' ? ' ok' : '');
+                row.className = 'alert-row' + (a.status === 'critical' ? ' crit' : '');
                 row.innerHTML = `
-                    <span class="alert-icon">${a.status === 'critical' ? '✕' : a.status === 'normal' ? '✓' : '⚠'}</span>
+                    <span class="alert-icon">${a.status === 'critical' ? '✕' : '⚠'}</span>
                     <span class="alert-metric">${metricMap[a.metric] || a.metric}</span>
                     <span class="alert-value">${formatValue(a)}</span>
                     <span class="ip-badge ${getBadgeClass(a.status)}">${getStatusLabel(a.status)}</span>
@@ -486,6 +514,9 @@
                 `;
                 container.appendChild(row);
             });
+            if (alerts.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:12px;font-size:0.78rem;color:var(--text-light);">No alert readings found</div>';
+            }
         } catch(e) { console.error(e); }
     }
 
@@ -594,74 +625,81 @@
 
     async function loadAlertTrend() {
         try {
-            const [summary, daily] = await Promise.all([
-                fetch('/alerts/' + currentSite + '/summary').then(r => r.json()),
-                fetch('/alerts/' + currentSite + '/daily').then(r => r.json())
-            ]);
+            const readings = await fetch('/trends/' + currentSite).then(r => r.json());
 
-            const weekly   = summary.weekly || 0;
-            const dayCount = summary.daily  || 0;
-            const dailyAvg = weekly / 7;
+            function isAlert(r) {
+                return getMetricStatus('ph',          r.ph)               !== 'normal' ||
+                       getMetricStatus('turbidity',   r.turbidityNtu)     !== 'normal' ||
+                       getMetricStatus('conductivity',r.conductivityUsCm) !== 'normal' ||
+                       getMetricStatus('waterTemp',   r.waterTemperatureC)!== 'normal' ||
+                       getMetricStatus('waterLevel',  r.waterLevelCm)     !== 'normal' ||
+                       getMetricStatus('light',       r.lightLux)         !== 'normal';
+            }
+
+            const byDate = {};
+            readings.forEach(r => {
+                const date = r.timestamp.split(' ')[0];
+                if (!byDate[date]) byDate[date] = 0;
+                if (isAlert(r)) byDate[date]++;
+            });
+
+            const today = new Date();
+            const daily = [];
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date(today);
+                d.setDate(today.getDate() - i);
+                const dateStr = d.toISOString().split('T')[0];
+                const dayName = i === 0 ? 'Today' : d.toLocaleDateString('en-GB', { weekday: 'short' });
+                daily.push({ date: dateStr, day: dayName, count: byDate[dateStr] || 0 });
+            }
+
+            const todayCount = daily[daily.length - 1].count;
+            const weekly     = daily.reduce((s, d) => s + d.count, 0);
+            const dailyAvg   = weekly / 7;
 
             document.getElementById('trend-week').textContent = weekly.toLocaleString();
             document.getElementById('trend-avg').textContent  = 'Daily average this week: ' + dailyAvg.toFixed(1) + ' alerts/day';
-            document.getElementById('pill-today').textContent = dayCount + ' Alerts Today';
+            document.getElementById('pill-today').textContent = todayCount + ' Alerts Today';
 
             const arrowEl = document.getElementById('trend-arrow');
             const descEl  = document.getElementById('trend-desc');
-
             arrowEl.textContent = '→';
             arrowEl.className   = 'trend-arrow';
 
-            if (dayCount > dailyAvg * 1.2) {
+            if (todayCount > dailyAvg * 1.2) {
                 arrowEl.style.transform = 'rotate(-90deg)';
                 arrowEl.style.color = '#dc2626';
-                descEl.innerHTML = '<strong>Above avg</strong> · ' + dayCount + ' alerts vs ' + dailyAvg.toFixed(1) + '/day';
-            } else if (dayCount < dailyAvg * 0.8) {
+                descEl.innerHTML = '<strong>Above avg</strong> · ' + todayCount + ' alerts vs ' + dailyAvg.toFixed(1) + '/day';
+            } else if (todayCount < dailyAvg * 0.8) {
                 arrowEl.style.transform = 'rotate(90deg)';
                 arrowEl.style.color = '#16a34a';
-                descEl.innerHTML = '<strong>Below avg</strong> · ' + dayCount + ' alerts vs ' + dailyAvg.toFixed(1) + '/day';            } else {
+                descEl.innerHTML = '<strong>Below avg</strong> · ' + todayCount + ' alerts vs ' + dailyAvg.toFixed(1) + '/day';
+            } else {
                 arrowEl.style.transform = 'rotate(0deg) translateY(-4px)';
                 arrowEl.style.color = '#d97706';
-                descEl.innerHTML = '<strong>On track</strong> · ' + dayCount + ' alerts vs ' + dailyAvg.toFixed(1) + '/day';
+                descEl.innerHTML = '<strong>On track</strong> · ' + todayCount + ' alerts vs ' + dailyAvg.toFixed(1) + '/day';
             }
 
-            const barsEl    = document.getElementById('daily-bars');
-            const maxCount  = Math.max(...daily.map(d => d.count), 1);
-            const todayDate = new Date().toISOString().split('T')[0];
-            const existing  = barsEl.querySelectorAll('.daily-bar-wrap');
-
-            if (existing.length === daily.length) {
+            const barsEl   = document.getElementById('daily-bars');
+            const maxCount = Math.max(...daily.map(d => d.count), 1);
+            barsEl.innerHTML = '';
+            daily.forEach(d => {
+                barsEl.innerHTML += `
+                    <div class="daily-bar-wrap${d.day === 'Today' ? ' today' : ''}">
+                        <span class="daily-bar-count">0</span>
+                        <div class="daily-bar" style="height:4%"></div>
+                        <span class="daily-bar-day">${d.day}</span>
+                    </div>`;
+            });
+            requestAnimationFrame(() => requestAnimationFrame(() => {
                 daily.forEach((d, i) => {
-                    const heightPct = Math.max(4, (d.count / maxCount) * 100);
-                    existing[i].querySelector('.daily-bar').style.height = heightPct + '%';
-                    const countEl = existing[i].querySelector('.daily-bar-count');
-                    animateCount(countEl, parseInt(countEl.textContent) || 0, d.count, 500);
+                    const wrap = barsEl.querySelectorAll('.daily-bar-wrap')[i];
+                    wrap.querySelector('.daily-bar').style.height = Math.max(4, (d.count / maxCount) * 100) + '%';
+                    animateCount(wrap.querySelector('.daily-bar-count'), 0, d.count, 500);
                 });
-            } else {
-                barsEl.innerHTML = '';
-                daily.forEach(d => {
-                    const isToday = d.date === todayDate;
-                    barsEl.innerHTML += `
-                        <div class="daily-bar-wrap${isToday ? ' today' : ''}">
-                            <span class="daily-bar-count">0</span>
-                            <div class="daily-bar" style="height:4%"></div>
-                            <span class="daily-bar-day">${d.day}</span>
-                        </div>`;
-                });
-                requestAnimationFrame(() => requestAnimationFrame(() => {
-                    daily.forEach((d, i) => {
-                        const heightPct = Math.max(4, (d.count / maxCount) * 100);
-                        const wrap = barsEl.querySelectorAll('.daily-bar-wrap')[i];
-                        wrap.querySelector('.daily-bar').style.height = heightPct + '%';
-                        animateCount(wrap.querySelector('.daily-bar-count'), 0, d.count, 500);
-                    });
-                }));
-            }
-
+            }));
         } catch(e) { console.error(e); }
     }
-
 
     function refreshHistory(btn) {
         loadAlertHistory();
@@ -676,13 +714,28 @@
 
     async function loadLatestCritical() {
         try {
-            const alerts = await fetch('/alerts/' + currentSite + '/recent').then(r => r.json());
+            const readings = await fetch('/trends/' + currentSite).then(r => r.json());
             const container = document.getElementById('latest-critical-content');
-            const criticals = alerts.filter(a => a.status === 'critical');
-            const todayCount = criticals.filter(a => {
-                return new Date(a.timestamp.replace(' ','T')).toDateString() === new Date().toDateString();
-            }).length;
-
+            const metricFields = [
+                { key:'ph',          field:'ph',               thKey:'ph' },
+                { key:'turbidity',   field:'turbidityNtu',      thKey:'turbidity' },
+                { key:'conductivity',field:'conductivityUsCm',  thKey:'conductivity' },
+                { key:'temperature', field:'waterTemperatureC', thKey:'waterTemp' },
+                { key:'level',       field:'waterLevelCm',      thKey:'waterLevel' },
+                { key:'light',       field:'lightLux',          thKey:'light' },
+            ];
+            const criticals = [];
+            readings.forEach(r => {
+                metricFields.forEach(m => {
+                    if (getMetricStatus(m.thKey, r[m.field]) === 'critical') {
+                        criticals.push({ timestamp: r.timestamp, metric: m.key, value: r[m.field], status: 'critical' });
+                    }
+                });
+            });
+            criticals.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+            const todayCount = criticals.filter(a =>
+                new Date(a.timestamp.replace(' ','T')).toDateString() === new Date().toDateString()
+            ).length;
             if (criticals.length === 0) {
                 container.innerHTML = `
                     <div style="text-align:center;padding:16px 0;">
@@ -691,7 +744,6 @@
                     </div>`;
                 return;
             }
-
             const a = criticals[0];
             const metricMap = { ph:'pH', turbidity:'Turbidity', conductivity:'Conductivity', temperature:'Water Temp', level:'Water Level', light:'Light' };
             container.innerHTML = `

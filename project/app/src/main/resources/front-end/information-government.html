@@ -1011,48 +1011,40 @@
     }
 
     async function loadSiteAlerts() {
-        /**
-         * Fetches total readings, total alerts and latest status for each site
-         * also updates the 'monitoring siters' section of the page
-         * -----------------
-         * 
-         * Parameters:
-         * -----------------
-         * null
-         * 
-         * Returns:
-         * -----------------
-         * nothing - updates total readings, total alerts, alert rate and status badge for each site box
-         * 
-         */
         const sites = [
-            {id: "site_upstream", prefix: "upstream"},
+            {id: "site_upstream",   prefix: "upstream"},
             {id: "site_downstream", prefix: "downstream"},
-            {id: "site_reservoir", prefix: "reservoir"}
-        ]
+            {id: "site_reservoir",  prefix: "reservoir"}
+        ];
 
-        for (const site of sites){
-            const latest_res = await fetch(`/latest/${site.id}`)
-            const latest_d = await latest_res.json()
+        for (const site of sites) {
+            const [latest_d, readings_d, alerts_d] = await Promise.all([
+                fetch(`/latest/${site.id}`).then(r => r.json()),
+                fetch(`/site/${site.id}`).then(r => r.json()),
+                fetch(`/alerts/${site.id}`).then(r => r.json())
+            ]);
 
-            const readings_res = await fetch(`/site/${site.id}`)
-            const readings_d = await readings_res.json()
+            const metricStatuses = [
+                getMetricStatus('ph',          latest_d.ph),
+                getMetricStatus('turbidity',   latest_d.turbidityNtu),
+                getMetricStatus('conductivity',latest_d.conductivityUsCm),
+                getMetricStatus('waterTemp',   latest_d.waterTemperatureC),
+                getMetricStatus('waterLevel',  latest_d.waterLevelCm),
+                getMetricStatus('light',       latest_d.lightLux),
+            ];
+            const status = metricStatuses.includes('critical') ? 'critical'
+                         : metricStatuses.includes('warning')  ? 'warning'
+                         : 'normal';
 
-            const alerts_res = await fetch(`/alerts/${site.id}/summary`)
-            const alerts_d = await alerts_res.json()
+            const badgeClass = status === 'normal' ? 'badge-ok' : status === 'warning' ? 'badge-warn' : 'badge-crit';
+            const label = status.charAt(0).toUpperCase() + status.slice(1);
 
-            const status = latest_d.status
-            const badgeClass = status === 'normal' ? 'badge-ok' : status === 'warning' ? 'badge-warn' : 'badge-crit'
-            const label = status.charAt(0).toUpperCase() + status.slice(1)
-
-            document.getElementById(`${site.prefix}-status-badge`).className = `stat-badge ${badgeClass}`
-            document.getElementById(`${site.prefix}-status-badge`).textContent = label
-            document.getElementById(`${site.prefix}-total-readings`).textContent = readings_d.count
-            document.getElementById(`${site.prefix}-total-alerts`).textContent = alerts_d.total
-
-            const alertRate = ((alerts_d.total / readings_d.count) * 100).toFixed(1)
-            document.getElementById(`${site.prefix}-alert-rate`).textContent = alertRate + "%"
-
+            document.getElementById(`${site.prefix}-status-badge`).className = `stat-badge ${badgeClass}`;
+            document.getElementById(`${site.prefix}-status-badge`).textContent = label;
+            document.getElementById(`${site.prefix}-total-readings`).textContent = readings_d.count;
+            document.getElementById(`${site.prefix}-total-alerts`).textContent = alerts_d.count;
+            document.getElementById(`${site.prefix}-alert-rate`).textContent =
+                ((alerts_d.count / readings_d.count) * 100).toFixed(1) + '%';
         }
     }
 
