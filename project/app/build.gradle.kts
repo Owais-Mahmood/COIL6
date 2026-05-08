@@ -17,6 +17,8 @@ dependencies {
     implementation("io.ktor:ktor-server-sessions-jvm:3.4.1")
     implementation("io.ktor:ktor-server-html-builder-jvm:3.4.1")
 
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json")
+
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation(kotlin("test"))
     testImplementation(libs.junit.jupiter.engine)

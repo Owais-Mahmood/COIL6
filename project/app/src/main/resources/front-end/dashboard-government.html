@@ -711,6 +711,11 @@
     let currentSite = 'site_upstream';
     let lastRefreshTime = null;
 
+    /**
+    * All functions on this page are duplicates of their respective non-official access versions.
+    * For a clarification of each functions use, parameters and return variables, check their non-official alternatives
+    */
+
     function updateStaleness() {
         if (!lastRefreshTime) return;
         const secs = Math.floor((Date.now() - lastRefreshTime) / 1000);
