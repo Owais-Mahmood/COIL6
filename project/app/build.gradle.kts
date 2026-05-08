@@ -21,6 +21,8 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation(libs.junit.jupiter.engine)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("io.ktor:ktor-server-test-host-jvm:3.4.1")
+    testImplementation("io.ktor:ktor-client-content-negotiation-jvm:3.4.1")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
