@@ -11,6 +11,9 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertContains
 
 class IntegrationTests {
     // same helper as unit tests so I don't have to fill every field each time
