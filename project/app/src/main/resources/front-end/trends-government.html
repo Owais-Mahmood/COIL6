@@ -317,7 +317,7 @@
 
     <nav class="navbar">
         <div style="display:flex; flex-direction:column; align-items:flex-start; gap:8px;">
-            <img src="images/stroomloop.png" width="200">
+            <img src="images/stroomloop.png" alt="Stroomloop Logo" width="200">
             <span class="official-badge" style="position: relative; top: -13px;">Official Access</span>
         </div>
         <div class="nav-pills">
@@ -464,6 +464,13 @@
         waterLevel:   { label: 'Water Level',  field: 'waterLevelCm',      unit: 'cm',    safeMin: THRESHOLDS.waterLevel.warnMin, safeMax: THRESHOLDS.waterLevel.warnMax,decimals: 1, color: '#0d9488' },
         light:        { label: 'Light',        field: 'lightLux',          unit: 'lux',   safeMin: null,                          safeMax: null,                         decimals: 0, color: '#eab308' }
     };
+
+
+    /**
+    * All functions on this page are duplicates of their respective non-official access versions.
+    * For a clarification of each functions use, parameters and return variables, check their non-official alternatives
+    */
+
 
     function getBadgeClass(status) {
         if (status === 'normal')   return 'badge-ok';

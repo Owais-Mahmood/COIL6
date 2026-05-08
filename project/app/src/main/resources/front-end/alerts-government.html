@@ -236,7 +236,7 @@
 
     <nav class="navbar">
         <div style="display:flex; flex-direction:column; align-items:flex-start; gap:8px;">
-            <img src="images/stroomloop.png" width="200">
+            <img src="images/stroomloop.png" alt="Stroomloop Logo" width="200">
             <span class="official-badge" style="position: relative; top: -13px;">Official Access</span>
         </div>
         <div class="nav-pills">
@@ -368,109 +368,27 @@
 <script>
     let currentSite = 'site_upstream';
 
+    /**
+    * All functions on this page are duplicates of their respective non-official access versions.
+    * For a clarification of each functions use, parameters and return variables, check their non-official alternatives
+    */
+
     function getBadgeClass(s) {
-        /**
-         * Returns the CSS badge class associated with a status value.
-         * -----------------
-         * 
-         * Parameters:
-         * -----------------
-         * s - A string representing the status level.
-         *     Expected values:
-         *     - 'normal'
-         *     - 'warning'
-         *     - any other value is treated as critical
-         * 
-         * Returns:
-         * -----------------
-         * A string containing the corresponding CSS class:
-         * - 'badge-ok'   for 'normal'
-         * - 'badge-warn' for 'warning'
-         * - 'badge-crit' for all other values
-         */
         return s === 'normal' ? 'badge-ok' : s === 'warning' ? 'badge-warn' : 'badge-crit';
     }
     function getStatusLabel(s) {
-        /**
-         * Returns the status label associated with each status value
-         * -----------------
-         * 
-         * Parameters:
-         * -----------------
-         * s - A string representing the status level.
-         *     Expected values:
-         *     - 'normal'
-         *     - 'warning'
-         *     - any other value is treated as critical
-         * 
-         * Returns:
-         * -----------------
-         * A string representing the status to be used as a label
-         * - 'Healthy'   for 'normal'
-         * - 'Moderate' for 'warning'
-         * - 'Critical' for all other values
-         *
-         */
         return s === 'normal' ? 'Healthy' : s === 'warning' ? 'Moderate' : 'Critical';
     }
     function formatLight(lux) {
-        /**
-         * Converts a light intensity integer into a readable string
-         * -----------------
-         * 
-         * Parameters:
-         * -----------------
-         * lux - the numerical value for light intensity
-         * 
-         * Returns:
-         * -----------------
-         * a string representing the lux value
-         *   - lux/1000 + 'k lux' if lux >= 1000
-         *   - lux + 'lux' otherwise
-         * 
-         * 
-         */
         return lux >= 1000 ? (lux/1000).toFixed(1)+'k lux' : lux.toFixed(0)+' lux';
     }
     function updateClock() {
-        /**
-         * Updates the time to be displayed on the dashboard clock
-         * -----------------
-         * 
-         * Parameters:
-         * -----------------
-         * Null
-         * 
-         * Returns:
-         * -----------------
-         * Null
-         * But updates the Clock element to match the current system time
-         * 
-         */
         const n = new Date();
         document.getElementById('clock').textContent =
             String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+
             ' · '+String(n.getDate()).padStart(2,'0')+'/'+String(n.getMonth()+1).padStart(2,'0')+'/'+n.getFullYear();
     }
     function minutesAgo(ts) {
-        /**
-         * Converts a time string into a relative time 
-         * -----------------
-         * 
-         * Parameters:
-         * -----------------
-         * ts - a time string representing a date time
-         * 
-         * Returns:
-         * -----------------
-         * what the function returns examples
-         * - 'Just now' 
-         * - '1 min ago'
-         * - '2 mins ago'
-         * - '59 mins ago'
-         * - '1 hrs ago'
-         * - '2 hrs ago'
-         */
         const diff = Math.floor((Date.now() - new Date(ts.replace(' ','T'))) / 60000);
         if (diff < 1)   return 'Just now';
         if (diff === 1) return '1 min ago';
@@ -479,25 +397,6 @@
         return h === 1 ? '1 hr ago' : h + ' hrs ago';
     }
     function formatValue(a) {
-        /**
-         * Formats a measurement value based on its metric type
-         * -----------------
-         * 
-         * Parameters:
-         * -----------------
-         * a - an object containing the properties of a metric
-         *      contains a metrics name and value
-         * 
-         * Returns:
-         * -----------------
-         * - 'ph'           - value with 2 decimal places
-         * - 'turbidity'    - value with 1 decimal place + " NTU"
-         * - 'conductivity' - integer value + " µS/cm"
-         * - 'temperature'  - value with 1 decimal place + "°C"
-         * - 'level'        - value with 1 decimal place + " cm"
-         * - 'light'        - formatted via formatLight()
-         * - default        - raw value
-         */
         if (a.metric === 'ph')           return a.value.toFixed(2);
         if (a.metric === 'turbidity')    return a.value.toFixed(1)+' NTU';
         if (a.metric === 'conductivity') return a.value.toFixed(0)+' µS/cm';
@@ -508,20 +407,6 @@
     }
 
     function selectSite(btn, siteId) {
-        /**
-         * Selects a different site depending on which button the user presses
-         * -----------------
-         * 
-         * Parameters:
-         * -----------------
-         * siteID - the unique identifier for each site
-         * btn - the element the user clicks to choose which site
-         * 
-         * Returns:
-         * -----------------
-         * Null
-         * 
-         */
         document.querySelectorAll('.site-toggle-row .site-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         currentSite = siteId;
@@ -539,20 +424,6 @@
     });
 
     function toggleNotifyDropdown(which) {
-        /**
-         * Toggles the visibility of a notification dropdown menu
-         * while ensuring the other dropdown is closed.
-         * -----------------
-         * 
-         * Parameters:
-         * -----------------
-         * which - A string that determines which dropdown to toggle.
-         *         Expected values:
-         * 
-         * Returns:
-         * -----------------
-         * Null
-         */
         const listId  = which === 'type' ? 'notify-type-list' : 'notify-site-list';
         const otherId = which === 'type' ? 'notify-site-list' : 'notify-type-list';
         document.getElementById(otherId).classList.remove('open');
@@ -560,22 +431,6 @@
     }
 
     function selectNotifyType(val, label) {
-        /**
-         * What the function does
-         * -----------------
-         * 
-         * Parameters:
-         * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
-         * 
-         * Returns:
-         * -----------------
-         * what the function returns
-         * 
-         * 
-         * 
-         */
         document.querySelector('#notify-type-dropdown .dropdown-btn').textContent = label;
         document.querySelectorAll('#notify-type-list .dropdown-item').forEach(i => i.classList.remove('active'));
         event.target.classList.add('active');
@@ -583,22 +438,6 @@
     }
 
     function selectNotifySite(val, label) {
-        /**
-         * What the function does
-         * -----------------
-         * 
-         * Parameters:
-         * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
-         * 
-         * Returns:
-         * -----------------
-         * what the function returns
-         * 
-         * 
-         * 
-         */
         document.querySelector('#notify-site-dropdown .dropdown-btn').textContent = label;
         document.querySelectorAll('#notify-site-list .dropdown-item').forEach(i => i.classList.remove('active'));
         event.target.classList.add('active');
@@ -606,22 +445,6 @@
     }
 
     function handleNotifySubmit() {
-        /**
-         * What the function does
-         * -----------------
-         * 
-         * Parameters:
-         * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
-         * 
-         * Returns:
-         * -----------------
-         * what the function returns
-         * 
-         * 
-         * 
-         */
         const email = document.getElementById('notify-email').value.trim();
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
         if (!email || !emailRegex.test(email)) {
@@ -635,44 +458,12 @@
     }
 
     function handleReport() {
-        /**
-         * What the function does
-         * -----------------
-         * 
-         * Parameters:
-         * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
-         * 
-         * Returns:
-         * -----------------
-         * what the function returns
-         * 
-         * 
-         * 
-         */
         const c = document.getElementById('report-confirm');
         c.style.display = 'block';
         setTimeout(() => { c.style.display = 'none'; }, 4000);
     }
 
     async function loadAlertHistory() {
-        /**
-         * What the function does
-         * -----------------
-         * 
-         * Parameters:
-         * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
-         * 
-         * Returns:
-         * -----------------
-         * what the function returns
-         * 
-         * 
-         * 
-         */
         try {
             const alerts = await fetch('/alerts/' + currentSite + '/recent').then(r => r.json());
             const container = document.getElementById('alert-history-list');
@@ -699,22 +490,6 @@
     }
 
     async function loadActiveAlerts() {
-        /**
-         * What the function does
-         * -----------------
-         * 
-         * Parameters:
-         * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
-         * 
-         * Returns:
-         * -----------------
-         * what the function returns
-         * 
-         * 
-         * 
-         */
         try {
             const d = await fetch('/latest/' + currentSite).then(r => r.json());
             const container = document.getElementById('active-alerts-rows');
@@ -748,22 +523,6 @@
     }
 
     async function loadWhatToDo() {
-        /**
-         * What the function does
-         * -----------------
-         * 
-         * Parameters:
-         * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
-         * 
-         * Returns:
-         * -----------------
-         * what the function returns
-         * 
-         * 
-         * 
-         */
         try {
             const d = await fetch('/latest/' + currentSite).then(r => r.json());
             const container = document.getElementById('wtd-rows');
@@ -812,22 +571,6 @@
     }
 
     function animateCount(el, from, to, duration) {
-        /**
-         * What the function does
-         * -----------------
-         * 
-         * Parameters:
-         * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
-         * 
-         * Returns:
-         * -----------------
-         * what the function returns
-         * 
-         * 
-         * 
-         */
         const start = performance.now();
         function step(now) {
             const t = Math.min((now - start) / duration, 1);
@@ -839,22 +582,6 @@
     }
 
     function animateVal(el, to, decimals, suffix, duration) {
-        /**
-         * What the function does
-         * -----------------
-         * 
-         * Parameters:
-         * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
-         * 
-         * Returns:
-         * -----------------
-         * what the function returns
-         * 
-         * 
-         * 
-         */
         const from = parseFloat(el.textContent) || 0;
         const start = performance.now();
         (function step(now) {
@@ -866,22 +593,6 @@
     }
 
     async function loadAlertTrend() {
-        /**
-         * What the function does
-         * -----------------
-         * 
-         * Parameters:
-         * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
-         * 
-         * Returns:
-         * -----------------
-         * what the function returns
-         * 
-         * 
-         * 
-         */
         try {
             const [summary, daily] = await Promise.all([
                 fetch('/alerts/' + currentSite + '/summary').then(r => r.json()),
@@ -953,22 +664,6 @@
 
 
     function refreshHistory(btn) {
-        /**
-         * What the function does
-         * -----------------
-         * 
-         * Parameters:
-         * -----------------
-         * a - what the parameter is 
-         * b - what this parameter is
-         * 
-         * Returns:
-         * -----------------
-         * what the function returns
-         * 
-         * 
-         * 
-         */
         loadAlertHistory();
         const label = document.getElementById('refresh-label');
         const arrow = document.getElementById('refresh-arrow');
