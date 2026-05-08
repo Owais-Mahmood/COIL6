@@ -705,6 +705,7 @@
     </div>
 </div>
 
+<script src="thresholds.js"></script>
 <script>
 
     let donutData = { normal: 0, warning: 0, critical: 0 };
@@ -788,7 +789,18 @@
                 sites.map(s => fetch('/latest/' + s).then(r => r.json()))
             );
             const counts = { normal: 0, warning: 0, critical: 0 };
-            results.forEach(d => { if (counts[d.status] !== undefined) counts[d.status]++; });
+            results.forEach(d => {
+                const s = [
+                    getMetricStatus('ph', d.ph),
+                    getMetricStatus('turbidity', d.turbidityNtu),
+                    getMetricStatus('conductivity', d.conductivityUsCm),
+                    getMetricStatus('waterTemp', d.waterTemperatureC),
+                    getMetricStatus('waterLevel', d.waterLevelCm),
+                    getMetricStatus('light', d.lightLux)
+                ];
+                const computed = s.includes('critical') ? 'critical' : s.includes('warning') ? 'warning' : 'normal';
+                counts[computed]++;
+            });
 
             const pillHealthy  = document.getElementById('pill-healthy');
             const pillModerate = document.getElementById('pill-moderate');
@@ -808,7 +820,17 @@
                 critical: { fill: '#ef4444', glow: 'rgba(239,68,68,0.2)'  }
             };
             ['upstream', 'downstream', 'reservoir'].forEach((key, i) => {
-                const c = dotColors[results[i].status] || dotColors.normal;
+                const d = results[i];
+                const s = [
+                    getMetricStatus('ph', d.ph),
+                    getMetricStatus('turbidity', d.turbidityNtu),
+                    getMetricStatus('conductivity', d.conductivityUsCm),
+                    getMetricStatus('waterTemp', d.waterTemperatureC),
+                    getMetricStatus('waterLevel', d.waterLevelCm),
+                    getMetricStatus('light', d.lightLux)
+                ];
+                const dotStatus = s.includes('critical') ? 'critical' : s.includes('warning') ? 'warning' : 'normal';
+                const c = dotColors[dotStatus] || dotColors.normal;
                 document.getElementById('dot-'      + key).setAttribute('fill', c.fill);
                 document.getElementById('dot-glow-' + key).setAttribute('fill', c.glow);
             });
@@ -965,12 +987,19 @@
             document.getElementById('val-level').textContent = d.waterLevelCm.toFixed(1) + ' cm';
             document.getElementById('val-light').textContent = formatLight(d.lightLux);
 
-            const badgeClass  = getBadgeClass(d.status);
-            const statusLabel = getStatusLabel(d.status);
-            ['ph', 'turb', 'cond', 'temp', 'level', 'light'].forEach(key => {
-                const badge = document.getElementById('badge-' + key);
-                badge.className   = 'ip-badge ' + badgeClass;
-                badge.textContent = statusLabel;
+            const metrics = [
+                { key: 'ph',    metric: 'ph',          value: d.ph },
+                { key: 'turb',  metric: 'turbidity',   value: d.turbidityNtu },
+                { key: 'cond',  metric: 'conductivity',value: d.conductivityUsCm },
+                { key: 'temp',  metric: 'waterTemp',   value: d.waterTemperatureC },
+                { key: 'level', metric: 'waterLevel',  value: d.waterLevelCm },
+                { key: 'light', metric: 'light',       value: d.lightLux }
+            ];
+            metrics.forEach(({ key, metric, value }) => {
+                const status = getMetricStatus(metric, value);
+                const badge  = document.getElementById('badge-' + key);
+                badge.className   = 'ip-badge ' + getBadgeClass(status);
+                badge.textContent = getStatusLabel(status);
             });
 
             document.getElementById('ao-total').textContent      = breakdown.total.toLocaleString();
@@ -992,12 +1021,22 @@
             const sub   = document.getElementById('verdict-sub');
             const icon  = document.getElementById('verdict-icon');
 
-            if (d.status === 'normal') {
+            const metricStatuses = [
+                getMetricStatus('ph', d.ph),
+                getMetricStatus('turbidity', d.turbidityNtu),
+                getMetricStatus('conductivity', d.conductivityUsCm),
+                getMetricStatus('waterTemp', d.waterTemperatureC),
+                getMetricStatus('waterLevel', d.waterLevelCm),
+                getMetricStatus('light', d.lightLux)
+            ];
+            const overallStatus = metricStatuses.includes('critical') ? 'critical' : metricStatuses.includes('warning') ? 'warning' : 'normal';
+
+            if (overallStatus === 'normal') {
                 strip.className   = 'verdict-strip v-safe';
                 icon.textContent  = '✓';
                 title.textContent = 'Water at this site is currently safe to use';
                 sub.textContent   = 'All monitored parameters are within acceptable limits';
-            } else if (d.status === 'warning') {
+            } else if (overallStatus === 'warning') {
                 strip.className   = 'verdict-strip v-warn';
                 icon.textContent  = '⚠';
                 title.textContent = 'Water at this site has moderate concerns, please use with caution';
@@ -1022,6 +1061,34 @@
 
         } catch (e) {
             console.error('Error loading dashboard data', e);
+        }
+    }
+
+    function getMetricStatus(metric, value) {
+        if (metric === 'ph') {
+            if (value < THRESHOLDS.ph.critMin || value > THRESHOLDS.ph.critMax) return 'critical';
+            if (value < THRESHOLDS.ph.warnMin || value > THRESHOLDS.ph.warnMax) return 'warning';
+            return 'normal';
+        } else if (metric === 'turbidity') {
+            if (value > THRESHOLDS.turbidity.crit) return 'critical';
+            if (value > THRESHOLDS.turbidity.warn) return 'warning';
+            return 'normal';
+        } else if (metric === 'conductivity') {
+            if (value > THRESHOLDS.conductivity.crit) return 'critical';
+            if (value > THRESHOLDS.conductivity.warn) return 'warning';
+            return 'normal';
+        } else if (metric === 'waterTemp') {
+            if (value < THRESHOLDS.waterTemp.critMin || value > THRESHOLDS.waterTemp.critMax) return 'critical';
+            if (value < THRESHOLDS.waterTemp.warnMin || value > THRESHOLDS.waterTemp.warnMax) return 'warning';
+            return 'normal';
+        } else if (metric === 'waterLevel') {
+            if (value < THRESHOLDS.waterLevel.critMin || value > THRESHOLDS.waterLevel.critMax) return 'critical';
+            if (value < THRESHOLDS.waterLevel.warnMin || value > THRESHOLDS.waterLevel.warnMax) return 'warning';
+            return 'normal';
+        } else if (metric === 'light') {
+            if (value > THRESHOLDS.light.crit) return 'critical';
+            if (value > THRESHOLDS.light.warn) return 'warning';
+            return 'normal';
         }
     }
 
@@ -1069,10 +1136,10 @@
             const keys  = ['upstream', 'downstream', 'reservoir'];
 
             const results = await Promise.all(
-                sites.map(s => fetch('/alerts/' + s + '/summary').then(r => r.json()))
+                sites.map(s => fetch('/alerts/' + s).then(r => r.json()))
             );
 
-            const counts = results.map(d => d.daily || 0);
+            const counts = results.map(d => d.count || 0);
             const total  = counts.reduce((a, b) => a + b, 0);
             const max    = Math.max(...counts, 1);
 

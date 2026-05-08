@@ -1006,19 +1006,27 @@
             const readings_res = await fetch(`/site/${site.id}`)
             const readings_d = await readings_res.json()
 
-            const alerts_res = await fetch(`/alerts/${site.id}/summary`)
+            const alerts_res = await fetch(`/alerts/${site.id}`)
             const alerts_d = await alerts_res.json()
 
-            const status = latest_d.status
-            const badgeClass = status === 'normal' ? 'badge-ok' : status === 'warning' ? 'badge-warn' : 'badge-crit'
-            const label = status.charAt(0).toUpperCase() + status.slice(1)
+            const metrics = [
+                getMetricStatus('ph', latest_d.ph),
+                getMetricStatus('turbidity', latest_d.turbidityNtu),
+                getMetricStatus('conductivity', latest_d.conductivityUsCm),
+                getMetricStatus('waterTemp', latest_d.waterTemperatureC),
+                getMetricStatus('waterLevel', latest_d.waterLevelCm),
+                getMetricStatus('light', latest_d.lightLux)
+            ];
+            const status = metrics.includes('critical') ? 'critical' : metrics.includes('warning') ? 'warning' : 'normal';
+            const badgeClass = status === 'normal' ? 'badge-ok' : status === 'warning' ? 'badge-warn' : 'badge-crit';
+            const label = status === 'normal' ? 'Healthy' : status === 'warning' ? 'Moderate' : 'Critical';
 
             document.getElementById(`${site.prefix}-status-badge`).className = `stat-badge ${badgeClass}`
             document.getElementById(`${site.prefix}-status-badge`).textContent = label
             document.getElementById(`${site.prefix}-total-readings`).textContent = readings_d.count
-            document.getElementById(`${site.prefix}-total-alerts`).textContent = alerts_d.total
+            document.getElementById(`${site.prefix}-total-alerts`).textContent = alerts_d.count
 
-            const alertRate = ((alerts_d.total / readings_d.count) * 100).toFixed(1)
+            const alertRate = ((alerts_d.count / readings_d.count) * 100).toFixed(1)
             document.getElementById(`${site.prefix}-alert-rate`).textContent = alertRate + "%"
 
         }
