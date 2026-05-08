@@ -15,6 +15,7 @@ import kotlin.test.assertContains
 
 class IntegrationTests {
 
+    // same helper as unit tests so I don't have to fill every field each time
     private fun makeReading(
         siteId: String = "site_upstream",
         status: String = "normal",
@@ -43,6 +44,7 @@ class IntegrationTests {
         wxRainMmHr = 0.0
     )
 
+    // set up a mini app with test data so we don't need the real CSV
     private fun ApplicationTestBuilder.setupApp(readings: List<WaterQualityReading>) {
         application {
             install(ContentNegotiation) { json() }
@@ -82,8 +84,7 @@ class IntegrationTests {
         }
     }
 
-    // --- integration tests ---
-
+    // tests for the main API endpoints
     @Test
     fun `alerts endpoint returns 200`() = testApplication {
         setupApp(listOf(makeReading(alertTriggered = 1), makeReading(alertTriggered = 0)))
@@ -134,8 +135,7 @@ class IntegrationTests {
         assertContains(response.bodyAsText(), "2")
     }
 
-    // --- security tests ---
-
+    // check the API doesn't crash on weird or malicious inputs
     @Test
     fun `alerts endpoint handles unknown site gracefully`() = testApplication {
         setupApp(listOf(makeReading(siteId = "site_upstream")))
