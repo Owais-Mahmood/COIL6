@@ -526,7 +526,23 @@
 
     let currentSite = "site_upstream"
 
+
+    
     function setSite(site) {
+        /**
+         * Changes the selected site based on the users button input
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * site - the current selected site
+         * btn - an element that lets the user change the set site
+         * 
+         * Returns:
+         * -----------------
+         * Null
+         * 
+         */
         currentSite = site
 
         document.querySelectorAll('.site-btn').forEach(btn => {
@@ -534,6 +550,20 @@
     }
 
     function updateClock() {
+        /**
+         * Updates the time to be displayed on the dashboard clock
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * Null
+         * 
+         * Returns:
+         * -----------------
+         * Null
+         * But updates the Clock element to match the current system time
+         * 
+         */
         const now  = new Date();
 
         const hh   = String(now.getHours()).padStart(2, '0');
@@ -546,6 +576,19 @@
     }
 
     function downloadCSV() {
+        /**
+         * Downloads a full copy of the data set in the users browser
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * Null
+         * 
+         * Returns:
+         * -----------------
+         * Null
+         * 
+         */
         const link = document.createElement('a');
         link.href = '/wq.csv';
         link.download = 'wq.csv';
@@ -556,6 +599,21 @@
     }
 
     function downloadInsightsCSV() {
+        /**
+         * Downloads a selected copy of the data set in the users browser
+         * -----------------
+         * 
+         * Parameters:
+         * -----------------
+         * Null, but is dependant on
+         * insight-site - the user selected data site
+         * insight-range - the user selected date range
+         * 
+         * Returns:
+         * -----------------
+         * Null
+         * 
+         */
         const site = document.getElementById('insight-site').value;
         const days = document.getElementById('insight-range').value;
 
