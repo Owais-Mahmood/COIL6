@@ -1,8 +1,5 @@
 package backend
 
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import kotlinx.serialization.Serializable
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
@@ -21,6 +18,9 @@ import io.ktor.server.sessions.clear
 import io.ktor.server.sessions.cookie
 import io.ktor.server.sessions.sessions
 import io.ktor.server.sessions.set
+import kotlinx.serialization.Serializable
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Serializable
 data class UserSession(val isOfficial: Boolean)
