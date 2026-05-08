@@ -1,4 +1,8 @@
 package backend
+
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import kotlinx.serialization.Serializable
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
@@ -12,10 +16,11 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
-import io.ktor.server.sessions.*
-import kotlinx.serialization.Serializable
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import io.ktor.server.sessions.Sessions
+import io.ktor.server.sessions.clear
+import io.ktor.server.sessions.cookie
+import io.ktor.server.sessions.sessions
+import io.ktor.server.sessions.set
 
 @Serializable
 data class UserSession(val isOfficial: Boolean)
@@ -159,7 +164,7 @@ fun main() {
             }
 
             get("/logout") {
-                call.sessions.clear<UserSession>()
+                call.sessions.clear("user_session")
                 call.respondRedirect("/login.html")
             }
 
