@@ -20,15 +20,23 @@ data class WaterQualityReading(
     val alertConductivity: Int,
     val wxTempC: Double,
     val wxRhPct: Double,
-    val wxRainMmHr: Double
+    val wxRainMmHr: Double,
 )
 
 // If a value can't be parsed, use a default instead of crashing
-fun safeDouble(value: String, fieldName: String, lineNumber: Int): Double {
+fun safeDouble(
+    value: String,
+    fieldName: String,
+    lineNumber: Int,
+): Double {
     return value.toDoubleOrNull() ?: 0.0
 }
 
-fun safeInt(value: String, fieldName: String, lineNumber: Int): Int {
+fun safeInt(
+    value: String,
+    fieldName: String,
+    lineNumber: Int,
+): Int {
     return value.toIntOrNull() ?: 0
 }
 
@@ -53,25 +61,26 @@ fun loadWaterQualityData(filePath: String): List<WaterQualityReading> {
         }
 
         // Create a reading object from the row
-        val reading = WaterQualityReading(
-            timestamp = row[0],
-            siteId = row[1],
-            ph = safeDouble(row[2], "ph", lineNumber),
-            turbidityNtu = safeDouble(row[3], "turbidity_ntu", lineNumber),
-            conductivityUsCm = safeDouble(row[4], "conductivity_uS_cm", lineNumber),
-            waterTemperatureC = safeDouble(row[5], "water_temperature_c", lineNumber),
-            waterLevelCm = safeDouble(row[6], "water_level_cm", lineNumber),
-            lightLux = safeDouble(row[7], "light_lux", lineNumber),
-            status = row[8],
-            alertTriggered = safeInt(row[9], "alert_triggered", lineNumber),
-            alertPh = safeInt(row[10], "alert_ph", lineNumber),
-            alertTurbidity = safeInt(row[11], "alert_turbidity", lineNumber),
-            alertTurbidityCrit = safeInt(row[12], "alert_turbidity_crit", lineNumber),
-            alertConductivity = safeInt(row[13], "alert_conductivity", lineNumber),
-            wxTempC = safeDouble(row[14], "wx_temp_c", lineNumber),
-            wxRhPct = safeDouble(row[15], "wx_rh_pct", lineNumber),
-            wxRainMmHr = safeDouble(row[16], "wx_rain_mm_hr", lineNumber)
-        )
+        val reading =
+            WaterQualityReading(
+                timestamp = row[0],
+                siteId = row[1],
+                ph = safeDouble(row[2], "ph", lineNumber),
+                turbidityNtu = safeDouble(row[3], "turbidity_ntu", lineNumber),
+                conductivityUsCm = safeDouble(row[4], "conductivity_uS_cm", lineNumber),
+                waterTemperatureC = safeDouble(row[5], "water_temperature_c", lineNumber),
+                waterLevelCm = safeDouble(row[6], "water_level_cm", lineNumber),
+                lightLux = safeDouble(row[7], "light_lux", lineNumber),
+                status = row[8],
+                alertTriggered = safeInt(row[9], "alert_triggered", lineNumber),
+                alertPh = safeInt(row[10], "alert_ph", lineNumber),
+                alertTurbidity = safeInt(row[11], "alert_turbidity", lineNumber),
+                alertTurbidityCrit = safeInt(row[12], "alert_turbidity_crit", lineNumber),
+                alertConductivity = safeInt(row[13], "alert_conductivity", lineNumber),
+                wxTempC = safeDouble(row[14], "wx_temp_c", lineNumber),
+                wxRhPct = safeDouble(row[15], "wx_rh_pct", lineNumber),
+                wxRainMmHr = safeDouble(row[16], "wx_rain_mm_hr", lineNumber),
+            )
 
         readings.add(reading)
     }

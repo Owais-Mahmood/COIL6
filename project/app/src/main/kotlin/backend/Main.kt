@@ -1,28 +1,21 @@
 package backend
-import backend.getAlertReadings
-import backend.getAlertReadingsForSite
-import backend.getAlertTypeBreakdownForSite
-import backend.getLatestReadingForSite
-import backend.getReadingsByStatus
-import backend.getReadingsForSite
-import backend.loadWaterQualityData
+import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.http.content.staticResources
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.request.receiveParameters
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondRedirect
-import io.ktor.server.request.receiveParameters
-import io.ktor.server.sessions.*
+import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
-import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.sessions.*
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import io.ktor.server.response.respondText
 
 @Serializable
 data class UserSession(val isOfficial: Boolean)
@@ -30,36 +23,36 @@ data class UserSession(val isOfficial: Boolean)
 @Serializable
 data class AlertSummary(
     val type: String,
-    val count: Int
+    val count: Int,
 )
 
 @Serializable
 data class SiteSummary(
     val siteId: String,
-    val count: Int
+    val count: Int,
 )
 
 @Serializable
 data class StatusSummary(
     val status: String,
-    val count: Int
+    val count: Int,
 )
 
 @Serializable
 data class ErrorResponse(
-    val error: String
+    val error: String,
 )
 
 @Serializable
 data class StatusCountItem(
     val status: String,
-    val count: Int
+    val count: Int,
 )
 
 @Serializable
 data class SiteCountItem(
     val siteId: String,
-    val count: Int
+    val count: Int,
 )
 
 @Serializable
@@ -68,7 +61,7 @@ data class AlertBreakdownResponse(
     val ph: Int,
     val turbidity: Int,
     val conductivity: Int,
-    val total: Int
+    val total: Int,
 )
 
 @Serializable
@@ -84,7 +77,7 @@ data class LatestReadingResponse(
     val status: String,
     val wxTempC: Double,
     val wxRhPct: Double,
-    val wxRainMmHr: Double
+    val wxRainMmHr: Double,
 )
 
 @Serializable
@@ -95,7 +88,7 @@ data class TrendPoint(
     val conductivityUsCm: Double,
     val waterTemperatureC: Double,
     val waterLevelCm: Double,
-    val lightLux: Double
+    val lightLux: Double,
 )
 
 @Serializable
@@ -103,7 +96,7 @@ data class RecentAlert(
     val metric: String,
     val value: Double,
     val status: String,
-    val timestamp: String
+    val timestamp: String,
 )
 
 @Serializable
@@ -112,27 +105,26 @@ data class AlertTimeSummaryResponse(
     val total: Int,
     val daily: Int,
     val weekly: Int,
-    val monthly: Int
+    val monthly: Int,
 )
 
 @Serializable
 data class DailyAlertCount(
     val day: String,
     val date: String,
-    val count: Int
+    val count: Int,
 )
 
 fun main() {
     val filePath = "../../datasets/datasets/synthetic_outputs/water_quality.csv"
     var waterReadings = loadWaterQualityData(filePath)
-    
+
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
     val latestTimestamp = waterReadings.maxOf { LocalDateTime.parse(it.timestamp, formatter) }
     val offset = java.time.Duration.between(latestTimestamp, LocalDateTime.now())
 
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
-
         install(ContentNegotiation) {
             json()
         }
@@ -145,7 +137,6 @@ fun main() {
         }
 
         routing {
-
             // Serve frontend files
             staticResources("/", "front-end")
 
@@ -156,7 +147,7 @@ fun main() {
 
             post("/login") {
                 val params = call.receiveParameters()
-                val email    = params["email"]    ?: ""
+                val email = params["email"] ?: ""
                 val password = params["password"] ?: ""
 
                 if (email == "official@gov.za" && password == "demo2026") {
@@ -207,8 +198,8 @@ fun main() {
                         ph = breakdown["ph"] ?: 0,
                         turbidity = breakdown["turbidity"] ?: 0,
                         conductivity = breakdown["conductivity"] ?: 0,
-                        total = (breakdown["ph"] ?: 0) + (breakdown["turbidity"] ?: 0) + (breakdown["conductivity"] ?: 0)
-                    )
+                        total = (breakdown["ph"] ?: 0) + (breakdown["turbidity"] ?: 0) + (breakdown["conductivity"] ?: 0),
+                    ),
                 )
             }
 
@@ -242,29 +233,32 @@ fun main() {
             get("/summary/status-counts") {
                 val statuses = listOf("normal", "warning", "critical")
 
-                val results = statuses.map { status ->
-                    StatusCountItem(
-                        status = status,
-                        count = getReadingsByStatus(waterReadings, status).size
-                    )
-                }
+                val results =
+                    statuses.map { status ->
+                        StatusCountItem(
+                            status = status,
+                            count = getReadingsByStatus(waterReadings, status).size,
+                        )
+                    }
 
                 call.respond(results)
             }
 
             // Summary of site counts
             get("/summary/site-counts") {
-                val siteIds = waterReadings
-                    .map { it.siteId.trim() }
-                    .distinct()
-                    .sorted()
+                val siteIds =
+                    waterReadings
+                        .map { it.siteId.trim() }
+                        .distinct()
+                        .sorted()
 
-                val results = siteIds.map { siteId ->
-                    SiteCountItem(
-                        siteId = siteId,
-                        count = getReadingsForSite(waterReadings, siteId).size
-                    )
-                }
+                val results =
+                    siteIds.map { siteId ->
+                        SiteCountItem(
+                            siteId = siteId,
+                            count = getReadingsForSite(waterReadings, siteId).size,
+                        )
+                    }
 
                 call.respond(results)
             }
@@ -296,13 +290,13 @@ fun main() {
                             status = latestReading.status,
                             wxTempC = latestReading.wxTempC,
                             wxRhPct = latestReading.wxRhPct,
-                            wxRainMmHr = latestReading.wxRainMmHr
-                        )
+                            wxRainMmHr = latestReading.wxRainMmHr,
+                        ),
                     )
                 }
             }
 
-            //Getting last 10 alerts
+            // Getting last 10 alerts
             get("/alerts/{siteId}/recent") {
                 val siteId = call.parameters["siteId"]
 
@@ -311,30 +305,38 @@ fun main() {
                     return@get
                 }
 
-                val alerts = getAlertReadingsForSite(waterReadings, siteId)
-                    .sortedByDescending { it.timestamp }
-                    .take(30)
-                    .flatMap { reading ->
+                val alerts =
+                    getAlertReadingsForSite(waterReadings, siteId)
+                        .sortedByDescending { it.timestamp }
+                        .take(30)
+                        .flatMap { reading ->
 
-                        val ts = LocalDateTime.parse(reading.timestamp, formatter)
-                            .plus(offset)
-                            .format(formatter)
+                            val ts =
+                                LocalDateTime.parse(reading.timestamp, formatter)
+                                    .plus(offset)
+                                    .format(formatter)
 
-                        listOfNotNull(
-                            if (reading.ph < 6.5 || reading.ph > 8.5)
-                                RecentAlert("ph", reading.ph, reading.status, ts) else null,
-
-                            if (reading.turbidityNtu > 1)
-                                RecentAlert("turbidity", reading.turbidityNtu, reading.status, ts) else null,
-
-                            if (reading.conductivityUsCm > 1700)
-                                RecentAlert("conductivity", reading.conductivityUsCm, reading.status, ts) else null
-                        )
-                    }
+                            listOfNotNull(
+                                if (reading.ph < 6.5 || reading.ph > 8.5) {
+                                    RecentAlert("ph", reading.ph, reading.status, ts)
+                                } else {
+                                    null
+                                },
+                                if (reading.turbidityNtu > 1) {
+                                    RecentAlert("turbidity", reading.turbidityNtu, reading.status, ts)
+                                } else {
+                                    null
+                                },
+                                if (reading.conductivityUsCm > 1700) {
+                                    RecentAlert("conductivity", reading.conductivityUsCm, reading.status, ts)
+                                } else {
+                                    null
+                                },
+                            )
+                        }
 
                 call.respond(alerts.take(15))
             }
-
 
             // Displaying alert no. by time frame
             get("/alerts/{siteId}/summary") {
@@ -353,9 +355,10 @@ fun main() {
                 val weeklyCutoff = now.minusWeeks(1)
                 val monthlyCutoff = now.minusMonths(1)
 
-                val parsedTimestamps = alerts.map {
-                    LocalDateTime.parse(it.timestamp, formatter).plus(offset)
-                }
+                val parsedTimestamps =
+                    alerts.map {
+                        LocalDateTime.parse(it.timestamp, formatter).plus(offset)
+                    }
 
                 val total = parsedTimestamps.size
                 val daily = parsedTimestamps.count { it.isAfter(dailyCutoff) }
@@ -368,8 +371,8 @@ fun main() {
                         total = total,
                         daily = daily,
                         weekly = weekly,
-                        monthly = monthly
-                    )
+                        monthly = monthly,
+                    ),
                 )
             }
 
@@ -382,18 +385,19 @@ fun main() {
                 val alerts = getAlertReadingsForSite(waterReadings, siteId)
                 val now = LocalDateTime.now()
                 val dayFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                val result = (6 downTo 0).map { daysAgo ->
-                    val date = now.minusDays(daysAgo.toLong()).toLocalDate()
-                    val count = 
-                        alerts.count { reading ->
-                            LocalDateTime.parse(reading.timestamp, formatter).plus(offset).toLocalDate() == date
-                        }
-                    DailyAlertCount(
-                        day = date.dayOfWeek.name.take(3).lowercase().replaceFirstChar { it.uppercase() },
-                        date = date.format(dayFormatter),
-                        count = count,
-                    )
-                }
+                val result =
+                    (6 downTo 0).map { daysAgo ->
+                        val date = now.minusDays(daysAgo.toLong()).toLocalDate()
+                        val count =
+                            alerts.count { reading ->
+                                LocalDateTime.parse(reading.timestamp, formatter).plus(offset).toLocalDate() == date
+                            }
+                        DailyAlertCount(
+                            day = date.dayOfWeek.name.take(3).lowercase().replaceFirstChar { it.uppercase() },
+                            date = date.format(dayFormatter),
+                            count = count,
+                        )
+                    }
                 call.respond(result)
             }
 
@@ -407,7 +411,7 @@ fun main() {
 
                 val alerts = getAlertReadingsForSite(waterReadings, siteId)
 
-                val breakdown = 
+                val breakdown =
                     alerts.flatMap { reading ->
                         listOfNotNull(
                             if (reading.ph < 6.5 || reading.ph > 8.5) "ph" else null,
@@ -440,11 +444,11 @@ fun main() {
 
                 val days = call.request.queryParameters["days"]?.toIntOrNull()
 
-                val allSiteReadings = 
+                val allSiteReadings =
                     getReadingsForSite(waterReadings, siteId)
                         .sortedBy { it.timestamp }
 
-                val siteReadings = 
+                val siteReadings =
                     if (days != null) {
                         val cutoff = latestTimestamp.minusDays(days.toLong())
                         allSiteReadings.filter { LocalDateTime.parse(it.timestamp, formatter).isAfter(cutoff) }
@@ -455,7 +459,7 @@ fun main() {
                 if (siteReadings.isEmpty()) {
                     call.respond(ErrorResponse("No readings found for site: $siteId"))
                 } else {
-                    val trendData = 
+                    val trendData =
                         siteReadings.map { reading ->
                             TrendPoint(
                                 timestamp = LocalDateTime.parse(reading.timestamp, formatter).plus(offset).format(formatter),
@@ -482,7 +486,7 @@ fun main() {
 
                 val cutoff = latestTimestamp.minusDays(days.toLong())
 
-                val filtered = 
+                val filtered =
                     getReadingsForSite(waterReadings, siteId)
                         .filter {
                             LocalDateTime.parse(it.timestamp, formatter)
